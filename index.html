@@ -8,10 +8,16 @@
 
         // Ground
         let ground = world.createBody();
-        ground.createFixture(pl.Edge(Vec2(-30.0, 30.0), Vec2(30.0, 30.0)), 0.0);
-        ground.createFixture(pl.Edge(Vec2(30.0, 30.0), Vec2(30.0, 0.0)), 0.0);
-        ground.createFixture(pl.Edge(Vec2(30.0, 0.0), Vec2(-30.0, 0.0)), 0.0);
-        ground.createFixture(pl.Edge(Vec2(-30.0, 0.0), Vec2(-30.0, 30.0)), 0.0);
+
+        // Create rows
+        for (let i = 0; i <= 30; i++) {
+            ground.createFixture(pl.Edge(Vec2(-30.0, 30.0 - i), Vec2(30.0, 30.0 - i)), 0.0);
+        }
+
+        // Create columns
+        for (let i = 0; i <= 60; i++) {
+            ground.createFixture(pl.Edge(Vec2(-30.0 + i, 30.0), Vec2(-30.0 + i, 0.0)), 0.0);
+        }
 
 
         // Boxes
