@@ -23,7 +23,7 @@
         // Boxes
         for (let i = 0; i < 5; ++i) {
             world.createDynamicBody(Vec2(-10.0 + 2.0 * i, 7.0))
-                .createFixture(pl.Box(0.5, 0.5), 20.0);
+                .createFixture(pl.Box(1, 1), 20.0);
         }
 
         world.on('pre-solve', function(contact, oldManifold) {
