@@ -77,6 +77,8 @@ $('.move').on('click', function () {
     moveUp(boxes[0])
 });
 
+createAStarGrid();
+
 function getLocationOnGrid(x, y) {
     let xVal = Math.round(x / 10)
     let yVal = Math.round(y / 10)
@@ -94,9 +96,9 @@ let targetTile
 function moveUp(box) {
     adjustAngle(box, "up");
     //Events.on(engine, 'afterUpdate', function () {
-        //get coordinates
+    //get coordinates
     let loc = getLocationOnGrid(box.position.x, box.position.y);
-        //get rotation
+    //get rotation
     let rot = getRotationOfBox(box);
     adjustAngle(box, "up")
 
@@ -108,21 +110,20 @@ function moveUp(box) {
     driveInterval = setInterval(driveIfNotArrived, 500);
 }
 
-function driveIfNotArrived(){
+function driveIfNotArrived() {
     let loc = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
 
     let arrived = checkIfArrivedAtHeight(loc, targetTile)
-    if (!arrived){
+    if (!arrived) {
         drive(boxes[0], 0, -1, 0.1)
-    } else
-    if (arrived){
+    } else if (arrived) {
         stop(boxes[0])
         clearInterval(driveInterval)
     }
 }
 
-function checkIfArrivedAtHeight(loc, tloc){
-    console.log("comparing ",loc[1], " and ", tloc[1])
+function checkIfArrivedAtHeight(loc, tloc) {
+    console.log("comparing ", loc[1], " and ", tloc[1])
 
     let tf = (loc[1] == tloc[1])
     console.log(tf)
@@ -133,24 +134,24 @@ function adjustAngle(box, direction) {
     if (direction == "up") {
         Body.rotate(box, -(box.angle));
     }
-    if(direction == "down"){
-        Body.rotate(box, (-(box.angle)-0.5))
+    if (direction == "down") {
+        Body.rotate(box, (-(box.angle) - 0.5))
     }
-    if(direction == "right"){
+    if (direction == "right") {
         Body.rotate(box, (-(box.angle) + 0.25))
     }
-    if(direction == "left"){
+    if (direction == "left") {
         Body.rotate(box, (-(box.angle) - 0.25))
     }
 
     console.log("new angle: ", box.angle);
 }
 
-function getTileOnTop(coordinates){
+function getTileOnTop(coordinates) {
     return [coordinates[0], (coordinates[1] - 1)]
 }
 
-function getTileBelow(coordinates){
+function getTileBelow(coordinates) {
     return [coordinates[0], (coordinates[1] + 1)]
 }
 
@@ -187,6 +188,33 @@ function stop(element) {
     rotate(element, true, 0);
 }
 
+
+function createAStarGrid() {
+    let blockedGridLocs = [];
+    for (let obstacle of obstacles) {
+        blockedGridLocs.push(getLocationOnGrid(obstacle.position.x, obstacle.position.y));
+    }
+
+    console.log('blocked grid cells', blockedGridLocs);
+
+    // loop through
+    let gridGraph = [];
+    for (let i = 1; i <= 400 / 10; i++) {
+        let gridGraphRow = [];
+        for (let j = 1; j <= 800 / 10; j++) {
+            gridGraphRow.push(0);
+        }
+        gridGraph.push(gridGraphRow);
+    }
+
+    for (let blockedGridLoc of blockedGridLocs) {
+        let x = blockedGridLoc[0];
+        let y = blockedGridLoc[1];
+        gridGraph[y][x] = 1;
+    }
+
+    console.log(gridGraph);
+}
 
 // add all of the bodies to the world
 World.add(engine.world, boxes);
