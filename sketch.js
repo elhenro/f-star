@@ -51,6 +51,7 @@ $('.linear').on('click', function () {
 $('.test').on('click', function () {
     let d = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
     console.log("coordinates of box[0]: ",d)
+    Body.rotate(boxes[0], 0.7)
 });
 
 $('.move').on('click', function () {
@@ -72,7 +73,16 @@ function moveUp(box){
     loc = getLocationOnGrid(box.position.x, box.position.y)
     //get rotation
     rot = getRotationOfBox(box)
+
+    adjustAngle(box, "up")
     console.log(loc, rot)
+}
+
+function adjustAngle(box, direction){
+    if(direction == "up"){
+        Body.rotate(box, -(box.angle))
+        console.log("new angle: ", box.angle)
+    }
 }
 
 
