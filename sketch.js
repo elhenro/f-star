@@ -348,6 +348,14 @@ for (let step of result) {
     path.push(body);
 }
 
+let mockMap = [];
+for (step of result){
+    mockMap.push([step.x, step.y]);
+}
+
+console.log(mockMap);
+
+
 // add all of the bodies to the world
 World.add(engine.world, boxes);
 World.add(engine.world, obstacles);
