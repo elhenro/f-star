@@ -27,8 +27,13 @@ for (let i = 0; i < 6; i++) {
 // create obstacles
 let obstacles = [];
 for (let i = 0; i < 4; i++) {
-    obstacles.push(Bodies.rectangle(Math.random() * 800, Math.random() * 400, 20, 20, {render: {lineWidth: 10}}));
+    //obstacles.push(Bodies.rectangle(Math.random() * 800, Math.random() * 400, 20, 20, {render: {lineWidth: 10}}));
 }
+
+//test obstacle
+obstacles.push(Bodies.rectangle(250, 180, 20, 20));
+
+let target = Bodies.rectangle(400, 20, 10, 10);
 
 
 // create a ground
@@ -90,7 +95,7 @@ $('.moveLeft').on('click', function () {
     move(boxes[0], "left")
 });
 
-$(document).keydown(function(e){
+$(document).keydown(function (e) {
     if (e.which == 37) {
         move(boxes[0], "left")
     }
@@ -104,9 +109,6 @@ $(document).keydown(function(e){
         move(boxes[0], "down")
     }
 });
-
-
-createAStarGrid();
 
 function getLocationOnGrid(x, y) {
     let xVal = Math.round(x / 10)
@@ -125,42 +127,41 @@ let driveDirectionY = 0
 let driveDirectionX = 0
 let driveSpeed = 0.1
 
-function move(box, direction){
+function move(box, direction) {
     let loc = getLocationOnGrid(box.position.x, box.position.y);
     adjustAngle(box, direction)
 
     targetTile = getNeighbourTile(loc, direction)
     console.log("tile: ", loc, " neighbour: ", targetTile)
 
-    if (direction == "up"){
+    if (direction == "up") {
         driveDirectionY = -1
     }
-    if (direction == "down"){
+    if (direction == "down") {
         driveDirectionY = 1
     }
-    if (direction == "right"){
+    if (direction == "right") {
         driveDirectionX = 1
     }
-    if (direction == "left"){
+    if (direction == "left") {
         driveDirectionX = -1
     }
     driveInterval = setInterval(driveIfNotArrived, 100);
 }
 
 
-function driveIfNotArrived(){
+function driveIfNotArrived() {
     let loc = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
 
     let arrived
-    if (driveDirectionY != 0){
+    if (driveDirectionY != 0) {
         arrived = checkIfArrivedAtHeight(loc, targetTile)
-    } else if (driveDirectionX != 0){
+    } else if (driveDirectionX != 0) {
         arrived = checkIfArrivedAtWidth(loc, targetTile)
     }
-    if (!arrived){
+    if (!arrived) {
         drive(boxes[0], driveDirectionX, driveDirectionY, driveSpeed)
-    } else
-    if (arrived){
+    } else if (arrived) {
         stop(boxes[0])
         clearInterval(driveInterval)
         driveDirectionX = 0
@@ -176,8 +177,8 @@ function checkIfArrivedAtHeight(loc, tloc) {
     return tf
 }
 
-function checkIfArrivedAtWidth(loc, tloc){
-    console.log("comparing ",loc[0], " and ", tloc[0])
+function checkIfArrivedAtWidth(loc, tloc) {
+    console.log("comparing ", loc[0], " and ", tloc[0])
     let tf = (loc[0] == tloc[0])
     console.log(tf)
     return tf
@@ -189,18 +190,18 @@ function adjustAngle(box, direction) {
 }
 
 
-function getNeighbourTile(coordinates, direction){
+function getNeighbourTile(coordinates, direction) {
     let stepSize = 5
-    if (direction == "up"){
+    if (direction == "up") {
         return [coordinates[0], (coordinates[1] - stepSize)]
     }
-    if (direction == "down"){
+    if (direction == "down") {
         return [coordinates[0], (coordinates[1] + stepSize)]
     }
-    if (direction == "right"){
+    if (direction == "right") {
         return [(coordinates[0] + stepSize), coordinates[1]]
     }
-    if (direction == "left"){
+    if (direction == "left") {
         return [(coordinates[0] - stepSize), coordinates[1]]
     }
 }
@@ -246,28 +247,47 @@ function createAStarGrid() {
 
     console.log('blocked grid cells', blockedGridLocs);
 
-    // loop through
+    // create empty grid
     let gridGraph = [];
-    for (let i = 1; i <= 400 / 10; i++) {
+    for (let i = 0; i < 400 / 10; i++) {
         let gridGraphRow = [];
-        for (let j = 1; j <= 800 / 10; j++) {
-            gridGraphRow.push(0);
+        for (let j = 0; j < 800 / 10; j++) {
+            gridGraphRow.push(1);
         }
         gridGraph.push(gridGraphRow);
     }
 
+    // update grid with blocked locations
     for (let blockedGridLoc of blockedGridLocs) {
         let x = blockedGridLoc[0];
         let y = blockedGridLoc[1];
-        gridGraph[y][x] = 1;
+        gridGraph[y][x] = 0;
     }
 
     console.log(gridGraph);
+    return gridGraph
+}
+
+let graph = new Graph(createAStarGrid());
+let start = graph.grid[0][0];
+let end = graph.grid[39][40];
+let result = astar.search(graph, start, end);
+// result is an array containing the shortest path
+
+
+console.log('result', result);
+
+let path = [];
+for (let step of result) {
+    let body = Bodies.rectangle(step.x * 10, step.y * 10, 5, 5);
+    path.push(body);
 }
 
 // add all of the bodies to the world
 World.add(engine.world, boxes);
 World.add(engine.world, obstacles);
+World.add(engine.world, [target]);
+World.add(engine.world, path);
 
 // run the engine
 Engine.run(engine);
