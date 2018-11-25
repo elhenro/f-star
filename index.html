@@ -1,47 +1,10 @@
 <html>
 <body>
-<script src="https://cdn.jsdelivr.net/npm/planck-js@0.2/dist/planck-with-testbed.js"></script>
-<script>
-    planck.testbed('ConveyorBelt', function(testbed) {
-        let pl = planck, Vec2 = pl.Vec2;
-        let world = new pl.World();
 
-        // Ground
-        let ground = world.createBody();
+<button class="linear">Linear</button>
 
-        // Create rows
-        for (let i = 0; i <= 30; i++) {
-            ground.createFixture(pl.Edge(Vec2(-30.0, 30.0 - i), Vec2(30.0, 30.0 - i)), 0.0);
-        }
-
-        // Create columns
-        for (let i = 0; i <= 60; i++) {
-            ground.createFixture(pl.Edge(Vec2(-30.0 + i, 30.0), Vec2(-30.0 + i, 0.0)), 0.0);
-        }
-
-
-        // Boxes
-        for (let i = 0; i < 5; ++i) {
-            world.createDynamicBody(Vec2(-10.0 + 2.0 * i, 7.0))
-                .createFixture(pl.Box(1, 1), 20.0);
-        }
-
-        world.on('pre-solve', function(contact, oldManifold) {
-            let fixtureA = contact.getFixtureA();
-            let fixtureB = contact.getFixtureB();
-
-            if (fixtureA == platform) {
-                contact.setTangentSpeed(5.0);
-            }
-
-            if (fixtureB == platform) {
-                contact.setTangentSpeed(-5.0);
-            }
-        });
-
-        return world;
-    });
-</script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="matter.min.js"></script>
+<script src="sketch.js"></script>
 </body>
 </html>
-
