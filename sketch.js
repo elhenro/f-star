@@ -23,7 +23,6 @@ for (let i = 0; i < 6; i++) {
     boxes.push(Bodies.rectangle(400, 200, 20, 20));
 }
 
-
 // create obstacles
 let obstacles = [];
 for (let i = 0; i < 4; i++) {
@@ -33,16 +32,6 @@ for (let i = 0; i < 4; i++) {
 
 // create a ground
 var ground = Bodies.rectangle(400, 610, 810, 60, {isStatic: true, frictionAir: 1});
-/*
-for (let box of boxes) {
-    console.log(box);
-}*/
-
-/*
-let testStartLocation = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
-console.log("start location of box 0: ", testStartLocation)
-console.log("test target on top: ", getNeighbourTile(testStartLocation, "up"))
-*/
 
 // Get the position of the boxes
 Events.on(engine, 'afterUpdate', function () {
