@@ -23,6 +23,14 @@ for (let i = 0; i < 6; i++) {
     boxes.push(Bodies.rectangle(400, 200, 20, 20));
 }
 
+
+// create obstacles
+let obstacles = [];
+for (let i = 0; i < 4; i++) {
+    obstacles.push(Bodies.rectangle(Math.random() * 800, Math.random() * 400, 20, 20, {render: {lineWidth: 10}}));
+}
+
+
 // create a ground
 var ground = Bodies.rectangle(400, 610, 810, 60, {isStatic: true, frictionAir: 1});
 /*
@@ -243,6 +251,7 @@ function stop(element) {
 
 // add all of the bodies to the world
 World.add(engine.world, boxes);
+World.add(engine.world, obstacles);
 
 // run the engine
 Engine.run(engine);
