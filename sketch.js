@@ -84,7 +84,22 @@ function moveUp(box){
     adjustAngle(box, "up")
 
     console.log(loc, rot)
-    console.log("tile on top of ", loc, " is ", getTileOnTop(loc))
+
+    let tileOnTop = getTileOnTop(loc)
+    console.log("tile on top of ", loc, " is ", tileOnTop)
+
+    /*
+    while (loc[1] < tileOnTop[1]) {
+        // if not there yet
+            console.log("moving")
+        if (loc[1] == tileOnTop[1]){
+            console.log("arrived")
+        }
+    } 
+    if (loc[1] >= tileOnTop[1]){
+        console.log("error - tile is not on top (anymore)")
+    }
+    */
 }
 
 function adjustAngle(box, direction){
