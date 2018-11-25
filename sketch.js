@@ -91,20 +91,22 @@ $('.moveLeft').on('click', function () {
 });
 
 $(document).keydown(function(e){
-    if (e.which == 37) { 
+    if (e.which == 37) {
         move(boxes[0], "left")
     }
-    if (e.which == 38) { 
+    if (e.which == 38) {
         move(boxes[0], "up")
     }
-    if (e.which == 39) { 
+    if (e.which == 39) {
         move(boxes[0], "right")
     }
-    if (e.which == 40) { 
+    if (e.which == 40) {
         move(boxes[0], "down")
     }
 });
 
+
+createAStarGrid();
 
 function getLocationOnGrid(x, y) {
     let xVal = Math.round(x / 10)
@@ -166,8 +168,8 @@ function driveIfNotArrived(){
     }
 }
 
-function checkIfArrivedAtHeight(loc, tloc){
-    console.log("comparing ",loc[1], " and ", tloc[1])
+function checkIfArrivedAtHeight(loc, tloc) {
+    console.log("comparing ", loc[1], " and ", tloc[1])
 
     let tf = (loc[1] == tloc[1])
     console.log(tf)
@@ -235,6 +237,33 @@ function stop(element) {
     rotate(element, true, 0);
 }
 
+
+function createAStarGrid() {
+    let blockedGridLocs = [];
+    for (let obstacle of obstacles) {
+        blockedGridLocs.push(getLocationOnGrid(obstacle.position.x, obstacle.position.y));
+    }
+
+    console.log('blocked grid cells', blockedGridLocs);
+
+    // loop through
+    let gridGraph = [];
+    for (let i = 1; i <= 400 / 10; i++) {
+        let gridGraphRow = [];
+        for (let j = 1; j <= 800 / 10; j++) {
+            gridGraphRow.push(0);
+        }
+        gridGraph.push(gridGraphRow);
+    }
+
+    for (let blockedGridLoc of blockedGridLocs) {
+        let x = blockedGridLoc[0];
+        let y = blockedGridLoc[1];
+        gridGraph[y][x] = 1;
+    }
+
+    console.log(gridGraph);
+}
 
 // add all of the bodies to the world
 World.add(engine.world, boxes);
