@@ -53,11 +53,26 @@ $('.test').on('click', function () {
     console.log("coordinates of box[0]: ",d)
 });
 
+$('.move').on('click', function () {
+    moveUp(boxes[0])
+});
+
 function getLocationOnGrid(x, y) {
     let xVal = Math.round(x / 10)
     let yVal = Math.round(y / 10)
     let coordinates = [xVal, yVal]
     return coordinates
+}
+function getRotationOfBox(box){
+    return box.angle
+}
+
+function moveUp(box){
+    //get coordinates
+    loc = getLocationOnGrid(box.position.x, box.position.y)
+    //get rotation
+    rot = getRotationOfBox(box)
+    console.log(loc, rot)
 }
 
 
