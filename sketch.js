@@ -37,7 +37,7 @@ Events.on(engine, 'afterUpdate', function () {
     for (let box of boxes) {
         let positionX = Math.round(box.position.x);
         let positionY = Math.round(box.position.y);
-        boxLocations += '<p>X: ' + positionX + ' Y: ' + positionY + ' gX:' + getLocationOnGrid(box.position.x, box.position.y)[0] + ' gY:' + getLocationOnGrid(box.position.x, box.position.y)[1] + '</p>';
+        boxLocations += '<p>X: ' + positionX + ' Y: ' + positionY + '</p>';
     }
 
     $('#locations').html(boxLocations);
@@ -86,6 +86,25 @@ function moveUp(box) {
         //get rotation
         let rot = getRotationOfBox(box);
 
+    adjustAngle(box, "up")
+
+    console.log(loc, rot)
+
+    let tileOnTop = getTileOnTop(loc)
+    console.log("tile on top of ", loc, " is ", tileOnTop)
+
+    /*
+    while (loc[1] < tileOnTop[1]) {
+        // if not there yet
+            console.log("moving")
+        if (loc[1] == tileOnTop[1]){
+            console.log("arrived")
+        }
+    }
+    if (loc[1] >= tileOnTop[1]){
+        console.log("error - tile is not on top (anymore)")
+    }
+    */
     });
 
     drive(box, 0, -1);
@@ -94,9 +113,37 @@ function moveUp(box) {
 function adjustAngle(box, direction) {
     if (direction == "up") {
         Body.rotate(box, -(box.angle));
-        console.log("new angle: ", box.angle);
     }
+    if(direction == "down"){
+        Body.rotate(box, (-(box.angle)-0.5))
+    }
+    if(direction == "right"){
+        Body.rotate(box, (-(box.angle) + 0.25))
+    }
+    if(direction == "left"){
+        Body.rotate(box, (-(box.angle) - 0.25))
+    }
+
+    console.log("new angle: ", box.angle);
 }
+
+function getTileOnTop(coordinates){
+    return [coordinates[0], (coordinates[1] + 1)]
+}
+
+function getTileBelow(coordinates){
+    return [coordinates[0], (coordinates[1] - 1)]
+}
+
+
+// add all of the bodies to the world
+World.add(engine.world, boxes);
+
+// run the engine
+Engine.run(engine);
+
+// run the renderer
+Render.run(render);
 
 
 function drive(element, x, y, speed = 1) {
