@@ -122,7 +122,7 @@ let driveInterval
 let targetTile
 let driveDirectionY = 0
 let driveDirectionX = 0
-let driveSpeed = 0.1
+let driveSpeed = 0.5
 
 function move(box, direction){
     let loc = getLocationOnGrid(box.position.x, box.position.y);
@@ -143,7 +143,7 @@ function move(box, direction){
     if (direction == "left"){
         driveDirectionX = -1
     }
-    driveInterval = setInterval(driveIfNotArrived, 100);
+    driveInterval = setInterval(driveIfNotArrived, 50);
 }
 
 
@@ -212,7 +212,7 @@ let moveReadyInterval
 let currentNextStepLocation
 
 function followPath(){
-    moveReadyInterval = setInterval(moveOnPathIfNextStepReady, 500)
+    moveReadyInterval = setInterval(moveOnPathIfNextStepReady, 50)
 }
 
 let readyToMove = true
