@@ -37,10 +37,12 @@ var ground = Bodies.rectangle(400, 610, 810, 60, {isStatic: true, frictionAir: 1
 for (let box of boxes) {
     console.log(box);
 }*/
+
+/*
 let testStartLocation = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
 console.log("start location of box 0: ", testStartLocation)
-
 console.log("test target on top: ", getNeighbourTile(testStartLocation, "up"))
+*/
 
 // Get the position of the boxes
 Events.on(engine, 'afterUpdate', function () {
@@ -66,6 +68,11 @@ $('.rotate').on('click', function () {
 $('.break').on('click', function () {
     stop(boxes[0]);
 });
+
+$('.follow').on('click', function () {
+    followPath()
+});
+
 
 $('.test').on('click', function () {
     let d = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y);
@@ -190,7 +197,7 @@ function adjustAngle(box, direction) {
 
 
 function getNeighbourTile(coordinates, direction){
-    let stepSize = 5
+    let stepSize = 1
     if (direction == "up"){
         return [coordinates[0], (coordinates[1] - stepSize)]
     }
@@ -203,7 +210,105 @@ function getNeighbourTile(coordinates, direction){
     if (direction == "left"){
         return [(coordinates[0] - stepSize), coordinates[1]]
     }
+    /*
+    if (direction !== "up" || direction !== "left" || direction !== "right" || direction !== "down"){
+        console.log("error - direction ", direction, " not found")
+    }*/
 }
+
+//var lastLocation
+let moveReadyInterval
+let currentNextStepLocation
+//var currentMoveDirection
+
+function followPath(){
+
+    //var loc
+    
+    moveReadyInterval = setInterval(moveOnPathIfNextStepReady, 500)
+    //for (let step of navigationMap){
+    /*    
+        let step = navigationMap[0]
+
+        currentNextStepLocation = step
+        if (!lastLocation){
+            // if first move get actual location of box
+            loc = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
+        } else {
+            // get location from last step
+            loc = lastLocation
+        }
+
+        let direction = getDirectionToMove(loc, step)
+
+        currentMoveDirection = direction
+        
+        moveReadyInterval = setInterval(moveOnPathIfNextStepReady, 2000)
+        */
+    //}
+}
+
+let readyToMove = true
+let stepIndex = 0
+let mockMap = [[40, 31], [40,32], [41,32], [42,32], [42,33], [43,33], [43,32]]
+
+function moveOnPathIfNextStepReady(){
+    let actor = boxes[0] 
+    let loc = getLocationOnGrid( actor.position.x, actor.position.y)
+    if(readyToMove){
+        readyToMove = false
+
+        let nextTarget = mockMap[ stepIndex ]
+        currentNextStepLocation = nextTarget
+
+        let direction = getDirectionToMove( loc, nextTarget) 
+        
+        move(boxes[0], direction)
+        stepIndex ++
+    }
+    if(checkIfArrived(loc, currentNextStepLocation)){
+        readyToMove = true
+        console.log("arrived at ", currentNextStepLocation,"! :)")
+    }
+
+    if(checkIfArrived(loc, mockMap[(mockMap.length - 1)])){
+        console.log("arrived at final location ! <3")
+        clearInterval(moveReadyInterval)
+    }
+
+    //if arrived at final location
+    //clearInterval(moveReadyInterval)
+    //readyToMove = checkIfArrived(getLocationOnGrid(boxes[0].position.x, boxes[0].position.y), currentNextStepLocation)
+}
+
+function checkIfArrived(loc, step){
+    console.log("checking if arrived: ", loc, " to ", step)
+    let arrived = (loc[0] == step[0] && loc[1] == step[1]) 
+    console.log(arrived)
+    return arrived
+}
+
+function getDirectionToMove(loc, step){
+    lastLocation = step
+
+    console.log(loc)
+    console.log(step)
+    if (step[0] > loc[0]){
+        return "right"
+    } else
+    if (step[0] < loc[0]){
+        return "left"
+    } else
+    if (step[1] < loc[1]){
+        return "up"
+    } else 
+    if (step[1] > loc[1]){
+        return "down"
+    } /*else {
+        return ("error "+ loc + " " + step)
+    }*/
+}
+
 
 // add all of the bodies to the world
 World.add(engine.world, boxes);
@@ -274,3 +379,4 @@ Engine.run(engine);
 
 // run the renderer
 Render.run(render);
+
