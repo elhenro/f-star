@@ -89,8 +89,18 @@ function moveUp(box){
 function adjustAngle(box, direction){
     if(direction == "up"){
         Body.rotate(box, -(box.angle))
-        console.log("new angle: ", box.angle)
     }
+    if(direction == "down"){
+        Body.rotate(box, (-(box.angle)-0.5))
+    }
+    if(direction == "right"){
+        Body.rotate(box, (-(box.angle) + 0.25))
+    }
+    if(direction == "left"){
+        Body.rotate(box, (-(box.angle) - 0.25))
+    }
+
+    console.log("new angle: ", box.angle)
 }
 
 
