@@ -59,7 +59,6 @@ $('.break').on('click', function () {
 $('.test').on('click', function () {
     let d = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
     console.log("coordinates of box[0]: ",d)
-    Body.rotate(boxes[0], 0.7)
 });
 
 $('.move').on('click', function () {
