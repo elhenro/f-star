@@ -32,7 +32,7 @@ for (let box of boxes) {
 let testStartLocation = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
 console.log("start location of box 0: ", testStartLocation)
 
-console.log("test target on top: ", getTileOnTop(testStartLocation))
+console.log("test target on top: ", getNeighbourTile(testStartLocation, "up"))
 
 // Get the position of the boxes
 Events.on(engine, 'afterUpdate', function () {
@@ -65,8 +65,21 @@ $('.test').on('click', function () {
     Body.rotate(boxes[0], 0.7)
 });
 
-$('.move').on('click', function () {
-    moveUp(boxes[0])
+
+$('.moveUp').on('click', function () {
+    move(boxes[0], "up")
+});
+
+$('.moveDown').on('click', function () {
+    move(boxes[0], "down")
+});
+
+$('.moveRight').on('click', function () {
+    move(boxes[0], "right")
+});
+
+$('.moveLeft').on('click', function () {
+    move(boxes[0], "left")
 });
 
 function getLocationOnGrid(x, y) {
@@ -82,34 +95,50 @@ function getRotationOfBox(box) {
 
 let driveInterval
 let targetTile
+let driveDirectionY = 0
+let driveDirectionX = 0
+let driveSpeed = 0.1
 
-function moveUp(box) {
-    adjustAngle(box, "up");
-    //Events.on(engine, 'afterUpdate', function () {
-        //get coordinates
+function move(box, direction){
     let loc = getLocationOnGrid(box.position.x, box.position.y);
-        //get rotation
-    let rot = getRotationOfBox(box);
-    adjustAngle(box, "up")
+    adjustAngle(box, direction)
 
-    //console.log(loc, rot)
+    targetTile = getNeighbourTile(loc, direction)
+    console.log("tile: ", loc, " neighbour: ", targetTile)
 
-    targetTile = getTileOnTop(loc)
-    //console.log("tile on top of ", loc, " is ", tileOnTop)
-
-    driveInterval = setInterval(driveIfNotArrived, 500);
+    if (direction == "up"){
+        driveDirectionY = -1
+    }
+    if (direction == "down"){
+        driveDirectionY = 1
+    }
+    if (direction == "right"){
+        driveDirectionX = 1
+    }
+    if (direction == "left"){
+        driveDirectionX = -1
+    }
+    driveInterval = setInterval(driveIfNotArrived, 100);
 }
+
 
 function driveIfNotArrived(){
     let loc = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
 
-    let arrived = checkIfArrivedAtHeight(loc, targetTile)
+    let arrived
+    if (driveDirectionY != 0){
+        arrived = checkIfArrivedAtHeight(loc, targetTile)
+    } else if (driveDirectionX != 0){
+        arrived = checkIfArrivedAtWidth(loc, targetTile)
+    }
     if (!arrived){
-        drive(boxes[0], 0, -1, 0.1)
+        drive(boxes[0], driveDirectionX, driveDirectionY, driveSpeed)
     } else
     if (arrived){
         stop(boxes[0])
         clearInterval(driveInterval)
+        driveDirectionX = 0
+        driveDirectionY = 0
     }
 }
 
@@ -121,12 +150,23 @@ function checkIfArrivedAtHeight(loc, tloc){
     return tf
 }
 
+function checkIfArrivedAtWidth(loc, tloc){
+    console.log("comparing ",loc[0], " and ", tloc[0])
+    let tf = (loc[0] == tloc[0])
+    console.log(tf)
+    return tf
+}
+
 function adjustAngle(box, direction) {
+    // just reset straight
+    Body.rotate(box, -(box.angle))
+    /*
     if (direction == "up") {
-        Body.rotate(box, -(box.angle));
+        Body.rotate(box, -(box.angle))
     }
     if(direction == "down"){
-        Body.rotate(box, (-(box.angle)-0.5))
+        // todo ?
+        Body.rotate(box, -(box.angle))
     }
     if(direction == "right"){
         Body.rotate(box, (-(box.angle) + 0.25))
@@ -134,18 +174,39 @@ function adjustAngle(box, direction) {
     if(direction == "left"){
         Body.rotate(box, (-(box.angle) - 0.25))
     }
-
-    console.log("new angle: ", box.angle);
+    */
+    //console.log("new angle: ", box.angle);
 }
 
+/*
 function getTileOnTop(coordinates){
     return [coordinates[0], (coordinates[1] - 1)]
 }
-
 function getTileBelow(coordinates){
     return [coordinates[0], (coordinates[1] + 1)]
 }
 
+function getTileToTheRight(coordinates){
+    return [(coordinates[0] + 1), coordinates[1]]
+}
+function getTileToTheLeft(coordinates){
+    return [(coordinates[0] - 1), coordinates[1]]
+}*/
+
+function getNeighbourTile(coordinates, direction){
+    if (direction == "up"){
+        return [coordinates[0], (coordinates[1] - 1)]
+    }
+    if (direction == "down"){
+        return [coordinates[0], (coordinates[1] + 1)]
+    }
+    if (direction == "right"){
+        return [(coordinates[0] + 1), coordinates[1]]
+    }
+    if (direction == "left"){
+        return [(coordinates[0] - 1), coordinates[1]]
+    }
+}
 
 // add all of the bodies to the world
 World.add(engine.world, boxes);
