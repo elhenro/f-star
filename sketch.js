@@ -347,14 +347,12 @@ for (let step of result) {
     let body = Bodies.rectangle(step.x * 10, step.y * 10, 5, 5);
     path.push(body);
 }
-/*
-let mockMap = [];
+let mockMap = [[39,30],[39,29]];
 for (step of result){
     mockMap.push([step.x, step.y]);
 }
-*/
-//console.log(String(mockMap));
-let mockMap = [[39,30],[39,29],[38,29],[38,28],[38,27],[38,26],[38,25],[38,24],[37,24]]
+
+console.log(mockMap);
 
 // add all of the bodies to the world
 World.add(engine.world, boxes);
