@@ -27,11 +27,11 @@ for (let i = 0; i < 6; i++) {
 // create obstacles
 let obstacles = [];
 for (let i = 0; i < 4; i++) {
-    //obstacles.push(Bodies.rectangle(Math.random() * 800, Math.random() * 400, 20, 20, {render: {lineWidth: 10}}));
+    //obstacles.push(Bodies.rectangle(Math.random() * 800, Math.random() * 400, 10, 10, {render: {lineWidth: 10}}));
 }
 
 //test obstacle
-obstacles.push(Bodies.rectangle(250, 180, 20, 20));
+obstacles.push(Bodies.rectangle(240, 180, 10, 10));
 
 let target = Bodies.rectangle(400, 20, 10, 10);
 
@@ -217,7 +217,7 @@ function followPath(){
 
 let readyToMove = true
 let stepIndex = 0
-let mockMap = [[40, 31], [40,32], [41,32], [42,32], [42,33], [43,33], [43,32]]
+//let mockMap = [[40, 31], [40,32], [41,32], [42,32], [42,33], [43,33], [43,32]]
 
 function moveOnPathIfNextStepReady(){
     let actor = boxes[0]
@@ -334,11 +334,11 @@ function createAStarGrid() {
 }
 
 let graph = new Graph(createAStarGrid());
-let start = graph.grid[0][0];
-let end = graph.grid[39][40];
-let result = astar.search(graph, start, end);
-// result is an array containing the shortest path
+let start = graph.grid[39][29];
+let end = graph.grid[0][0];
 
+// result is an array containing the shortest path
+let result = astar.search(graph, start, end);
 
 console.log('result', result);
 
