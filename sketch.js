@@ -23,11 +23,17 @@ for (let i = 0; i < 6; i++) {
     boxes.push(Bodies.rectangle(400, 200, 20, 20));
 }
 
+
 // create obstacles
 let obstacles = [];
 for (let i = 0; i < 4; i++) {
-    obstacles.push(Bodies.rectangle(Math.random() * 800, Math.random() * 400, 20, 20, {render: {lineWidth: 10}}));
+    //obstacles.push(Bodies.rectangle(Math.random() * 800, Math.random() * 400, 20, 20, {render: {lineWidth: 10}}));
 }
+
+//test obstacle
+obstacles.push(Bodies.rectangle(250, 180, 20, 20));
+
+let target = Bodies.rectangle(400, 20, 10, 10);
 
 
 // create a ground
@@ -100,9 +106,6 @@ $(document).keydown(function(e){
         move(boxes[0], "down")
     }
 });
-
-
-createAStarGrid();
 
 function getLocationOnGrid(x, y) {
     let xVal = Math.round(x / 10)
@@ -217,7 +220,7 @@ let stepIndex = 0
 let mockMap = [[40, 31], [40,32], [41,32], [42,32], [42,33], [43,33], [43,32]]
 
 function moveOnPathIfNextStepReady(){
-    let actor = boxes[0] 
+    let actor = boxes[0]
     let loc = getLocationOnGrid( actor.position.x, actor.position.y)
     if(readyToMove){
         readyToMove = false
@@ -225,8 +228,8 @@ function moveOnPathIfNextStepReady(){
         let nextTarget = mockMap[ stepIndex ]
         currentNextStepLocation = nextTarget
 
-        let direction = getDirectionToMove( loc, nextTarget) 
-        
+        let direction = getDirectionToMove( loc, nextTarget)
+
         move(boxes[0], direction)
         stepIndex ++
     }
@@ -243,7 +246,7 @@ function moveOnPathIfNextStepReady(){
 
 function checkIfArrived(loc, step){
     console.log("checking if arrived: ", loc, " to ", step)
-    let arrived = (loc[0] == step[0] && loc[1] == step[1]) 
+    let arrived = (loc[0] == step[0] && loc[1] == step[1])
     console.log(arrived)
     return arrived
 }
@@ -261,10 +264,10 @@ function getDirectionToMove(loc, step){
     } else
     if (step[1] < loc[1]){
         return "up"
-    } else 
+    } else
     if (step[1] > loc[1]){
         return "down"
-    } 
+    }
 }
 
 
@@ -309,28 +312,47 @@ function createAStarGrid() {
 
     console.log('blocked grid cells', blockedGridLocs);
 
-    // loop through
+    // create empty grid
     let gridGraph = [];
-    for (let i = 1; i <= 400 / 10; i++) {
+    for (let i = 0; i < 400 / 10; i++) {
         let gridGraphRow = [];
-        for (let j = 1; j <= 800 / 10; j++) {
-            gridGraphRow.push(0);
+        for (let j = 0; j < 800 / 10; j++) {
+            gridGraphRow.push(1);
         }
         gridGraph.push(gridGraphRow);
     }
 
+    // update grid with blocked locations
     for (let blockedGridLoc of blockedGridLocs) {
         let x = blockedGridLoc[0];
         let y = blockedGridLoc[1];
-        gridGraph[y][x] = 1;
+        gridGraph[y][x] = 0;
     }
 
     console.log(gridGraph);
+    return gridGraph
+}
+
+let graph = new Graph(createAStarGrid());
+let start = graph.grid[0][0];
+let end = graph.grid[39][40];
+let result = astar.search(graph, start, end);
+// result is an array containing the shortest path
+
+
+console.log('result', result);
+
+let path = [];
+for (let step of result) {
+    let body = Bodies.rectangle(step.x * 10, step.y * 10, 5, 5);
+    path.push(body);
 }
 
 // add all of the bodies to the world
 World.add(engine.world, boxes);
 World.add(engine.world, obstacles);
+World.add(engine.world, [target]);
+World.add(engine.world, path);
 
 // run the engine
 Engine.run(engine);
