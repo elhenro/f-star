@@ -30,6 +30,7 @@ for (let box of boxes) {
     console.log(box);
 }
 
+
 // Get the position of the boxes
 Events.on(engine, 'afterUpdate', function () {
     let boxLocations = "";
@@ -43,9 +44,16 @@ Events.on(engine, 'afterUpdate', function () {
 
 });
 
-
 $('.linear').on('click', function () {
-    Body.setVelocity(boxes[0], {x: 2, y: -7});
+    drive(boxes[0], 2, -7, 0.1);
+});
+
+$('.rotate').on('click', function () {
+    rotate(boxes[0]);
+});
+
+$('.break').on('click', function () {
+    stop(boxes[0]);
 });
 
 $('.test').on('click', function () {
@@ -95,3 +103,25 @@ Engine.run(engine);
 // run the renderer
 Render.run(render);
 
+
+function drive(element, x, y, speed = 1) {
+    Events.on(engine, 'afterUpdate', function () {
+        Body.setVelocity(element, {x: x * speed, y: y * speed});
+    });
+}
+
+function rotate(element, clockwise = true, speed = 1) {
+    let rotation = 0.01 * speed;
+    if (!clockwise) {
+        rotation = -0.01 * speed;
+    }
+
+    Events.on(engine, 'afterUpdate', function () {
+        Body.rotate(element, rotation);
+    });
+}
+
+function stop(element) {
+    drive(element, 0, 0);
+    rotate(element, true, 0);
+}
