@@ -37,7 +37,7 @@ Events.on(engine, 'afterUpdate', function () {
     for (let box of boxes) {
         let positionX = Math.round(box.position.x);
         let positionY = Math.round(box.position.y);
-        boxLocations += '<p>X: ' + positionX + ' Y: ' + positionY + '</p>';
+        boxLocations += '<p>X: ' + positionX + ' Y: ' + positionY + ' gX:' + getLocationOnGrid(box.position.x, box.position.y)[0] + ' gY:' + getLocationOnGrid(box.position.x, box.position.y)[1] + '</p>';
     }
 
     $('#locations').html(boxLocations);
@@ -57,8 +57,8 @@ $('.break').on('click', function () {
 });
 
 $('.test').on('click', function () {
-    let d = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
-    console.log("coordinates of box[0]: ",d)
+    let d = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y);
+    console.log("coordinates of box[0]: ", d);
     Body.rotate(boxes[0], 0.7)
 });
 
@@ -72,36 +72,31 @@ function getLocationOnGrid(x, y) {
     let coordinates = [xVal, yVal]
     return coordinates
 }
-function getRotationOfBox(box){
+
+function getRotationOfBox(box) {
     return box.angle
 }
 
-function moveUp(box){
-    //get coordinates
-    loc = getLocationOnGrid(box.position.x, box.position.y)
-    //get rotation
-    rot = getRotationOfBox(box)
+function moveUp(box) {
+    adjustAngle(box, "up");
 
-    adjustAngle(box, "up")
-    console.log(loc, rot)
+    Events.on(engine, 'afterUpdate', function () {
+        //get coordinates
+        let loc = getLocationOnGrid(box.position.x, box.position.y);
+        //get rotation
+        let rot = getRotationOfBox(box);
+
+    });
+
+    drive(box, 0, -1);
 }
 
-function adjustAngle(box, direction){
-    if(direction == "up"){
-        Body.rotate(box, -(box.angle))
-        console.log("new angle: ", box.angle)
+function adjustAngle(box, direction) {
+    if (direction == "up") {
+        Body.rotate(box, -(box.angle));
+        console.log("new angle: ", box.angle);
     }
 }
-
-
-// add all of the bodies to the world
-World.add(engine.world, boxes);
-
-// run the engine
-Engine.run(engine);
-
-// run the renderer
-Render.run(render);
 
 
 function drive(element, x, y, speed = 1) {
@@ -125,3 +120,13 @@ function stop(element) {
     drive(element, 0, 0);
     rotate(element, true, 0);
 }
+
+
+// add all of the bodies to the world
+World.add(engine.world, boxes);
+
+// run the engine
+Engine.run(engine);
+
+// run the renderer
+Render.run(render);
