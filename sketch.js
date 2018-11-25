@@ -90,6 +90,22 @@ $('.moveLeft').on('click', function () {
     move(boxes[0], "left")
 });
 
+$(document).keydown(function(e){
+    if (e.which == 37) { 
+        move(boxes[0], "left")
+    }
+    if (e.which == 38) { 
+        move(boxes[0], "up")
+    }
+    if (e.which == 39) { 
+        move(boxes[0], "right")
+    }
+    if (e.which == 40) { 
+        move(boxes[0], "down")
+    }
+});
+
+
 function getLocationOnGrid(x, y) {
     let xVal = Math.round(x / 10)
     let yVal = Math.round(y / 10)
