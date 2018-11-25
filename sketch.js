@@ -48,6 +48,18 @@ $('.linear').on('click', function () {
     Body.setVelocity(boxes[0], {x: 2, y: -7});
 });
 
+$('.test').on('click', function () {
+    let d = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
+    console.log("coordinates of box[0]: ",d)
+});
+
+function getLocationOnGrid(x, y) {
+    let xVal = Math.round(x / 10)
+    let yVal = Math.round(y / 10)
+    let coordinates = [xVal, yVal]
+    return coordinates
+}
+
 
 // add all of the bodies to the world
 World.add(engine.world, boxes);
