@@ -239,6 +239,7 @@ function moveOnPathIfNextStepReady(){
     }
 
     if(checkIfArrived(loc, mockMap[(mockMap.length - 1)])){
+        alert("Juhu! I foudn the way, all by myself :)")
         console.log("arrived at final location ! <3")
         clearInterval(moveReadyInterval)
     }
