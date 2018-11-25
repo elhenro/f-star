@@ -310,7 +310,7 @@ function createAStarGrid() {
         blockedGridLocs.push(getLocationOnGrid(obstacle.position.x, obstacle.position.y));
     }
 
-    console.log('blocked grid cells', blockedGridLocs);
+    //console.log('blocked grid cells', blockedGridLocs);
 
     // create empty grid
     let gridGraph = [];
@@ -329,7 +329,7 @@ function createAStarGrid() {
         gridGraph[y][x] = 0;
     }
 
-    console.log(gridGraph);
+    //console.log(gridGraph);
     return gridGraph
 }
 
@@ -340,21 +340,21 @@ let end = graph.grid[0][0];
 // result is an array containing the shortest path
 let result = astar.search(graph, start, end);
 
-console.log('result', result);
+//console.log('result', result);
 
 let path = [];
 for (let step of result) {
     let body = Bodies.rectangle(step.x * 10, step.y * 10, 5, 5);
     path.push(body);
 }
-
+/*
 let mockMap = [];
 for (step of result){
     mockMap.push([step.x, step.y]);
 }
-
-console.log(mockMap);
-
+*/
+//console.log(String(mockMap));
+let mockMap = [[39,30],[39,29],[38,29],[38,28],[38,27],[38,26],[38,25],[38,24],[37,24]]
 
 // add all of the bodies to the world
 World.add(engine.world, boxes);
