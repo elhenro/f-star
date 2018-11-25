@@ -24,7 +24,7 @@ for (let i = 0; i < 6; i++) {
 }
 
 // create a ground
-var ground = Bodies.rectangle(400, 610, 810, 60, {isStatic: true, frictionAir: 1 });
+var ground = Bodies.rectangle(400, 610, 810, 60, {isStatic: true, frictionAir: 1});
 
 for (let box of boxes) {
     console.log(box);
@@ -32,14 +32,20 @@ for (let box of boxes) {
 
 // Get the position of the boxes
 Events.on(engine, 'afterUpdate', function () {
-    /*for (let box of boxes) {
-        console.log(box.position.x, box.position.y);
-    }*/
+    let boxLocations = "";
+    for (let box of boxes) {
+        let positionX = Math.round(box.position.x);
+        let positionY = Math.round(box.position.y);
+        boxLocations += '<p>X: ' + positionX + ' Y: ' + positionY + '</p>';
+    }
+
+    $('#locations').html(boxLocations);
+
 });
 
 
 $('.linear').on('click', function () {
-    Body.setVelocity( boxes[0], {x: 2, y: -7});
+    Body.setVelocity(boxes[0], {x: 2, y: -7});
 });
 
 
