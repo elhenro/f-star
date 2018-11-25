@@ -25,11 +25,14 @@ for (let i = 0; i < 6; i++) {
 
 // create a ground
 var ground = Bodies.rectangle(400, 610, 810, 60, {isStatic: true, frictionAir: 1});
-
+/*
 for (let box of boxes) {
     console.log(box);
-}
+}*/
+let testStartLocation = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
+console.log("start location of box 0: ", testStartLocation)
 
+console.log("test target on top: ", getTileOnTop(testStartLocation))
 
 // Get the position of the boxes
 Events.on(engine, 'afterUpdate', function () {
@@ -77,37 +80,44 @@ function getRotationOfBox(box) {
     return box.angle
 }
 
+let driveInterval
+let targetTile
+
 function moveUp(box) {
     adjustAngle(box, "up");
-
-    Events.on(engine, 'afterUpdate', function () {
+    //Events.on(engine, 'afterUpdate', function () {
         //get coordinates
-        let loc = getLocationOnGrid(box.position.x, box.position.y);
+    let loc = getLocationOnGrid(box.position.x, box.position.y);
         //get rotation
-        let rot = getRotationOfBox(box);
-
+    let rot = getRotationOfBox(box);
     adjustAngle(box, "up")
 
-    console.log(loc, rot)
+    //console.log(loc, rot)
 
-    let tileOnTop = getTileOnTop(loc)
-    console.log("tile on top of ", loc, " is ", tileOnTop)
+    targetTile = getTileOnTop(loc)
+    //console.log("tile on top of ", loc, " is ", tileOnTop)
 
-    /*
-    while (loc[1] < tileOnTop[1]) {
-        // if not there yet
-            console.log("moving")
-        if (loc[1] == tileOnTop[1]){
-            console.log("arrived")
-        }
+    driveInterval = setInterval(driveIfNotArrived, 500);
+}
+
+function driveIfNotArrived(){
+    let loc = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
+
+    let arrived = checkIfArrivedAtHeight(loc, targetTile)
+    if (!arrived){
+        drive(boxes[0], 0, -1, 0.1)
+    } else
+    if (arrived){
+        stop(boxes[0])
     }
-    if (loc[1] >= tileOnTop[1]){
-        console.log("error - tile is not on top (anymore)")
-    }
-    */
-    });
+}
 
-    drive(box, 0, -1);
+function checkIfArrivedAtHeight(loc, tloc){
+    console.log("comparing ",loc[1], " and ", tloc[1])
+
+    let tf = (loc[1] == tloc[1])
+    console.log(tf)
+    return tf
 }
 
 function adjustAngle(box, direction) {
@@ -128,11 +138,11 @@ function adjustAngle(box, direction) {
 }
 
 function getTileOnTop(coordinates){
-    return [coordinates[0], (coordinates[1] + 1)]
+    return [coordinates[0], (coordinates[1] - 1)]
 }
 
 function getTileBelow(coordinates){
-    return [coordinates[0], (coordinates[1] - 1)]
+    return [coordinates[0], (coordinates[1] + 1)]
 }
 
 
