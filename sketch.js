@@ -184,51 +184,22 @@ function checkIfArrivedAtWidth(loc, tloc){
 function adjustAngle(box, direction) {
     // just reset straight
     Body.rotate(box, -(box.angle))
-    /*
-    if (direction == "up") {
-        Body.rotate(box, -(box.angle))
-    }
-    if(direction == "down"){
-        // todo ?
-        Body.rotate(box, -(box.angle))
-    }
-    if(direction == "right"){
-        Body.rotate(box, (-(box.angle) + 0.25))
-    }
-    if(direction == "left"){
-        Body.rotate(box, (-(box.angle) - 0.25))
-    }
-    */
-    //console.log("new angle: ", box.angle);
 }
 
-/*
-function getTileOnTop(coordinates){
-    return [coordinates[0], (coordinates[1] - 1)]
-}
-function getTileBelow(coordinates){
-    return [coordinates[0], (coordinates[1] + 1)]
-}
-
-function getTileToTheRight(coordinates){
-    return [(coordinates[0] + 1), coordinates[1]]
-}
-function getTileToTheLeft(coordinates){
-    return [(coordinates[0] - 1), coordinates[1]]
-}*/
 
 function getNeighbourTile(coordinates, direction){
+    let stepSize = 5
     if (direction == "up"){
-        return [coordinates[0], (coordinates[1] - 1)]
+        return [coordinates[0], (coordinates[1] - stepSize)]
     }
     if (direction == "down"){
-        return [coordinates[0], (coordinates[1] + 1)]
+        return [coordinates[0], (coordinates[1] + stepSize)]
     }
     if (direction == "right"){
-        return [(coordinates[0] + 1), coordinates[1]]
+        return [(coordinates[0] + stepSize), coordinates[1]]
     }
     if (direction == "left"){
-        return [(coordinates[0] - 1), coordinates[1]]
+        return [(coordinates[0] - stepSize), coordinates[1]]
     }
 }
 
