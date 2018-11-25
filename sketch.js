@@ -109,6 +109,7 @@ function driveIfNotArrived(){
     } else
     if (arrived){
         stop(boxes[0])
+        clearInterval(driveInterval)
     }
 }
 
