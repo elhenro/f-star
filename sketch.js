@@ -216,36 +216,11 @@ function getNeighbourTile(coordinates, direction){
     }*/
 }
 
-//var lastLocation
 let moveReadyInterval
 let currentNextStepLocation
-//var currentMoveDirection
 
 function followPath(){
-
-    //var loc
-    
     moveReadyInterval = setInterval(moveOnPathIfNextStepReady, 500)
-    //for (let step of navigationMap){
-    /*    
-        let step = navigationMap[0]
-
-        currentNextStepLocation = step
-        if (!lastLocation){
-            // if first move get actual location of box
-            loc = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
-        } else {
-            // get location from last step
-            loc = lastLocation
-        }
-
-        let direction = getDirectionToMove(loc, step)
-
-        currentMoveDirection = direction
-        
-        moveReadyInterval = setInterval(moveOnPathIfNextStepReady, 2000)
-        */
-    //}
 }
 
 let readyToMove = true
@@ -275,10 +250,6 @@ function moveOnPathIfNextStepReady(){
         console.log("arrived at final location ! <3")
         clearInterval(moveReadyInterval)
     }
-
-    //if arrived at final location
-    //clearInterval(moveReadyInterval)
-    //readyToMove = checkIfArrived(getLocationOnGrid(boxes[0].position.x, boxes[0].position.y), currentNextStepLocation)
 }
 
 function checkIfArrived(loc, step){
@@ -304,9 +275,7 @@ function getDirectionToMove(loc, step){
     } else 
     if (step[1] > loc[1]){
         return "down"
-    } /*else {
-        return ("error "+ loc + " " + step)
-    }*/
+    } 
 }
 
 
