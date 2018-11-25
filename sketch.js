@@ -82,7 +82,9 @@ function moveUp(box){
     rot = getRotationOfBox(box)
 
     adjustAngle(box, "up")
+
     console.log(loc, rot)
+    console.log("tile on top of ", loc, " is ", getTileOnTop(loc))
 }
 
 function adjustAngle(box, direction){
@@ -100,6 +102,14 @@ function adjustAngle(box, direction){
     }
 
     console.log("new angle: ", box.angle)
+}
+
+function getTileOnTop(coordinates){
+    return [coordinates[0], (coordinates[1] + 1)]
+}
+
+function getTileBelow(coordinates){
+    return [coordinates[0], (coordinates[1] - 1)]
 }
 
 
