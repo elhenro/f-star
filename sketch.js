@@ -71,7 +71,7 @@ $('.follow').on('click', function () {
 
 $('.test').on('click', function () {
     let d = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y);
-    console.log("coordinates of box[0]: ", d);
+    //console.log("coordinates of box[0]: ", d);
     Body.rotate(boxes[0], 0.7)
 });
 
@@ -126,10 +126,11 @@ let driveSpeed = 0.5
 
 function move(box, direction){
     let loc = getLocationOnGrid(box.position.x, box.position.y);
-    adjustAngle(box, direction)
+
+    adjustAngle(direction)
 
     targetTile = getNeighbourTile(loc, direction)
-    console.log("tile: ", loc, " neighbour: ", targetTile)
+    //console.log("tile: ", loc, " neighbour: ", targetTile)
 
     if (direction == "up"){
         driveDirectionY = -1
@@ -168,25 +169,96 @@ function driveIfNotArrived(){
 }
 
 function checkIfArrivedAtHeight(loc, tloc) {
-    console.log("comparing ", loc[1], " and ", tloc[1])
+    //console.log("comparing ", loc[1], " and ", tloc[1])
 
     let tf = (loc[1] == tloc[1])
-    console.log(tf)
+    //console.log(tf)
     return tf
 }
 
 function checkIfArrivedAtWidth(loc, tloc){
-    console.log("comparing ",loc[0], " and ", tloc[0])
+    //console.log("comparing ",loc[0], " and ", tloc[0])
     let tf = (loc[0] == tloc[0])
-    console.log(tf)
+    //console.log(tf)
     return tf
 }
 
-function adjustAngle(box, direction) {
-    // just reset straight
-    Body.rotate(box, -(box.angle))
+function adjustAngle(direction) {
+    rotateUntil(direction) 
 }
 
+let rotationInterval
+let currentRotationDirection
+let wantedAngularRotation
+let pi = Math.PI
+function rotateUntil(direction){
+
+    //console.log("started rotating until ", direction)
+
+    if (direction == "up"){
+        wantedAngularRotation = 0
+    }
+    if (direction == "down"){
+        wantedAngularRotation = (pi)
+    }
+    if (direction == "right"){
+        wantedAngularRotation = (pi * 0.5)
+    }
+    if (direction == "left"){
+        wantedAngularRotation = -(pi * 0.5)
+    }
+
+    currentRotationDirection = direction
+    rotationInterval = setInterval(rotateIfNotArrived, 50);
+}
+
+let rotationSpeed = -0.005
+function rotateIfNotArrived(){
+    let box = boxes[0]
+    //let angle = precise(box.angle)
+    let angle = Math.round(box.angle * 10) / 10
+    //let wantedAngle = precise(wantedAngularRotation)
+    let wantedAngle = Math.round(wantedAngularRotation * 10) / 10
+
+    let arrived = (angle == wantedAngle)
+    console.log("rotation comparing ", angle, " and ", wantedAngle, " : ", arrived)
+
+    if(arrived == false){
+
+        readyToMove = false
+        //console.log("still rotating..", angle)
+        
+        if ((Math.round(box.angularVelocity * 10) / 10) == 0){
+            Body.setAngularVelocity(box, rotationSpeed)
+        }
+
+    } else if (arrived == true){
+
+        console.log("adjused rotation successfully: ", angle, " ", currentRotationDirection)
+        readyToMove = true
+        // stop spinning
+        
+        // start move interval
+        clearInterval(rotationInterval)
+        Body.setAngularVelocity(box, 0)
+
+        stop(box)
+
+        moveReadyInterval = setInterval(moveOnPathIfNextStepReady, /*50*/ 300)
+    }
+
+    // spin back if at max rotation
+    if (angle > pi){
+        rotationSpeed = -0.01
+    }
+    if (angle < -(pi)){
+        rotationSpeed = 0.01
+    }
+}
+/*
+function precise(x) {
+    return Number.parseFloat(x).toPrecision(1);
+}*/
 
 function getNeighbourTile(coordinates, direction){
     let stepSize = 1
@@ -212,10 +284,12 @@ let moveReadyInterval
 let currentNextStepLocation
 
 function followPath(){
-    moveReadyInterval = setInterval(moveOnPathIfNextStepReady, 50)
+    //moveReadyInterval = setInterval(moveOnPathIfNextStepReady, /*50*/ 200)
+    rotateUntil("left")
 }
 
-let readyToMove = true
+//let readyToMove = true
+let readyToMove = false
 let stepIndex = 0
 //let mockMap = [[40, 31], [40,32], [41,32], [42,32], [42,33], [43,33], [43,32]]
 
@@ -235,28 +309,40 @@ function moveOnPathIfNextStepReady(){
     }
     if(checkIfArrived(loc, currentNextStepLocation)){
         readyToMove = true
-        console.log("arrived at ", currentNextStepLocation,"! :)")
+        //console.log("arrived at ", currentNextStepLocation,"! :)")
     }
 
     if(checkIfArrived(loc, mockMap[(mockMap.length - 1)])){
         alert("Juhu! I foudn the way, all by myself :)")
-        console.log("arrived at final location ! <3")
+        //console.log("arrived at final location ! <3")
         clearInterval(moveReadyInterval)
     }
 }
 
 function checkIfArrived(loc, step){
-    console.log("checking if arrived: ", loc, " to ", step)
-    let arrived = (loc[0] == step[0] && loc[1] == step[1])
-    console.log(arrived)
+    //console.log("checking if arrived: ", loc, " to ", step)
+    var arrived
+    if (step && loc){
+        arrived = (loc[0] == step[0] && loc[1] == step[1])
+    }else{
+        console.log("error ",loc, " ",step)
+    }
+    if (!typeof arrived === "boolean"){
+        console.log("error in checkIfArrived(), ", arrived, " ", loc, " ", step, " not a boolean?")
+    }
+    
     return arrived
 }
 
 function getDirectionToMove(loc, step){
     lastLocation = step
 
-    console.log(loc)
-    console.log(step)
+    if (loc[1] == undefined || step[1] == undefined){
+        return "up"
+    }
+
+    //console.log(loc)
+    //console.log(step)
     if (step[0] > loc[0]){
         return "right"
     } else
