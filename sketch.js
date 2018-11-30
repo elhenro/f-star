@@ -163,7 +163,7 @@ function move(box, direction){
 
 
 function driveIfNotArrived(){
-    let loc = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
+    let loc = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y);
 
     let arrived;
     if (driveDirectionY != 0){
