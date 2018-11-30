@@ -1,43 +1,6 @@
-// module aliases
-var Engine = Matter.Engine,
-    Render = Matter.Render,
-    World = Matter.World,
-    Bodies = Matter.Bodies,
-    Events = Matter.Events,
-    Body = Matter.Body;
-
-// create an engine
-var engine = Engine.create();
-
-// create a renderer
-var render = Render.create({
-    element: document.body,
-    engine: engine
-});
-
-engine.world.gravity.y = 0;
-
-// create some boxes
-let boxes = [];
-for (let i = 0; i < 6; i++) {
-    boxes.push(Bodies.rectangle(400, 200, 20, 20));
-}
-
-
-// create obstacles
-let obstacles = [];
-for (let i = 0; i < 4; i++) {
-    //obstacles.push(Bodies.rectangle(Math.random() * 800, Math.random() * 400, 10, 10, {render: {lineWidth: 10}}));
-}
-
-//test obstacle
-obstacles.push(Bodies.rectangle(240, 180, 10, 10));
-
-let target = Bodies.rectangle(400, 20, 10, 10);
-
-
-// create a ground
-var ground = Bodies.rectangle(400, 610, 810, 60, {isStatic: true, frictionAir: 1});
+/*
+* jQuery interactions and DOM manipulation
+*/
 
 // Get the position of the boxes
 Events.on(engine, 'afterUpdate', function () {
@@ -107,10 +70,61 @@ $(document).keydown(function(e){
     }
 });
 
+
+/*
+* Simulation engine
+*/
+// module aliases
+var Engine = Matter.Engine,
+    Render = Matter.Render,
+    World = Matter.World,
+    Bodies = Matter.Bodies,
+    Events = Matter.Events,
+    Body = Matter.Body;
+
+// create an engine
+var engine = Engine.create();
+
+// create a renderer
+var render = Render.create({
+    element: document.body,
+    engine: engine
+});
+
+engine.world.gravity.y = 0;
+
+
+/*
+* Creating boxes, configuring functions
+*/
+// create some boxes
+let boxes = [];
+for (let i = 0; i < 6; i++) {
+    boxes.push(Bodies.rectangle(400, 200, 20, 20));
+}
+
+
+// create obstacles
+let obstacles = [];
+for (let i = 0; i < 4; i++) {
+    //obstacles.push(Bodies.rectangle(Math.random() * 800, Math.random() * 400, 10, 10, {render: {lineWidth: 10}}));
+}
+
+//test obstacle
+obstacles.push(Bodies.rectangle(300, 180, 10, 10));
+
+let target = Bodies.rectangle(400, 20, 10, 10);
+
+
+// create a ground
+var ground = Bodies.rectangle(400, 610, 810, 60, {isStatic: true, frictionAir: 1});
+
+
+
 function getLocationOnGrid(x, y) {
-    let xVal = Math.round(x / 10)
-    let yVal = Math.round(y / 10)
-    let coordinates = [xVal, yVal]
+    let xVal = Math.round(x / 10);
+    let yVal = Math.round(y / 10);
+    let coordinates = [xVal, yVal];
     return coordinates
 }
 
@@ -118,18 +132,18 @@ function getRotationOfBox(box) {
     return box.angle
 }
 
-let driveInterval
-let targetTile
-let driveDirectionY = 0
-let driveDirectionX = 0
-let driveSpeed = 0.5
+let driveInterval;
+let targetTile;
+let driveDirectionY = 0;
+let driveDirectionX = 0;
+let driveSpeed = 0.5;
 
 function move(box, direction){
     let loc = getLocationOnGrid(box.position.x, box.position.y);
 
-    adjustAngle(direction)
+    adjustAngle(direction);
 
-    targetTile = getNeighbourTile(loc, direction)
+    targetTile = getNeighbourTile(loc, direction);
     //console.log("tile: ", loc, " neighbour: ", targetTile)
 
     if (direction == "up"){
@@ -151,7 +165,7 @@ function move(box, direction){
 function driveIfNotArrived(){
     let loc = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y)
 
-    let arrived
+    let arrived;
     if (driveDirectionY != 0){
         arrived = checkIfArrivedAtHeight(loc, targetTile)
     } else if (driveDirectionX != 0){
@@ -161,17 +175,17 @@ function driveIfNotArrived(){
         drive(boxes[0], driveDirectionX, driveDirectionY, driveSpeed)
     } else
     if (arrived){
-        stop(boxes[0])
-        clearInterval(driveInterval)
-        driveDirectionX = 0
-        driveDirectionY = 0
+        stop(boxes[0]);
+        clearInterval(driveInterval);
+        driveDirectionX = 0;
+        driveDirectionY = 0;
     }
 }
 
 function checkIfArrivedAtHeight(loc, tloc) {
     //console.log("comparing ", loc[1], " and ", tloc[1])
 
-    let tf = (loc[1] == tloc[1])
+    let tf = (loc[1] == tloc[1]);
     //console.log(tf)
     return tf
 }
@@ -187,10 +201,10 @@ function adjustAngle(direction) {
     rotateUntil(direction) 
 }
 
-let rotationInterval
-let currentRotationDirection
-let wantedAngularRotation
-let pi = Math.PI
+let rotationInterval;
+let currentRotationDirection;
+let wantedAngularRotation;
+let pi = Math.PI;
 function rotateUntil(direction){
 
     //console.log("started rotating until ", direction)
@@ -208,13 +222,13 @@ function rotateUntil(direction){
         wantedAngularRotation = -(pi * 0.5)
     }
 
-    currentRotationDirection = direction
+    currentRotationDirection = direction;
     rotationInterval = setInterval(rotateIfNotArrived, 50);
 }
 
-let rotationSpeed = -0.005
+let rotationSpeed = -0.005;
 function rotateIfNotArrived(){
-    let box = boxes[0]
+    let box = boxes[0];
     //let angle = precise(box.angle)
     let angle = Math.round(box.angle * 10) / 10
     //let wantedAngle = precise(wantedAngularRotation)
@@ -235,14 +249,14 @@ function rotateIfNotArrived(){
     } else if (arrived == true){
 
         console.log("adjused rotation successfully: ", angle, " ", currentRotationDirection)
-        readyToMove = true
+        readyToMove = true;
         // stop spinning
         
         // start move interval
-        clearInterval(rotationInterval)
-        Body.setAngularVelocity(box, 0)
+        clearInterval(rotationInterval);
+        Body.setAngularVelocity(box, 0);
 
-        stop(box)
+        stop(box);
 
         moveReadyInterval = setInterval(moveOnPathIfNextStepReady, /*50*/ 300)
     }
@@ -261,7 +275,7 @@ function precise(x) {
 }*/
 
 function getNeighbourTile(coordinates, direction){
-    let stepSize = 1
+    let stepSize = 1;
     if (direction == "up"){
         return [coordinates[0], (coordinates[1] - stepSize)]
     }
@@ -280,31 +294,31 @@ function getNeighbourTile(coordinates, direction){
     }*/
 }
 
-let moveReadyInterval
-let currentNextStepLocation
+let moveReadyInterval;
+let currentNextStepLocation;
 
 function followPath(){
     //moveReadyInterval = setInterval(moveOnPathIfNextStepReady, /*50*/ 200)
     rotateUntil("left")
 }
 
-//let readyToMove = true
-let readyToMove = false
-let stepIndex = 0
+//let readyToMove = true;
+let readyToMove = false;
+let stepIndex = 0;
 //let mockMap = [[40, 31], [40,32], [41,32], [42,32], [42,33], [43,33], [43,32]]
 
 function moveOnPathIfNextStepReady(){
-    let actor = boxes[0]
-    let loc = getLocationOnGrid( actor.position.x, actor.position.y)
+    let actor = boxes[0];
+    let loc = getLocationOnGrid( actor.position.x, actor.position.y);
     if(readyToMove){
-        readyToMove = false
+        readyToMove = false;
 
-        let nextTarget = mockMap[ stepIndex ]
-        currentNextStepLocation = nextTarget
+        let nextTarget = mockMap[ stepIndex ];
+        currentNextStepLocation = nextTarget;
 
-        let direction = getDirectionToMove( loc, nextTarget)
+        let direction = getDirectionToMove( loc, nextTarget);
 
-        move(boxes[0], direction)
+        move(boxes[0], direction);
         stepIndex ++
     }
     if(checkIfArrived(loc, currentNextStepLocation)){
@@ -313,7 +327,7 @@ function moveOnPathIfNextStepReady(){
     }
 
     if(checkIfArrived(loc, mockMap[(mockMap.length - 1)])){
-        alert("Juhu! I foudn the way, all by myself :)")
+        alert("Juhu! I foudn the way, all by myself :)");
         //console.log("arrived at final location ! <3")
         clearInterval(moveReadyInterval)
     }
@@ -321,7 +335,7 @@ function moveOnPathIfNextStepReady(){
 
 function checkIfArrived(loc, step){
     //console.log("checking if arrived: ", loc, " to ", step)
-    var arrived
+    var arrived;
     if (step && loc){
         arrived = (loc[0] == step[0] && loc[1] == step[1])
     }else{
@@ -335,7 +349,7 @@ function checkIfArrived(loc, step){
 }
 
 function getDirectionToMove(loc, step){
-    lastLocation = step
+    lastLocation = step;
 
     if (loc[1] == undefined || step[1] == undefined){
         return "up"
@@ -441,6 +455,10 @@ for (step of result){
 
 console.log(mockMap);
 
+
+/*
+* Start engine
+*/
 // add all of the bodies to the world
 World.add(engine.world, boxes);
 World.add(engine.world, obstacles);
