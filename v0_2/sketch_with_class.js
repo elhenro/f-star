@@ -14,7 +14,15 @@ let gridPos = chair.getLocationOnGrid(chair.chair.position.x, chair.chair.positi
 console.log('Chair grid pos:', gridPos);
 
 
+/* todo: loop erstellen, der dem stuhl sagt, dass er
+    sich bewegen soll und wärend dem fahren überprüft
+    ob er angekommen ist. falls ja neues ziel geben
+    und wiederholen
+*/
 
+/* todo: a-star so implementieren, dass der stuhl ein
+    2d array bekommt (so wie path oben)
+ */
 
 /*Events.on(engine, 'afterUpdate', function () {
     console.log(path);
