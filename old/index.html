@@ -1,0 +1,52 @@
+<html>
+    <head>
+        <title>Pathfinder</title>
+    </head>
+<body>
+
+<!--
+<button class="break">Break</button>
+<button class="moveUp">up</button>
+<button class="moveDown">down</button>
+<button class="moveRight">right</button>
+<button class="moveLeft">left</button>
+-->
+
+<button class="follow">go</button>
+
+
+<div id="locations"></div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<script src="matter.js"></script>
+
+<script src="astar.js"></script>
+
+<script src="sketch.js"></script>
+</body>
+</html>
+
+<style>
+body {
+    overflow: hidden;
+}
+#locations {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+}
+button {
+    display: block;
+    margin: auto;
+    padding: 1%;
+    border: none;
+    background: #d87093;
+    color: darkred;
+}
+button:hover{cursor:pointer;}
+canvas{
+    margin: auto;
+    display: block;
+}
+</style>
