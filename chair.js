@@ -185,16 +185,16 @@ class Chair {
         
         let wag;
         if (direction === "up") {
-            wag = 0
-        } else
-        if (direction === "down") {
-            wag = (Math.PI)
-        } else
-        if (direction === "right") {
             wag = (Math.PI * 0.5)
         } else
+        if (direction === "down") {
+            wag = -(Math.PI * 0.5)
+        } else
+        if (direction === "right") {
+            wag = Math.PI
+        } else
         if (direction === "left") {
-            wag = - (Math.PI * 0.5)
+            wag = 0
         } else
         {
             wag = 0;
@@ -223,7 +223,7 @@ class Chair {
     }
 
     // Moves the chair up, right, down or left
-    move (direction) {
+    move(direction) {
 
         if (direction === "up") {
             this.controller.forceY = -1

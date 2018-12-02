@@ -15,7 +15,10 @@ var engine = Engine.create();
 // create a renderer
 var render = Render.create({
     element: document.body,
-    engine: engine
+    engine: engine,
+    options: {
+        showAngleIndicator: true
+    }
 });
 
 engine.world.gravity.y = 0;

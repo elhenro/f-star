@@ -1,4 +1,3 @@
-
 /*
 * Simulation engine
 */
@@ -77,7 +76,7 @@ $('.moveLeft').on('click', function () {
     move(boxes[0], "left")
 });
 
-$(document).keydown(function(e){
+$(document).keydown(function (e) {
     if (e.which == 37) {
         move(boxes[0], "left")
     }
@@ -91,8 +90,6 @@ $(document).keydown(function(e){
         move(boxes[0], "down")
     }
 });
-
-
 
 
 /*
@@ -121,7 +118,6 @@ let target = Bodies.rectangle(400, 20, 10, 10);
 var ground = Bodies.rectangle(400, 610, 810, 60, {isStatic: true, frictionAir: 1});
 
 
-
 function getLocationOnGrid(x, y) {
     let xVal = Math.round(x / 10);
     let yVal = Math.round(y / 10);
@@ -139,7 +135,7 @@ let driveDirectionY = 0;
 let driveDirectionX = 0;
 let driveSpeed = 0.5;
 
-function move(box, direction){
+function move(box, direction) {
     let loc = getLocationOnGrid(box.position.x, box.position.y);
 
     adjustAngle(direction);
@@ -147,35 +143,34 @@ function move(box, direction){
     targetTile = getNeighbourTile(loc, direction);
     //console.log("tile: ", loc, " neighbour: ", targetTile)
 
-    if (direction == "up"){
+    if (direction == "up") {
         driveDirectionY = -1
     }
-    if (direction == "down"){
+    if (direction == "down") {
         driveDirectionY = 1
     }
-    if (direction == "right"){
+    if (direction == "right") {
         driveDirectionX = 1
     }
-    if (direction == "left"){
+    if (direction == "left") {
         driveDirectionX = -1
     }
     driveInterval = setInterval(driveIfNotArrived, 50);
 }
 
 
-function driveIfNotArrived(){
+function driveIfNotArrived() {
     let loc = getLocationOnGrid(boxes[0].position.x, boxes[0].position.y);
 
     let arrived;
-    if (driveDirectionY != 0){
+    if (driveDirectionY != 0) {
         arrived = checkIfArrivedAtHeight(loc, targetTile)
-    } else if (driveDirectionX != 0){
+    } else if (driveDirectionX != 0) {
         arrived = checkIfArrivedAtWidth(loc, targetTile)
     }
-    if (!arrived){
+    if (!arrived) {
         drive(boxes[0], driveDirectionX, driveDirectionY, driveSpeed)
-    } else
-    if (arrived){
+    } else if (arrived) {
         stop(boxes[0]);
         clearInterval(driveInterval);
         driveDirectionX = 0;
@@ -191,7 +186,7 @@ function checkIfArrivedAtHeight(loc, tloc) {
     return tf
 }
 
-function checkIfArrivedAtWidth(loc, tloc){
+function checkIfArrivedAtWidth(loc, tloc) {
     //console.log("comparing ",loc[0], " and ", tloc[0])
     let tf = (loc[0] == tloc[0])
     //console.log(tf)
@@ -199,27 +194,28 @@ function checkIfArrivedAtWidth(loc, tloc){
 }
 
 function adjustAngle(direction) {
-    rotateUntil(direction) 
+    rotateUntil(direction)
 }
 
 let rotationInterval;
 let currentRotationDirection;
 let wantedAngularRotation;
 let pi = Math.PI;
-function rotateUntil(direction){
+
+function rotateUntil(direction) {
 
     //console.log("started rotating until ", direction)
 
-    if (direction == "up"){
+    if (direction == "up") {
         wantedAngularRotation = 0
     }
-    if (direction == "down"){
+    if (direction == "down") {
         wantedAngularRotation = (pi)
     }
-    if (direction == "right"){
+    if (direction == "right") {
         wantedAngularRotation = (pi * 0.5)
     }
-    if (direction == "left"){
+    if (direction == "left") {
         wantedAngularRotation = -(pi * 0.5)
     }
 
@@ -228,7 +224,8 @@ function rotateUntil(direction){
 }
 
 let rotationSpeed = -0.005;
-function rotateIfNotArrived(){
+
+function rotateIfNotArrived() {
     let box = boxes[0];
     //let angle = precise(box.angle)
     let angle = Math.round(box.angle * 10) / 10
@@ -238,21 +235,21 @@ function rotateIfNotArrived(){
     let arrived = (angle == wantedAngle)
     console.log("rotation comparing ", angle, " and ", wantedAngle, " : ", arrived)
 
-    if(arrived == false){
+    if (arrived == false) {
 
         readyToMove = false
         //console.log("still rotating..", angle)
-        
-        if ((Math.round(box.angularVelocity * 10) / 10) == 0){
+
+        if ((Math.round(box.angularVelocity * 10) / 10) == 0) {
             Body.setAngularVelocity(box, rotationSpeed)
         }
 
-    } else if (arrived == true){
+    } else if (arrived == true) {
 
         console.log("adjused rotation successfully: ", angle, " ", currentRotationDirection)
         readyToMove = true;
         // stop spinning
-        
+
         // start move interval
         clearInterval(rotationInterval);
         Body.setAngularVelocity(box, 0);
@@ -263,30 +260,31 @@ function rotateIfNotArrived(){
     }
 
     // spin back if at max rotation
-    if (angle > pi){
+    if (angle > pi) {
         rotationSpeed = -0.01
     }
-    if (angle < -(pi)){
+    if (angle < -(pi)) {
         rotationSpeed = 0.01
     }
 }
+
 /*
 function precise(x) {
     return Number.parseFloat(x).toPrecision(1);
 }*/
 
-function getNeighbourTile(coordinates, direction){
+function getNeighbourTile(coordinates, direction) {
     let stepSize = 1;
-    if (direction == "up"){
+    if (direction == "up") {
         return [coordinates[0], (coordinates[1] - stepSize)]
     }
-    if (direction == "down"){
+    if (direction == "down") {
         return [coordinates[0], (coordinates[1] + stepSize)]
     }
-    if (direction == "right"){
+    if (direction == "right") {
         return [(coordinates[0] + stepSize), coordinates[1]]
     }
-    if (direction == "left"){
+    if (direction == "left") {
         return [(coordinates[0] - stepSize), coordinates[1]]
     }
     /*
@@ -298,7 +296,7 @@ function getNeighbourTile(coordinates, direction){
 let moveReadyInterval;
 let currentNextStepLocation;
 
-function followPath(){
+function followPath() {
     //moveReadyInterval = setInterval(moveOnPathIfNextStepReady, /*50*/ 200)
     rotateUntil("left")
 }
@@ -306,68 +304,66 @@ function followPath(){
 //let readyToMove = true;
 let readyToMove = false;
 let stepIndex = 0;
+
 //let mockMap = [[40, 31], [40,32], [41,32], [42,32], [42,33], [43,33], [43,32]]
 
-function moveOnPathIfNextStepReady(){
+function moveOnPathIfNextStepReady() {
     let actor = boxes[0];
-    let loc = getLocationOnGrid( actor.position.x, actor.position.y);
-    if(readyToMove){
+    let loc = getLocationOnGrid(actor.position.x, actor.position.y);
+    if (readyToMove) {
         readyToMove = false;
 
-        let nextTarget = mockMap[ stepIndex ];
+        let nextTarget = mockMap[stepIndex];
         currentNextStepLocation = nextTarget;
 
-        let direction = getDirectionToMove( loc, nextTarget);
+        let direction = getDirectionToMove(loc, nextTarget);
 
         move(boxes[0], direction);
-        stepIndex ++
+        stepIndex++
     }
-    if(checkIfArrived(loc, currentNextStepLocation)){
+    if (checkIfArrived(loc, currentNextStepLocation)) {
         readyToMove = true
         //console.log("arrived at ", currentNextStepLocation,"! :)")
     }
 
-    if(checkIfArrived(loc, mockMap[(mockMap.length - 1)])){
+    if (checkIfArrived(loc, mockMap[(mockMap.length - 1)])) {
         alert("Juhu! I foudn the way, all by myself :)");
         //console.log("arrived at final location ! <3")
         clearInterval(moveReadyInterval)
     }
 }
 
-function checkIfArrived(loc, step){
+function checkIfArrived(loc, step) {
     //console.log("checking if arrived: ", loc, " to ", step)
     var arrived;
-    if (step && loc){
+    if (step && loc) {
         arrived = (loc[0] == step[0] && loc[1] == step[1])
-    }else{
-        console.log("error ",loc, " ",step)
+    } else {
+        console.log("error ", loc, " ", step)
     }
-    if (!typeof arrived === "boolean"){
+    if (!typeof arrived === "boolean") {
         console.log("error in checkIfArrived(), ", arrived, " ", loc, " ", step, " not a boolean?")
     }
-    
+
     return arrived
 }
 
-function getDirectionToMove(loc, step){
+function getDirectionToMove(loc, step) {
     lastLocation = step;
 
-    if (loc[1] == undefined || step[1] == undefined){
+    if (loc[1] == undefined || step[1] == undefined) {
         return "up"
     }
 
     //console.log(loc)
     //console.log(step)
-    if (step[0] > loc[0]){
+    if (step[0] > loc[0]) {
         return "right"
-    } else
-    if (step[0] < loc[0]){
+    } else if (step[0] < loc[0]) {
         return "left"
-    } else
-    if (step[1] < loc[1]){
+    } else if (step[1] < loc[1]) {
         return "up"
-    } else
-    if (step[1] > loc[1]){
+    } else if (step[1] > loc[1]) {
         return "down"
     }
 }
@@ -449,8 +445,8 @@ for (let step of result) {
     let body = Bodies.rectangle(step.x * 10, step.y * 10, 5, 5);
     path.push(body);
 }
-let mockMap = [[39,30],[39,29]];
-for (step of result){
+let mockMap = [[39, 30], [39, 29]];
+for (step of result) {
     mockMap.push([step.x, step.y]);
 }
 
