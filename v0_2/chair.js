@@ -1,4 +1,11 @@
 class Chair {
+    followPath(path){
+        for (step of path){
+            if (isNeighbour(step)){
+                // TODO letse go...
+        }
+    }
+
     // Creates a new chair
     constructor(posX = 0, posY = 0) {
         console.log('Chair created');
@@ -13,8 +20,6 @@ class Chair {
     // Moves the chair up, right, down or left
     move(direction, speed = 1, timeout = 50) {
         let loc = this.getLocationOnGrid(this.chair.position.x, this.chair.position.y);
-
-        //this.adjustAngle(direction);
 
         let targetTile = this.getNeighbourTile(loc, direction);
 
