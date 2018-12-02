@@ -56,7 +56,7 @@ class Chair {
 
     adjustAngle(direction) {
         let pi = Math.PI;
-        console.log("started rotating until ", direction)
+        console.log("started rotating until ", direction);
         let wag;
         if (direction === "up") {
             wag = 0
@@ -75,7 +75,6 @@ class Chair {
         }
 
         this.controller.wantedAngularRotation = wag;
-        
         this.controller.rotationInterval = setInterval(this.rotateIfNotArrived, 50);
     }
 
@@ -86,13 +85,13 @@ class Chair {
         
         let box = this.chair;
 
-        let angle = Math.round(box.chair.angle * 10) / 10
+        let angle = Math.round(box.chair.angle * 10) / 10;
 
-        let wantedAngle = Math.round(this.controller.wantedAngularRotation * 10) / 10
+        let wantedAngle = Math.round(this.controller.wantedAngularRotation * 10) / 10;
 
-        let arrived = (angle === wantedAngle)
+        let arrived = (angle === wantedAngle);
 
-        console.log("rotation comparing ", angle, " and ", wantedAngle, " : ", arrived)
+        console.log("rotation comparing ", angle, " and ", wantedAngle, " : ", arrived);
 
         if (arrived === false) {
                 //TODO also implement check for readyToRotate here
@@ -109,7 +108,7 @@ class Chair {
 
         } else if (arrived === true) {
 
-            console.log("adjused rotation successfully: ", angle, " ", currentRotationDirection)
+            console.log("adjused rotation successfully: ", angle, " ", currentRotationDirection);
 
             this.controller.driveReady = true;
             this.controller.rotationReady = false;
@@ -123,7 +122,7 @@ class Chair {
 
             this.stop(box);
 
-            moveReadyInterval = setInterval(moveOnPathIfNextStepReady, /*50*/ 300)
+            moveReadyInterval = setInterval(moveOnPathIfNextStepReady, /*50*/ 300);
 
 
             clearInterval(this.controller.rotationInterval); // function stops itslef
