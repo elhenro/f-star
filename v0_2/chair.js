@@ -8,7 +8,7 @@ class Chair {
             path: [],
             rotationDirection: "",
             wantedAngularRotation: 0,
-            rotationSpeed: -0.005,
+            rotationSpeed: -0.1,
             driveReady: false,
             rotationReady: true,
             stepIndex: 0,
@@ -250,6 +250,7 @@ class Chair {
     isArrived(target){
         let chairGridPos = this.getLocationOnGrid(this.chair.position.x, this.chair.position.y);
         console.log(chairGridPos, target);
+
         return (chairGridPos[0] === target[0] && chairGridPos[1] === target[1]);
     }
 

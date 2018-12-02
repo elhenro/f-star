@@ -37,7 +37,9 @@ Events.on(engine, 'afterUpdate', function () {
 });
 */
 
+$( document ).ready(function() {
+    let path = [[19, 40], [18, 40], [17, 40], [17,39], [17,38], [17,37], [17,36], [17,35], [18,35] ];
+    
+    chair.followPath(path);
+})
 
-let path = [[19, 40], [18, 40], [18, 60], [10, 60]];
-
-chair.followPath(path);
