@@ -3,7 +3,7 @@ class Chair {
     constructor(posX = 0, posY = 0) {
         console.log('Chair created');
         this.chair = Bodies.rectangle(posX, posY, 20, 20);
-
+        let self = this;
         this.controller = {
             path: [],
             rotationDirection: "",
@@ -16,7 +16,86 @@ class Chair {
             timeout: 50,
             forceX: 0,
             forceY: 0,
-            rotationInterval: null,
+            rotationIntervalTime: 50,
+            moveIntervalTime: 300,
+            rotationInterval: function() {
+                //console.log(self.controller)
+
+                let actualAngle = Math.round(self.chair.angle * 10) /10
+                let wantedAngle = Math.round(self.controller.wantedAngularRotation * 10) / 10
+
+                let arrived = (actualAngle === wantedAngle)
+
+                console.log("rotation comparing ", actualAngle, " and ", wantedAngle, " : ", arrived)
+
+                if (arrived === false) {
+                    //TODO also implement check for readyToRotate here
+
+                    self.controller.driveReady = false;
+                    self.controller.rotationReady = true;
+
+                    console.log("still rotating..", wantedAngle)
+
+                    if ((Math.round( self.chair.angularVelocity * 10) / 10) === 0) {
+                        Body.setAngularVelocity(self.chair, self.controller.rotationSpeed)
+                    }
+                } else if (arrived === true) {
+                    console.log("adjused rotation successfully: ", self.chair.angle, " ", self.controller.rotationDirection)
+
+                    self.controller.driveReady = true;
+                    self.controller.rotationReady = false;
+
+                    // stop spinning
+                    self.stop();
+
+                    // start move interval
+                    Body.setAngularVelocity( self.chair, 0);
+
+                    
+                    setInterval(self.controller.moveInterval, self.controller.moveIntervalTime)
+                    
+                    // interval clears itself
+                    clearInterval(self.controller.rotationInterval);
+                }
+                // spin back if at max rotation
+                if (self.chair.angle > Math.PI) {
+                    self.controller.rotationSpeed = -0.01
+                }
+                if (self.chair.angle < -(Math.PI)) {
+                    self.controller.rotationSpeed = 0.01
+                }
+            },
+            moveInterval: function() {
+                let actor = self.chair;
+                let nextTarget = self.controller.path[ self.controller.stepIndex ];
+
+                // if is ready to move
+                if(self.controller.driveReady){
+                    self.controller.driveReady = false;
+
+
+                    let direction = self.whereToMove( nextTarget );
+
+                    self.move(direction);
+
+                    self.controller.stepIndex ++
+                }
+
+                // if is arrived at current target
+                if(self.isArrived(nextTarget)){
+                    self.controller.driveReady = true
+                    console.log("arrived at ", nexTarget,"! :)")
+                }
+
+                // if is arrived at last step
+                if(self.isArrived(self.controller.path[(self.controller.path.length - 1)])){
+                    alert("Juhu! I foudn the way, all by myself :)");
+                    console.log("arrived at final location ! <3")
+
+                    // interval clears itself
+                    clearInterval(self.controller.moveInterval)
+                } 
+            },
         };
     }
 
@@ -75,70 +154,15 @@ class Chair {
         }
 
         this.controller.wantedAngularRotation = wag;
-        
-        this.controller.rotationInterval = setInterval(this.rotateIfNotArrived, 50);
-    }
 
-    rotateIfNotArrived() {
-        console.log(this.controller);
+        //this.controller.rotationInterval = setInterval(this.rotateIfNotArrived, this.controller.rotationIntervalTime);
 
-        let rotationSpeed = this.controller.rotationSpeed;
-        
-        let box = this.chair;
+        setInterval(this.controller.rotationInterval, this.controller.rotationIntervalTime)
 
-        let angle = Math.round(box.chair.angle * 10) / 10
-
-        let wantedAngle = Math.round(this.controller.wantedAngularRotation * 10) / 10
-
-        let arrived = (angle === wantedAngle)
-
-        console.log("rotation comparing ", angle, " and ", wantedAngle, " : ", arrived)
-
-        if (arrived === false) {
-                //TODO also implement check for readyToRotate here
-
-            this.controller.driveReady = false;
-            this.controller.rotationReady = true;
-
-            console.log("still rotating..", angle)
-
-            if ((Math.round(box.chair.angularVelocity * 10) / 10) === 0) {
-
-                Body.setAngularVelocity(box, rotationSpeed)
-            }
-
-        } else if (arrived === true) {
-
-            console.log("adjused rotation successfully: ", angle, " ", currentRotationDirection)
-
-            this.controller.driveReady = true;
-            this.controller.rotationReady = false;
-
-            // stop spinning
-
-
-
-            // start move interval
-            Body.setAngularVelocity( box, 0);
-
-            this.stop(box);
-
-            moveReadyInterval = setInterval(moveOnPathIfNextStepReady, /*50*/ 300)
-
-
-            clearInterval(this.controller.rotationInterval); // function stops itslef
-        }
-
-        // spin back if at max rotation
-        if (angle > pi) {
-            rotationSpeed = -0.01
-        }
-        if (angle < -(pi)) {
-            rotationSpeed = 0.01
-        }
     }
     
     moveOnPathIfNextStepReady(){
+        /*
         let actor = this.chair;
 
         readyToMove = this.controller.driveReady;
@@ -167,7 +191,7 @@ class Chair {
             alert("Juhu! I foudn the way, all by myself :)");
             console.log("arrived at final location ! <3")
             clearInterval(moveReadyInterval)
-        }
+        }*/
     }
 
     getNeighbourTile(coordinates, direction) {
@@ -193,32 +217,32 @@ class Chair {
     // Moves the chair up, right, down or left
     move (direction) {
 
-        speed = this.controller.moveSpeed;
+        //let speed = this.controller.moveSpeed;
         //timeout = this.controller.timeout; // for actor to stop after a maximum of time with no "response"
 
-        let loc = this.getLocationOnGrid(this.chair.position.x, this.chair.position.y);
+        //let loc = this.getLocationOnGrid(this.chair.position.x, this.chair.position.y);
 
-        let targetTile = this.getNeighbourTile(loc, direction);
+        //let targetTile = this.getNeighbourTile(loc, direction);
 
-        driveDirectionX = this.controller.forceX;
-        driveDirectionY = this.controller.forceY;
+        //let driveDirectionX = this.controller.forceX;
+        //let driveDirectionY = this.controller.forceY;
 
         if (direction === "up") {
-            driveDirectionY = -1
+            this.controller.forceY = -1
         }
         if (direction === "down") {
-            driveDirectionY = 1
+            this.controller.forceY = 1
         }
         if (direction === "right") {
-            driveDirectionX = 1
+            this.controller.forceX = 1
         }
         if (direction === "left") {
-            driveDirectionX = -1
+            this.controller.forceX = -1
         }
 
         let self = this;
         Events.on(engine, 'afterUpdate', function () {
-            Body.setVelocity(self.chair, {x: driveDirectionX * speed, y: driveDirectionY * speed});
+            Body.setVelocity(self.chair, {x: self.controller.forceX * self.controller.moveSpeed, y: self.controller.forceY * self.controller.moveSpeed});
         });
     }
 
