@@ -135,7 +135,7 @@ class Chair {
 
     adjustAngle(direction) {
         let pi = Math.PI;
-        console.log("started rotating until ", direction)
+        console.log("started rotating until ", direction);
         let wag;
         if (direction === "up") {
             wag = 0
