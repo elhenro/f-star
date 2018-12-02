@@ -17,8 +17,10 @@ class Chair {
             timeout: 50,
             forceX: 0,
             forceY: 0,
-            rotationIntervalTime: 30,
-            moveIntervalTime: 20,
+            rotationIntervalTime: 100,
+            moveIntervalTime: 100,
+            rotationIntervalID: null,
+            moveIntervalID: null,
             rotationInterval: function() {
                 //console.log(self.controller)
 
@@ -27,22 +29,20 @@ class Chair {
 
                 let arrivedAtAngle = actualAngle === wantedAngle;
 
-                console.log("rotation comparing ", actualAngle, " and ", wantedAngle, " : ", arrivedAtAngle)
+                //console.log("rotation comparing ", actualAngle, " and ", wantedAngle, " : ", arrivedAtAngle)
 
                 if (arrivedAtAngle === false && self.controller.rotationReady) {
 
                     self.controller.driveReady = false;
+                    clearInterval(self.controller.moveIntervalID);
                     //self.controller.rotationReady = true;
 
                     //console.log("still rotating..", wantedAngle)
-
                     if ((Math.round( self.chair.angularVelocity * 10) / 10) === 0) {
                         Body.setAngularVelocity(self.chair, self.controller.rotationSpeed)
                     }
-                } else if (arrivedAtAngle === true) {
-                    //console.log("ANGEL: ", actualAngle);
-                    //console.log("WANTEDANGLE: ", wantedAngle)
-
+                } else 
+                if (arrivedAtAngle === true) {
                     //console.log("adjusted rotation successfully: ", self.chair.angle, " ", self.controller.wantedAngularRotation)
 
                     self.controller.driveReady = true;
@@ -52,10 +52,10 @@ class Chair {
                     self.stop();
 
                     // interval clears itself
-                    clearInterval(self.controller.rotationInterval);
+                    clearInterval(self.controller.rotationIntervalID);
 
                     // set movement interval
-                    setInterval(self.controller.moveInterval, self.controller.moveIntervalTime)
+                    self.controller.moveIntervalID = setInterval(self.controller.moveInterval, self.controller.moveIntervalTime)
                 }
                 // spin back if at max rotation
                 if (self.chair.angle > (Math.PI * 2)) {
@@ -69,10 +69,11 @@ class Chair {
                 let nextTarget = self.controller.path[ self.controller.stepIndex ];
 
                 // debug
-                console.log("NEXT TARGET ", nextTarget, " current position: ", (Math.round(self.chair.position.x) / 10), (Math.round(self.chair.position.y) / 10 ));
+                //console.log("NEXT TARGET ", nextTarget, " current position: ", (Math.round(self.chair.position.x) / 10), (Math.round(self.chair.position.y) / 10 ));
 
                 if(self.controller.driveReady === false){
                     console.log("not ready to move.")
+                    self.stop()
                 }
 
                 // if is ready to move
@@ -83,8 +84,9 @@ class Chair {
                 }
 
                 // if is arrived at current target
+                //console.log("checking if arrived at:", nextTarget, " current: ", self.chair.position)
                 if(self.isArrived(nextTarget)){
-                    console.log("arrived at ", nextTarget,"! :)")
+                    console.log("X X X X X X X --- arrived at ", nextTarget,"! :) ---  X X X X X X X X")
 
                     self.controller.stepIndex ++
 
@@ -100,17 +102,21 @@ class Chair {
                     console.log("arrived at final location ! <3")
 
                     // interval clears itself
-                    clearInterval(self.controller.moveInterval)
+                    clearInterval(self.controller.moveIntervalID)
 
                     self.controller.driveReady = false
                     self.controller.rotationReady = true
                 } 
 
                 if (nextTarget == undefined){
-                    console.log("warning - no next target defined")
+                    self.errorState = true;
+                    self.errorMsg = "error - no next target defined";
+                    self.stop()
+                    console.log(self.errorMsg)
                 }
             },
             errorState: false,
+            errorMsg: "",
         };
     }
 
@@ -128,12 +134,14 @@ class Chair {
             else 
             // target is not neighbour tile
             if(this.isNeighbour( path[this.controller.stepIndex] ) === false) {
-                    console.log("warning -- current target out of reach: ", path[this.controller.stepIndex], " position: ", this.chair.position.x, " ", this.chair.position.y)
+                this.errorState = true;
+                this.errorMsg = "warning -- current target out of reach: ", path[this.controller.stepIndex], " position: ", this.chair.position.x, " ", this.chair.position.y;
             } 
         // if error was produced
         } else if ( this.controller.errorState === true){
-           console.log("ERROR - stopped following path");
+
             this.stop();
+            throw new Error(this.controller.errorMsg);
         }
     }
 
@@ -151,8 +159,8 @@ class Chair {
 
     // Returns the grid cell for a x y position
     getLocationOnGrid(x, y) {
-        let xVal = Math.round(x / 10);
-        let yVal = Math.round(y / 10);
+        let xVal = Math.round(x * 10) / 10;
+        let yVal = Math.round(y * 10) / 10;
         return [xVal, yVal];
     }
 
@@ -182,10 +190,7 @@ class Chair {
         console.log("WAG: ", wag)
         this.controller.wantedAngularRotation = wag;
 
-        //this.controller.rotationInterval = setInterval(this.rotateIfNotArrived, this.controller.rotationIntervalTime);
-
-        setInterval(this.controller.rotationInterval, this.controller.rotationIntervalTime)
-
+        this.controller.rotationIntervalID = setInterval(this.controller.rotationInterval, this.controller.rotationIntervalTime)
     }
 
     getNeighbourTile(coordinates, direction) {
@@ -244,7 +249,7 @@ class Chair {
         let chairGridPos = this.getLocationOnGrid(this.chair.position.x, this.chair.position.y);
         //console.log(chairGridPos, target);
 
-        //console.log("Arrivalcheck: comparing: ", chairGridPos[0], " and ", target[0], " , also ", chairGridPos[1], " and ", target[1]);
+        //console.log("Arrivalcheck: comparing: ", Math.round(chairGridPos[0]), " and ", (target[0] * 10), " , also ", Math.round(chairGridPos[1]), " and ", (target[1] * 10));
         return (chairGridPos[0] === target[0] && chairGridPos[1] === target[1]);
     }
 
@@ -284,12 +289,11 @@ class Chair {
     stop() {
         console.log('stopping chair');
 
-        console.log(this.chair.angle);
-        //this.move('down', 0);
-        //this.rotate(true, 0);
+        //this.controller.driveReady = false;
+        //this.controller.rotationReady = false;
         
-        clearInterval(this.controller.moveInterval);
-        clearInterval(this.controller.rotationInterval);
+        clearInterval(this.controller.moveIntervalID);
+        clearInterval(this.controller.rotationIntervalID);
 
         Body.setVelocity(this.chair, {x: 0, y: 0});
         Body.setAngularVelocity(this.chair, 0);
