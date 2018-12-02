@@ -9,7 +9,7 @@ class Chair {
             direction: "",
             wantedAngularRotation: null,
             initalSpeed: 0.02,
-            rotationSpeed: 0.03,
+            rotationSpeed: -0.03,
             driveReady: false,
             rotationReady: true,
             stepIndex: 0,
@@ -18,16 +18,16 @@ class Chair {
             forceX: 0,
             forceY: 0,
             rotationIntervalTime: 30,
-            moveIntervalTime: 200,
+            moveIntervalTime: 20,
             rotationInterval: function() {
                 //console.log(self.controller)
 
-                let actualAngle = ((Math.round(self.chair.angle) * 10) / 10);
-                let wantedAngle = ((Math.round(self.controller.wantedAngularRotation) * 10) / 10 );
+                let actualAngle = (Math.round(self.chair.angle * 10) / 10);
+                let wantedAngle = (Math.round(self.controller.wantedAngularRotation * 10) / 10 );
 
                 let arrivedAtAngle = actualAngle === wantedAngle;
 
-                //console.log("rotation comparing ", actualAngle, " and ", wantedAngle, " : ", arrivedAtAngle)
+                console.log("rotation comparing ", actualAngle, " and ", wantedAngle, " : ", arrivedAtAngle)
 
                 if (arrivedAtAngle === false && self.controller.rotationReady) {
 
@@ -71,14 +71,15 @@ class Chair {
                 // debug
                 console.log("NEXT TARGET ", nextTarget, " current position: ", (Math.round(self.chair.position.x) / 10), (Math.round(self.chair.position.y) / 10 ));
 
+                if(self.controller.driveReady === false){
+                    console.log("not ready to move.")
+                }
+
                 // if is ready to move
-                if(self.controller.driveReady && nextTarget != undefined){
-                    self.controller.driveReady = false;
+                if((self.controller.driveReady === true) && (nextTarget != undefined)) {
+                    //self.controller.driveReady = false;
 
-
-                    //let direction = self.whereToMove( nextTarget );
-                    let direction = self.controller.direction;
-                    self.move(direction);
+                    self.move(self.controller.direction);
                 }
 
                 // if is arrived at current target
@@ -87,8 +88,10 @@ class Chair {
 
                     self.controller.stepIndex ++
 
-                    self.controller.driveReady = true
-                    followPath(self.controller.path);
+                    self.controller.driveReady = false
+                    self.controller.rotationReady = false
+                    self.stop()
+                    //this.followPath(self.controller.path);
                 }
 
                 // if is arrived at last step
@@ -156,25 +159,27 @@ class Chair {
 
     adjustAngle(direction) {
         let pi = Math.PI;
-        //console.log("started rotating until ", direction);
+        
+        console.log("started rotating until ", direction);
+        
         let wag;
         if (direction === "up") {
             wag = 0
         } else
         if (direction === "down") {
-            wag = pi
+            wag = (Math.PI)
         } else
         if (direction === "right") {
-            wag = (pi * 0.5)
+            wag = (Math.PI * 0.5)
         } else
         if (direction === "left") {
-            wag = -(pi * 0.5)
+            wag = - (Math.PI * 0.5)
         } else
         {
             wag = 0;
         }
 
-        //console.log("WAG: ", wag)
+        console.log("WAG: ", wag)
         this.controller.wantedAngularRotation = wag;
 
         //this.controller.rotationInterval = setInterval(this.rotateIfNotArrived, this.controller.rotationIntervalTime);
@@ -239,7 +244,7 @@ class Chair {
         let chairGridPos = this.getLocationOnGrid(this.chair.position.x, this.chair.position.y);
         //console.log(chairGridPos, target);
 
-        //console.log("IS ARRIVED RETURNED: ", (chairGridPos[0] === target[0] && chairGridPos[1] === target[1]));
+        //console.log("Arrivalcheck: comparing: ", chairGridPos[0], " and ", target[0], " , also ", chairGridPos[1], " and ", target[1]);
         return (chairGridPos[0] === target[0] && chairGridPos[1] === target[1]);
     }
 
@@ -278,8 +283,14 @@ class Chair {
     // Stops the chair movement and rotation
     stop() {
         console.log('stopping chair');
+
+        console.log(this.chair.angle);
         //this.move('down', 0);
         //this.rotate(true, 0);
+        
+        clearInterval(this.controller.moveInterval);
+        clearInterval(this.controller.rotationInterval);
+
         Body.setVelocity(this.chair, {x: 0, y: 0});
         Body.setAngularVelocity(this.chair, 0);
     }
