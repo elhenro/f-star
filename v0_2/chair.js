@@ -9,7 +9,7 @@ class Chair {
             direction: "",
             wantedAngularRotation: null,
             initalSpeed: 0.02,
-            rotationSpeed: -0.03,
+            rotationSpeed: 0.03,
             driveReady: false,
             rotationReady: true,
             stepIndex: 0,
@@ -86,14 +86,21 @@ class Chair {
                 // if is arrived at current target
                 //console.log("checking if arrived at:", nextTarget, " current: ", self.chair.position)
                 if(self.isArrived(nextTarget)){
+
                     console.log("X X X X X X X --- arrived at ", nextTarget,"! :) ---  X X X X X X X X")
 
                     self.controller.stepIndex ++
 
                     self.controller.driveReady = false
-                    self.controller.rotationReady = false
+                    self.controller.rotationReady = true
+
+                    clearInterval(self.moveIntervalID);
+                    //Body.setVelocity(self.chair, {x: 0, y: 0});
                     self.stop()
-                    //this.followPath(self.controller.path);
+
+                    // TODO: er sollte hier anhalten wenn das auskommentiert ist !!
+                    // next
+                    //self.followPath(self.controller.path);
                 }
 
                 // if is arrived at last step
@@ -241,16 +248,15 @@ class Chair {
             console.log("warning: target is not defined: ", target);
             this.controller.errorState = true;
 
-            return; // = break
+            return;
         }
-
         //this.controller.stepIndex ++
         
         let chairGridPos = this.getLocationOnGrid(this.chair.position.x, this.chair.position.y);
         //console.log(chairGridPos, target);
-
         //console.log("Arrivalcheck: comparing: ", Math.round(chairGridPos[0]), " and ", (target[0] * 10), " , also ", Math.round(chairGridPos[1]), " and ", (target[1] * 10));
-        return (chairGridPos[0] === target[0] && chairGridPos[1] === target[1]);
+        //console.log("arrival check returns: ", ((Math.round(chairGridPos[0]) === (target[0] * 10) )&&( Math.round(chairGridPos[1]) === (target[1] * 10))))
+        return ((Math.round(chairGridPos[0]) === (target[0] * 10) )&&( Math.round(chairGridPos[1]) === (target[1] * 10)));
     }
 
     // Returns "up", "right", "down" or "left"
@@ -288,7 +294,6 @@ class Chair {
     // Stops the chair movement and rotation
     stop() {
         console.log('stopping chair');
-
         //this.controller.driveReady = false;
         //this.controller.rotationReady = false;
         
@@ -298,11 +303,4 @@ class Chair {
         Body.setVelocity(this.chair, {x: 0, y: 0});
         Body.setAngularVelocity(this.chair, 0);
     }
-
-    // Gives the chair a velocity
-    drive(x, y, speed = 1) {
-        Body.setVelocity(this.chair, {x: x * speed, y: y * speed});
-    }
-
-
 }
