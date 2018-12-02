@@ -39,4 +39,5 @@ Events.on(engine, 'afterUpdate', function () {
 
 
 let path = [[19, 40], [18, 40], [18, 60], [10, 60]];
-followPath(path);
+
+chair.followPath(path);

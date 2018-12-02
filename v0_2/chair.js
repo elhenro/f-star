@@ -1,47 +1,49 @@
 class Chair {
-    followPath(path){
-        for (step of path){
-            if (isNeighbour(step)){
-                // TODO letse go...
-        }
-    }
-
     // Creates a new chair
     constructor(posX = 0, posY = 0) {
         console.log('Chair created');
         this.chair = Bodies.rectangle(posX, posY, 20, 20);
+
+        this.controller = {
+            path: [],
+            rotationDirection: "",
+            wantedAngularRotation: 0,
+            rotationSpeed: -0.005,
+            driveReady: false,
+            rotationReady: true,
+            stepIndex: 0,
+            moveSpeed: 1,
+            timeout: 50,
+            forceX: 0,
+            forceY: 0,
+            rotationInterval: null,
+        };
+    }
+
+    followPath(path) {
+        
+        this.controller.path = path;
+        //console.log(this.controller);
+        for (let step of path) {
+            if (this.isNeighbour(step)) {
+                let direction = this.whereToMove(step); 
+
+                this.adjustAngle(direction)
+
+            }
+        }
+    }
+
+    isNeighbour(step){
+        // TODO : 3
+        // if step.x == + - 1
+        let t = true;
+        return t;
     }
 
     // Console logs the chair object
     logYourself() {
         console.log(this.chair);
-    }
-
-    // Moves the chair up, right, down or left
-    move(direction, speed = 1, timeout = 50) {
-        let loc = this.getLocationOnGrid(this.chair.position.x, this.chair.position.y);
-
-        let targetTile = this.getNeighbourTile(loc, direction);
-
-        let driveDirectionX = 0;
-        let driveDirectionY = 0;
-        if (direction === "up") {
-            driveDirectionY = -1
-        }
-        if (direction === "down") {
-            driveDirectionY = 1
-        }
-        if (direction === "right") {
-            driveDirectionX = 1
-        }
-        if (direction === "left") {
-            driveDirectionX = -1
-        }
-
-        let self = this;
-        Events.on(engine, 'afterUpdate', function () {
-            Body.setVelocity(self.chair, {x: driveDirectionX * speed, y: driveDirectionY * speed});
-        });
     }
 
     // Returns the grid cell for a x y position
@@ -53,64 +55,78 @@ class Chair {
 
 
     adjustAngle(direction) {
-        let rotationInterval;
-        let currentRotationDirection;
-        let wantedAngularRotation;
         let pi = Math.PI;
-
-        //console.log("started rotating until ", direction)
-
+        console.log("started rotating until ", direction)
+        let wag;
         if (direction === "up") {
-            wantedAngularRotation = 0
-        }
+            wag = 0
+        } else
         if (direction === "down") {
-            wantedAngularRotation = (pi)
-        }
+            wag = (pi)
+        } else
         if (direction === "right") {
-            wantedAngularRotation = (pi * 0.5)
-        }
+            wag = (pi * 0.5)
+        } else
         if (direction === "left") {
-            wantedAngularRotation = -(pi * 0.5)
+            wag = -(pi * 0.5)
+        } else
+        {
+            wag = 0;
         }
 
-        currentRotationDirection = direction;
-        rotationInterval = setInterval(this.rotateIfNotArrived, 50);
+        this.controller.wantedAngularRotation = wag;
+        
+        this.controller.rotationInterval = setInterval(this.rotateIfNotArrived, 50);
     }
 
-
     rotateIfNotArrived() {
-        let rotationSpeed = -0.005;
-        let box = boxes[0];
-        //let angle = precise(box.angle)
-        let angle = Math.round(box.angle * 10) / 10
-        //let wantedAngle = precise(wantedAngularRotation)
-        let wantedAngle = Math.round(wantedAngularRotation * 10) / 10
+        console.log(this.controller);
+
+        let rotationSpeed = this.controller.rotationSpeed;
+        
+        let box = this.chair;
+
+        let angle = Math.round(box.chair.angle * 10) / 10
+
+        let wantedAngle = Math.round(this.controller.wantedAngularRotation * 10) / 10
 
         let arrived = (angle === wantedAngle)
+
         console.log("rotation comparing ", angle, " and ", wantedAngle, " : ", arrived)
 
         if (arrived === false) {
+                //TODO also implement check for readyToRotate here
 
-            readyToMove = false;
-            //console.log("still rotating..", angle)
+            this.controller.driveReady = false;
+            this.controller.rotationReady = true;
 
-            if ((Math.round(box.angularVelocity * 10) / 10) === 0) {
+            console.log("still rotating..", angle)
+
+            if ((Math.round(box.chair.angularVelocity * 10) / 10) === 0) {
+
                 Body.setAngularVelocity(box, rotationSpeed)
             }
 
         } else if (arrived === true) {
 
             console.log("adjused rotation successfully: ", angle, " ", currentRotationDirection)
-            readyToMove = true;
+
+            this.controller.driveReady = true;
+            this.controller.rotationReady = false;
+
             // stop spinning
 
-            // start move interval
-            clearInterval(rotationInterval);
-            Body.setAngularVelocity(box, 0);
 
-            this.stop(this.chair);
+
+            // start move interval
+            Body.setAngularVelocity( box, 0);
+
+            this.stop(box);
 
             moveReadyInterval = setInterval(moveOnPathIfNextStepReady, /*50*/ 300)
+
+
+            clearInterval(this.controller.rotationInterval); // function stops itslef
         }
 
         // spin back if at max rotation
@@ -119,6 +135,38 @@ class Chair {
         }
         if (angle < -(pi)) {
             rotationSpeed = 0.01
+        }
+    }
+    
+    moveOnPathIfNextStepReady(){
+        let actor = this.chair;
+
+        readyToMove = this.controller.driveReady;
+        
+        stepIndex = this.controller.stepIndex;
+        path = this.controller.path;
+
+        if(readyToMove){
+            readyToMove = false;
+
+            let nextTarget = path[ stepIndex ];
+
+            let direction = this.whereToMove( nextTarget );
+
+            move(direction);
+
+            stepIndex ++
+        }
+
+        if(this.isArrived(loc, nextTarget)){
+            readyToMove = true
+            //console.log("arrived at ", nexTarget,"! :)")
+        }
+
+        if(this.isArrived(path[(path.length - 1)])){
+            alert("Juhu! I foudn the way, all by myself :)");
+            console.log("arrived at final location ! <3")
+            clearInterval(moveReadyInterval)
         }
     }
 
@@ -142,27 +190,39 @@ class Chair {
         }*/
     }
 
-    driveIfNotArrived(driveDirectionX = 0, driveDirectionY = 0) {
+    // Moves the chair up, right, down or left
+    move (direction) {
+
+        speed = this.controller.moveSpeed;
+        //timeout = this.controller.timeout; // for actor to stop after a maximum of time with no "response"
+
         let loc = this.getLocationOnGrid(this.chair.position.x, this.chair.position.y);
 
-        let arrived;
-        /*if (driveDirectionY !== 0){
-            arrived = checkIfArrivedAtHeight(loc, targetTile)
-        } else if (driveDirectionX !== 0){
-            arrived = checkIfArrivedAtWidth(loc, targetTile)
-        }*/
-        if (!arrived) {
-            this.drive(driveDirectionX, driveDirectionY);
-        } else {
-            if (arrived) {
-                this.stop(this.chair);
-                clearInterval(driveInterval);
-                driveDirectionX = 0;
-                driveDirectionY = 0;
-            }
+        let targetTile = this.getNeighbourTile(loc, direction);
+
+        driveDirectionX = this.controller.forceX;
+        driveDirectionY = this.controller.forceY;
+
+        if (direction === "up") {
+            driveDirectionY = -1
         }
+        if (direction === "down") {
+            driveDirectionY = 1
+        }
+        if (direction === "right") {
+            driveDirectionX = 1
+        }
+        if (direction === "left") {
+            driveDirectionX = -1
+        }
+
+        let self = this;
+        Events.on(engine, 'afterUpdate', function () {
+            Body.setVelocity(self.chair, {x: driveDirectionX * speed, y: driveDirectionY * speed});
+        });
     }
 
+    // check if actor has arrived ar target coordinates like: [position.x, position.y]
     isArrived(target){
         let chairGridPos = this.getLocationOnGrid(this.chair.position.x, this.chair.position.y);
         console.log(chairGridPos, target);
