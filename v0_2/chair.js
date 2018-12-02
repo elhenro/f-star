@@ -8,17 +8,17 @@ class Chair {
             path: [], // comes from bottom of sketch.js
             direction: "",
             wantedAngularRotation: null,
-            initalSpeed: 0.02,
-            rotationSpeed: 0.03,
+            initalSpeed: 0.1,
+            rotationSpeed: -0.1,
             driveReady: false,
             rotationReady: true,
             stepIndex: 0,
-            moveSpeed: 0.2,
+            moveSpeed: 0.6,
             timeout: 50,
             forceX: 0,
             forceY: 0,
-            rotationIntervalTime: 100,
-            moveIntervalTime: 100,
+            rotationIntervalTime: 20,
+            moveIntervalTime: 10,
             rotationIntervalID: null,
             moveIntervalID: null,
             rotationInterval: function() {
@@ -90,6 +90,7 @@ class Chair {
                     console.log("X X X X X X X --- arrived at ", nextTarget,"! :) ---  X X X X X X X X")
 
                     self.controller.stepIndex ++
+                    console.log("new target is: ", self.controller.path[self.controller.stepIndex])
 
                     self.controller.driveReady = false
                     self.controller.rotationReady = true
@@ -98,9 +99,8 @@ class Chair {
                     //Body.setVelocity(self.chair, {x: 0, y: 0});
                     self.stop()
 
-                    // TODO: er sollte hier anhalten wenn das auskommentiert ist !!
-                    // next
-                    //self.followPath(self.controller.path);
+                    // NEXT
+                    self.followPath(self.controller.path);
                 }
 
                 // if is arrived at last step
@@ -133,10 +133,16 @@ class Chair {
 
             //target is neighbour tile
             if(this.isNeighbour(path[this.controller.stepIndex])){
+                console.log("getting next direction for step number [", this.controller.stepIndex,"] : ", path[this.controller.stepIndex])
                 this.controller.direction = this.whereToMove(path[this.controller.stepIndex]);
 
-                //console.log("ADJUSTING ANGLE: ", this.controller.direction);
-                this.adjustAngle(this.controller.direction);
+                console.log("ADJUSTING ANGLE: ", this.controller.direction);
+                if(this.adjustAngle === undefined){
+                    this.errorState = true;
+                    this.errorMsg = "undefined adjustment angle"
+                } else {
+                    this.adjustAngle(this.controller.direction);
+                }
             }
             else 
             // target is not neighbour tile
@@ -175,7 +181,7 @@ class Chair {
     adjustAngle(direction) {
         let pi = Math.PI;
         
-        console.log("started rotating until ", direction);
+        //console.log("started rotating until ", direction);
         
         let wag;
         if (direction === "up") {
@@ -236,10 +242,15 @@ class Chair {
             this.controller.forceY = 0
         }
 
-        let self = this;
-        Events.on(engine, 'afterUpdate', function () {
-            Body.setVelocity(self.chair, {x: self.controller.forceX * self.controller.moveSpeed, y: self.controller.forceY * self.controller.moveSpeed});
-        });
+        // DAS WAR DAS PROBLEM LöL !!!!!
+        // deswegen ist er einfach weiter gefahren, weil unsere stop function ihn dann nie stoppt.... 
+        //let self = this;
+        //Events.on(engine, 'afterUpdate', function () {
+            //Body.setVelocity(self.chair, {x: self.controller.forceX * self.controller.moveSpeed, y: self.controller.forceY * self.controller.moveSpeed});
+        //});
+
+        Body.setVelocity(this.chair, {x: this.controller.forceX * this.controller.moveSpeed, y: this.controller.forceY * this.controller.moveSpeed});
+
     }
 
     // check if actor has arrived ar target coordinates like: [position.x, position.y]
@@ -263,19 +274,78 @@ class Chair {
     // depending on the direction the chair has
     // to move to arrive at the target location
     whereToMove(target) {
+        console.log("called: whereToMove(", target,")");
+        if (target === undefined){
+            this.stop();
+            this.errorState = true;
+            this.errorMsg = "undefined next target"
+        }
+        console.log("current position: ", this.getLocationOnGrid(this.chair.position.x, this.chair.position.y));
         let direction;
         let chairGridPos = this.getLocationOnGrid(this.chair.position.x, this.chair.position.y);
+        
+        let xPos = Math.round(chairGridPos[0]);
+        let yPos = Math.round(chairGridPos[1]);
+        let xTarget = target[0] * 10;
+        let yTarget = target[1] * 10; 
 
-        if (chairGridPos[0] > target[0]) {
-            direction = "left";
-        } else if (chairGridPos[0] < target[0]) {
-            direction = "right";
-        } else if (chairGridPos[1] > target[1]) {
-            direction = "up"
-        } else if (chairGridPos[1] < target[1]) {
-            direction = "down"
+        console.log("?? ", xPos, " = ", xTarget)
+        if (xPos == xTarget){
+            if (yPos > yTarget){
+                return "up";
+            } else if (yPos < yTarget){
+                return "down";
+            } /*else {
+                this.errorState = true;
+                this.errorMsg = ("failed finding direction with: " + yPos + " and " + yTarget);
+            }*/
+        } else
+        console.log("?? ", yPos, " = ", yTarget)
+        if (yPos == yTarget){
+            if (xPos > xTarget){
+                return "left";
+            } else 
+            if (xPos < xTarget){
+                return "right";
+            } /*else {
+                this.errorState = true;
+                this.errorMsg = ("failed finding direction with: " + xPos + " and " + xTarget);
+                return this.errorMsg
+            }*/
+        } /*else 
+        if (xPos > xTarget) {
+            return "left";
+        } else 
+        if (xPos < xTarget){
+            return "right";
+        } else
+        if ( yPos > yTarget){
+            return "up";
+        } else
+        if (yPos < yTarget){
+            return "down";
+        }*/
+
+        {
+            this.errorState = true;
+            this.errorMsg = ("failed getting direction with position:"+ xPos + " " + yPos + " and target: " + xTarget + " " + yTarget);
         }
-        return direction;
+
+        /*
+        if (xPos > xTarget) {
+            // problem: up also returns left
+            direction = "left";
+        } else 
+        if (xPos < xTarget) {
+            direction = "right";
+        } else 
+        if (chairGridPos[1] > target[1]) {
+            direction = "up"
+        } else 
+        if (chairGridPos[1] < target[1]) {
+            direction = "down"
+        }*/
+        //return direction;
     }
 
     // Rotates the chair clock- or counterclockwise
