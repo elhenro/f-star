@@ -29,7 +29,7 @@ function createAStarGrid() {
 
 let graph = new Graph(createAStarGrid());
 let start = graph.grid[19][40];
-let end = graph.grid[2][5];
+let end = graph.grid[17][20];
 
 // result is an array containing the shortest path
 let result = astar.search(graph, start, end);

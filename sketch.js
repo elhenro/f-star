@@ -2,12 +2,6 @@
 const chair = new Chair(200, 400);
 chair.logYourself();
 
-/* todo: loop erstellen, der dem stuhl sagt, dass er
-    sich bewegen soll und wärend dem fahren überprüft
-    ob er angekommen ist. falls ja neues ziel geben
-    und wiederholen
-*/
-
 /* todo: a-star so implementieren, dass der stuhl ein
     2d array bekommt (so wie path oben)
  */
@@ -20,7 +14,15 @@ $(document).ready(function () {
 
     // todo: function to check path for validity: always only one step X or Y
     // let path = [[21,40],[22,40],[22,41],[23,41]];
+    window.go = function() {
+        console.log('Lost gehts!');
+        chair.followPath(mockMap);
+    }
 
-    chair.followPath(mockMap);
+    //let chair = new Chair();
+    window.createChair = function () {
+        new Chair();
+    }
+
 });
 
