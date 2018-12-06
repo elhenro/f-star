@@ -391,4 +391,11 @@ class Chair {
         }
         window.updateObstacle(id,Math.round(x), Math.round(y));
     }
+
+    resetStepIndex(){
+        this.controller.stepIndex = 0;
+        this.controller.rotationReady = true;
+
+        this.controller.errorState = false;
+    }
 }

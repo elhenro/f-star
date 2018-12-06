@@ -31,7 +31,8 @@ function getRoute(startLoc, tloc) {
     }
 
     let graph = new Graph(createAStarGrid());
-    let start = graph.grid[(startLoc[0] / 10)][(startLoc[1] / 10)];
+    console.log(Math.round(startLoc[0]), Math.round(startLoc[1]))
+    let start = graph.grid[(Math.round(startLoc[0] / 10))][Math.round(startLoc[1] / 10)];
     let end = graph.grid[tloc[0]][tloc[1]];
 
     // result is an array containing the shortest path

@@ -13,11 +13,11 @@ window.updateObstacle = function(id,x,y){
 }
 
 $(document).ready(function () {
-    window.go = function (index) {
+    window.go = function (index, coords) {
         let chairPos = chairs[index].getLocationOnGrid(chairs[index].chair.position);
         //let mockMap = getRoute(chairPos);
 
-        let p = [5,20]
+        let p = [ coords[0],coords[1] ]
         let mockMap = getRoute(chairPos, p)
 
         console.log(mockMap)
@@ -28,6 +28,7 @@ $(document).ready(function () {
             console.log('Path for ', chairs[index], " - ", mockMap);
         }
 
+        chairs[index].resetStepIndex();
         chairs[index].followPath(mockMap);
 
         // for testing
@@ -35,7 +36,7 @@ $(document).ready(function () {
         //chairs[index].followPath(path);
     };
 
-    window.chair = new Chair();
+    //window.chair = new Chair();
     window.createChair = function (posX, posY) {
         let chair = new Chair(posX, posY);
 
@@ -63,7 +64,7 @@ $(document).ready(function () {
         //  box 1 drives left to collide with box 2
     window.createChair(100, 200)
     window.createChair(200, 200)
-    go(1);
+    go(1, [5,20]);
 
     function addObstacle(id, x,y){
         window.obstacles = window.obstacles.concat([[id,x,y]]);
