@@ -66,6 +66,16 @@ class Chair {
                 // debug
                 //console.log("NEXT TARGET ", nextTarget, " current position: ", (Math.round(self.chair.position.x) / 10), (Math.round(self.chair.position.y) / 10 ));
 
+                // prevent collision
+                if (self.stepBlockedByObstacle(nextTarget, this.window.obstacles)){
+
+                    self.getNewWay()
+
+                    console.log("prevented collision with ...")
+                    self.stop()
+                    return
+                }
+
                 if (self.controller.driveReady === false) {
                     console.log("not ready to move.");
                     self.stop();
@@ -123,13 +133,19 @@ class Chair {
     }
 
     followPath(path) {
-        if (this.controller.errorState === false) {
+        if (!this.controller.errorState) {
             this.controller.path = path;
 
             //target is neighbour tile
             if (this.isNeighbour(path[this.controller.stepIndex])) {
                 console.log("getting next direction for step number [", this.controller.stepIndex, "] : ", path[this.controller.stepIndex])
-                this.controller.direction = this.whereToMove(path[this.controller.stepIndex]);
+
+                if (this.whereToMove(path[this.controller.stepIndex]) != "err"){
+                    this.controller.direction = this.whereToMove(path[this.controller.stepIndex]);
+                } else {
+                    console.log("!! ERROR: ", this.errorMsg);
+                    return
+                }
 
                 console.log("ADJUSTING ANGLE: ", this.controller.direction);
                 if (this.adjustAngle === undefined) {
@@ -145,7 +161,7 @@ class Chair {
                 this.errorMsg = "warning -- current target out of reach: ", path[this.controller.stepIndex], " position: ", this.chair.position.x, " ", this.chair.position.y;
             }
             // if error was produced
-        } else if (this.controller.errorState === true) {
+        } else if (this.controller.errorState) {
 
             this.stop();
             throw new Error(this.controller.errorMsg);
@@ -264,11 +280,16 @@ class Chair {
     // to move to arrive at the target location
     whereToMove(target) {
         console.log("called: whereToMove(", target, ")");
-        if (target === undefined) {
-            this.stop();
+
+        if (!target) {
+            console.log("no next target")
             this.errorState = true;
-            this.errorMsg = "undefined next target"
+            this.errorMsg = "no next target"
+            this.stop();
+            //this.followPath(this.controller.path);
+            return "err"
         }
+        
         console.log("current position: ", this.getLocationOnGrid(this.simulation.getPosition(this.chair)));
 
         let chairGridPos = this.getLocationOnGrid(this.simulation.getPosition(this.chair));
@@ -308,7 +329,23 @@ class Chair {
         clearInterval(this.controller.moveIntervalID);
         clearInterval(this.controller.rotationIntervalID);
 
+        // nur zum testen in simulation
         this.simulation.applyForce(this.chair, 'Straight', {x: 0, y: 0}, this.controller.moveSpeed);
         this.simulation.applyForce(this.chair, 'Rotation', null, 0);
+    }
+
+    stepBlockedByObstacle(step, obstacles){
+        for (let obstacle of obstacles) {
+            if(obstacle[0] == step[0] && obstacle[1] == step[1]){
+                console.log(step, " blocked by obstacle")
+                return true
+            }
+        }
+        return false
+    }
+
+    getNewWay() {
+        
+        // todo: re-call followPath(), because actor was stop() 'ed before 
     }
 }
