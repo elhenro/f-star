@@ -73,7 +73,7 @@ class Chair {
                 //console.log("NEXT TARGET ", nextTarget, " current position: ", (Math.round(self.chair.position.x) / 10), (Math.round(self.chair.position.y) / 10 ));
 
                 if (self.controller.driveReady === false) {
-                    console.log("not ready to move.")
+                    console.log("not ready to move.");
                     self.stop()
                 }
 
@@ -88,7 +88,7 @@ class Chair {
                 //console.log("checking if arrived at:", nextTarget, " current: ", self.chair.position)
                 if (self.isArrived(nextTarget)) {
 
-                    console.log("X X X X X X X --- arrived at ", nextTarget, "! :) ---  X X X X X X X X")
+                    console.log("X X X X X X X --- arrived at ", nextTarget, "! :) ---  X X X X X X X X");
 
                     self.controller.stepIndex++;
                     console.log("new target is: ", self.controller.path[self.controller.stepIndex]);
@@ -98,13 +98,14 @@ class Chair {
 
                     clearInterval(self.moveIntervalID);
                     //Body.setVelocity(self.chair, {x: 0, y: 0});
-                    self.stop()
+                    self.stop();
 
                     // NEXT
                     self.followPath(self.controller.path);
                 }
 
                 // if is arrived at last step
+                console.log(self.controller.path[(self.controller.path.length - 1)]);
                 if (self.isArrived(self.controller.path[(self.controller.path.length - 1)])) {
                     alert("Juhu! I foudn the way, all by myself :)");
                     console.log("arrived at final location ! <3");
@@ -112,8 +113,8 @@ class Chair {
                     // interval clears itself
                     clearInterval(self.controller.moveIntervalID);
 
-                    self.controller.driveReady = false
-                    self.controller.rotationReady = true
+                    self.controller.driveReady = false;
+                    self.controller.rotationReady = true;
                 }
 
                 if (nextTarget == undefined) {
@@ -256,6 +257,7 @@ class Chair {
         //this.controller.stepIndex ++
 
         let chairGridPos = this.getLocationOnGrid(this.simulation.getPosition(this.chair));
+        console.log('cgp', chairGridPos);
         //console.log(chairGridPos, target);
         //console.log("Arrivalcheck: comparing: ", Math.round(chairGridPos[0]), " and ", (target[0] * 10), " , also ", Math.round(chairGridPos[1]), " and ", (target[1] * 10));
         //console.log("arrival check returns: ", ((Math.round(chairGridPos[0]) === (target[0] * 10) )&&( Math.round(chairGridPos[1]) === (target[1] * 10))))
@@ -273,7 +275,7 @@ class Chair {
             this.errorMsg = "undefined next target"
         }
         console.log("current position: ", this.getLocationOnGrid(this.simulation.getPosition(this.chair)));
-        let direction;
+
         let chairGridPos = this.getLocationOnGrid(this.simulation.getPosition(this.chair));
 
         let xPos = Math.round(chairGridPos[0]);

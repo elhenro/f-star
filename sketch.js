@@ -17,7 +17,7 @@ $(document).ready(function () {
     window.go = function() {
         console.log('Lost gehts!');
         chair.followPath(mockMap);
-    }
+    };
 
     //let chair = new Chair();
     window.createChair = function () {
