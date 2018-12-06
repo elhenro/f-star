@@ -5,6 +5,7 @@ class Simulation {
     createChair(posX = 0, posY = 0) {
         console.log('Chair created');
         let chair = Bodies.rectangle(posX, posY, 20, 20);
+        // add chair to the world
         World.add(engine.world, [chair]);
         return chair;
     }

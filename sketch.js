@@ -14,12 +14,16 @@ $(document).ready(function () {
     // let path = [[21,40],[22,40],[22,41],[23,41]];
     window.go = function (index) {
         console.log('Chair ' + index + ' los gehts!');
+
+        let chairPos = chairs[index].getLocationOnGrid(chairs[index].chair.position);
+        let mockMap = getRoute(chairPos);
+        console.log('Path', mockMap);
         chairs[index].followPath(mockMap);
     };
 
     //let chair = new Chair();
-    window.createChair = function () {
-        let chair = new Chair(200, 400);
+    window.createChair = function (posX, posY) {
+        let chair = new Chair(posX, posY);
         chairs.push(chair);
     };
 

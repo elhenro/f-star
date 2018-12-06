@@ -68,7 +68,7 @@ class Chair {
 
                 if (self.controller.driveReady === false) {
                     console.log("not ready to move.");
-                    self.stop()
+                    self.stop();
                 }
 
                 // if is ready to move
@@ -190,7 +190,7 @@ class Chair {
             wag = 0;
         }
 
-        console.log("WAG: ", wag)
+        console.log("WAG: ", wag);
         this.controller.wantedAngularRotation = wag;
 
         this.controller.rotationIntervalID = setInterval(this.controller.rotationInterval, this.controller.rotationIntervalTime)
