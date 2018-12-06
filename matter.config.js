@@ -17,6 +17,7 @@ var render = Render.create({
     element: document.body,
     engine: engine,
     options: {
+        showBroadphase: true,
         showAngleIndicator: true
     }
 });
