@@ -2,7 +2,7 @@ class Chair {
     // Creates a new chair
     constructor(posX = 0, posY = 0) {
         this.simulation = new Simulation();
-        this.chair = this.simulation.createChair(200, 400);
+        this.chair = this.simulation.createChair(posX, posY);
         console.log(this.chair);
 
         let self = this;
@@ -24,22 +24,16 @@ class Chair {
             rotationIntervalID: null,
             moveIntervalID: null,
             rotationInterval: function () {
-                //console.log(self.controller)
-
                 let actualAngle = (Math.round(self.chair.angle * 10) / 10);
                 let wantedAngle = (Math.round(self.controller.wantedAngularRotation * 10) / 10);
 
                 let arrivedAtAngle = actualAngle === wantedAngle;
 
-                //console.log("rotation comparing ", actualAngle, " and ", wantedAngle, " : ", arrivedAtAngle)
-
                 if (arrivedAtAngle === false && self.controller.rotationReady) {
 
                     self.controller.driveReady = false;
                     clearInterval(self.controller.moveIntervalID);
-                    //self.controller.rotationReady = true;
 
-                    //console.log("still rotating..", wantedAngle)
                     if ((Math.round(self.chair.angularVelocity * 10) / 10) === 0) {
                         self.simulation.applyForce(self.chair, 'Rotation', null, self.controller.rotationSpeed)
                     }
@@ -105,7 +99,6 @@ class Chair {
                 }
 
                 // if is arrived at last step
-                console.log(self.controller.path[(self.controller.path.length - 1)]);
                 if (self.isArrived(self.controller.path[(self.controller.path.length - 1)])) {
                     alert("Juhu! I foudn the way, all by myself :)");
                     console.log("arrived at final location ! <3");
@@ -239,7 +232,10 @@ class Chair {
             this.controller.forceY = 0;
         }
 
-        this.simulation.applyForce(this.chair, 'Straight', {x: this.controller.forceX, y: this.controller.forceY}, this.controller.moveSpeed);
+        this.simulation.applyForce(this.chair, 'Straight', {
+            x: this.controller.forceX,
+            y: this.controller.forceY
+        }, this.controller.moveSpeed);
         /*     Body.setVelocity(this.chair, {
                  x: this.controller.forceX * this.controller.moveSpeed,
                  y: this.controller.forceY * this.controller.moveSpeed
@@ -257,7 +253,6 @@ class Chair {
         //this.controller.stepIndex ++
 
         let chairGridPos = this.getLocationOnGrid(this.simulation.getPosition(this.chair));
-        console.log('cgp', chairGridPos);
         //console.log(chairGridPos, target);
         //console.log("Arrivalcheck: comparing: ", Math.round(chairGridPos[0]), " and ", (target[0] * 10), " , also ", Math.round(chairGridPos[1]), " and ", (target[1] * 10));
         //console.log("arrival check returns: ", ((Math.round(chairGridPos[0]) === (target[0] * 10) )&&( Math.round(chairGridPos[1]) === (target[1] * 10))))

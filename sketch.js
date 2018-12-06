@@ -1,10 +1,8 @@
 // Create a chair
-const chair = new Chair(200, 400);
+/*const chair = new Chair(200, 400);
 chair.logYourself();
-
-/* todo: a-star so implementieren, dass der stuhl ein
-    2d array bekommt (so wie path oben)
- */
+*/
+let chairs = [];
 
 $(document).ready(function () {
 
@@ -14,15 +12,20 @@ $(document).ready(function () {
 
     // todo: function to check path for validity: always only one step X or Y
     // let path = [[21,40],[22,40],[22,41],[23,41]];
-    window.go = function() {
-        console.log('Lost gehts!');
-        chair.followPath(mockMap);
+    window.go = function (index) {
+        console.log('Chair ' + index + ' los gehts!');
+        chairs[index].followPath(mockMap);
     };
 
     //let chair = new Chair();
     window.createChair = function () {
-        new Chair();
-    }
+        let chair = new Chair(200, 400);
+        chairs.push(chair);
+    };
+
+    window.showChairs = function () {
+        console.log(chairs);
+    };
 
 });
 

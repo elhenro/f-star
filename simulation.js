@@ -4,7 +4,9 @@ class Simulation {
 
     createChair(posX = 0, posY = 0) {
         console.log('Chair created');
-        return Bodies.rectangle(posX, posY, 20, 20);
+        let chair = Bodies.rectangle(posX, posY, 20, 20);
+        World.add(engine.world, [chair]);
+        return chair;
     }
 
     getPosition(actor) {
@@ -23,7 +25,5 @@ class Simulation {
                 Body.setAngularVelocity(actor, speed);
                 break;
         }
-
     }
-
 }

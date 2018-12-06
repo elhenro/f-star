@@ -2,7 +2,7 @@
 * Start engine
 */
 // Add all bodies to the world
-World.add(engine.world, [chair.chair]);
+//World.add(engine.world, [chair.chair]);
 World.add(engine.world, [topWall, rightWall, bottomWall, leftWall]);
 /*
 World.add(engine.world, obstacles);
