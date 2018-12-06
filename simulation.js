@@ -28,4 +28,9 @@ class Simulation {
                 break;
         }
     }
+
+    getChairId(){
+        // not working yet.. 
+        return this.chair.id;
+    }
 }
