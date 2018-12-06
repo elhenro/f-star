@@ -1,5 +1,5 @@
 function getRoute(startLoc) {
-    console.log(startLoc);
+    //console.log(startLoc);
 
     function createAStarGrid() {
         let blockedGridLocs = [];
@@ -37,8 +37,8 @@ function getRoute(startLoc) {
 // result is an array containing the shortest path
     let result = astar.search(graph, start, end);
 
-    console.log(graph);
-    console.log(result);
+    //console.log(graph);
+    //console.log(result);
 
     let mockMap = [];
     for (let step of result) {

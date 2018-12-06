@@ -3,10 +3,11 @@ class Simulation {
     }
 
     createChair(posX = 0, posY = 0) {
-        console.log('Chair created');
         let chair = Bodies.rectangle(posX, posY, 20, 20);
         // add chair to the world
         World.add(engine.world, [chair]);
+
+        console.log('Chair created:', chair);
         return chair;
     }
 
@@ -26,5 +27,10 @@ class Simulation {
                 Body.setAngularVelocity(actor, speed);
                 break;
         }
+    }
+
+    getChairId(){
+        // not working yet.. 
+        return this.chair.id;
     }
 }

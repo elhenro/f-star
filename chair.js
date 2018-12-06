@@ -3,9 +3,15 @@ class Chair {
     constructor(posX = 0, posY = 0) {
         this.simulation = new Simulation();
         this.chair = this.simulation.createChair(posX, posY);
-        console.log(this.chair);
+        if(this.debug){
+            console.log(this.chair);
+        }
 
         let self = this;
+
+        // enable / disable console logging for more information
+        this.debug = false;
+        
         this.controller = {
             path: [], // comes from bottom of sketch.js
             direction: "",
@@ -38,7 +44,9 @@ class Chair {
                         self.simulation.applyForce(self.chair, 'Rotation', null, self.controller.rotationSpeed)
                     }
                 } else if (arrivedAtAngle === true) {
-                    //console.log("adjusted rotation successfully: ", self.chair.angle, " ", self.controller.wantedAngularRotation)
+                    if(this.debug){
+                        console.log("adjusted rotation successfully: ", self.chair.angle, " ", self.controller.wantedAngularRotation)
+                    }
 
                     self.controller.driveReady = true;
                     self.controller.rotationReady = false;
@@ -63,39 +71,45 @@ class Chair {
             moveInterval: function () {
                 let nextTarget = self.controller.path[self.controller.stepIndex];
 
-                // debug
-                //console.log("NEXT TARGET ", nextTarget, " current position: ", (Math.round(self.chair.position.x) / 10), (Math.round(self.chair.position.y) / 10 ));
+                if(this.debug){
+                    console.log("NEXT TARGET ", nextTarget, " current position: ", (Math.round(self.chair.position.x) / 10), (Math.round(self.chair.position.y) / 10 ));
+                }
 
                 // prevent collision
                 if (self.stepBlockedByObstacle(nextTarget, this.window.obstacles)){
 
-                    self.getNewWay()
+                    //self.getNewWay()
 
-                    console.log("prevented collision with ...")
                     self.stop()
                     return
                 }
 
                 if (self.controller.driveReady === false) {
-                    console.log("not ready to move.");
+                    if(this.debug){
+                        console.log("not ready to move.");
+                    }
                     self.stop();
                 }
 
                 // if is ready to move
                 if ((self.controller.driveReady === true) && (nextTarget != undefined)) {
-                    //self.controller.driveReady = false;
-
                     self.move(self.controller.direction);
                 }
 
                 // if is arrived at current target
-                //console.log("checking if arrived at:", nextTarget, " current: ", self.chair.position)
+                if(this.debug){
+                    console.log("checking if arrived at:", nextTarget, " current: ", self.chair.position)
+                }
                 if (self.isArrived(nextTarget)) {
 
-                    console.log("X X X X X X X --- arrived at ", nextTarget, "! :) ---  X X X X X X X X");
+                    let position = self.getLocationOnGrid(self.simulation.getPosition(self.chair));
+                    self.updateObstaclePosition(self.getId(),position[0],position[1])
 
                     self.controller.stepIndex++;
-                    console.log("new target is: ", self.controller.path[self.controller.stepIndex]);
+                    if(self.debug){
+                        console.log("X X X X X X X --- arrived at ", nextTarget, "! :) ---  X X X X X X X X");
+                        console.log("new target is: ", self.controller.path[self.controller.stepIndex]);
+                    }
 
                     self.controller.driveReady = false;
                     self.controller.rotationReady = true;
@@ -110,8 +124,10 @@ class Chair {
 
                 // if is arrived at last step
                 if (self.isArrived(self.controller.path[(self.controller.path.length - 1)])) {
-                    alert("Juhu! I foudn the way, all by myself :)");
-                    console.log("arrived at final location ! <3");
+                    //alert("Juhu! I foudn the way, all by myself :)");
+                    if(this.debug){
+                        console.log("arrived at final location ! <3");
+                    }
 
                     // interval clears itself
                     clearInterval(self.controller.moveIntervalID);
@@ -138,7 +154,9 @@ class Chair {
 
             //target is neighbour tile
             if (this.isNeighbour(path[this.controller.stepIndex])) {
-                console.log("getting next direction for step number [", this.controller.stepIndex, "] : ", path[this.controller.stepIndex])
+                if(this.debug){
+                    console.log("getting next direction for step number [", this.controller.stepIndex, "] : ", path[this.controller.stepIndex])
+                }
 
                 if (this.whereToMove(path[this.controller.stepIndex]) != "err"){
                     this.controller.direction = this.whereToMove(path[this.controller.stepIndex]);
@@ -147,7 +165,9 @@ class Chair {
                     return
                 }
 
-                console.log("ADJUSTING ANGLE: ", this.controller.direction);
+                if(this.debug){
+                    console.log("ADJUSTING ANGLE: ", this.controller.direction);
+                }
                 if (this.adjustAngle === undefined) {
                     this.errorState = true;
                     this.errorMsg = "undefined adjustment angle"
@@ -169,7 +189,6 @@ class Chair {
     }
 
     isNeighbour(step) {
-        // TODO : 3
         // if step.x == + - 1
         let t = true;
         return t;
@@ -190,8 +209,9 @@ class Chair {
 
     adjustAngle(direction) {
         let pi = Math.PI;
-
-        //console.log("started rotating until ", direction);
+        if (this.debug){
+            console.log("started rotating until ", direction);
+        }
 
         let wag;
         if (direction === "up") {
@@ -206,7 +226,10 @@ class Chair {
             wag = 0;
         }
 
-        console.log("WAG: ", wag);
+        if(this.debug){
+            console.log("WAG: ", wag);
+        }
+
         this.controller.wantedAngularRotation = wag;
 
         this.controller.rotationIntervalID = setInterval(this.controller.rotationInterval, this.controller.rotationIntervalTime)
@@ -252,11 +275,6 @@ class Chair {
             x: this.controller.forceX,
             y: this.controller.forceY
         }, this.controller.moveSpeed);
-        /*     Body.setVelocity(this.chair, {
-                 x: this.controller.forceX * this.controller.moveSpeed,
-                 y: this.controller.forceY * this.controller.moveSpeed
-             });*/
-
     }
 
     // check if actor has arrived ar target coordinates like: [position.x, position.y]
@@ -266,12 +284,13 @@ class Chair {
             this.controller.errorState = true;
             return;
         }
-        //this.controller.stepIndex ++
 
         let chairGridPos = this.getLocationOnGrid(this.simulation.getPosition(this.chair));
-        //console.log(chairGridPos, target);
-        //console.log("Arrivalcheck: comparing: ", Math.round(chairGridPos[0]), " and ", (target[0] * 10), " , also ", Math.round(chairGridPos[1]), " and ", (target[1] * 10));
-        //console.log("arrival check returns: ", ((Math.round(chairGridPos[0]) === (target[0] * 10) )&&( Math.round(chairGridPos[1]) === (target[1] * 10))))
+        if (this.debug){
+            console.log(chairGridPos, target);
+            console.log("Arrivalcheck: comparing: ", Math.round(chairGridPos[0]), " and ", (target[0] * 10), " , also ", Math.round(chairGridPos[1]), " and ", (target[1] * 10));
+            console.log("arrival check returns: ", ((Math.round(chairGridPos[0]) === (target[0] * 10) )&&( Math.round(chairGridPos[1]) === (target[1] * 10))))
+        } 
         return ((Math.round(chairGridPos[0]) === (target[0] * 10)) && (Math.round(chairGridPos[1]) === (target[1] * 10)));
     }
 
@@ -279,18 +298,23 @@ class Chair {
     // depending on the direction the chair has
     // to move to arrive at the target location
     whereToMove(target) {
-        console.log("called: whereToMove(", target, ")");
+        if(this.debug){
+            console.log("called: whereToMove(", target, ")");
+        }
 
         if (!target) {
-            console.log("no next target")
             this.errorState = true;
-            this.errorMsg = "no next target"
+            this.errorMsg = "no next target ( or arrived ? ),  chair ID: " + this.chair.id 
             this.stop();
             //this.followPath(this.controller.path);
             return "err"
         }
         
-        console.log("current position: ", this.getLocationOnGrid(this.simulation.getPosition(this.chair)));
+        if(this.debug){
+            console.log("current position: ", this.getLocationOnGrid(this.simulation.getPosition(this.chair)));
+        }
+
+
 
         let chairGridPos = this.getLocationOnGrid(this.simulation.getPosition(this.chair));
 
@@ -322,7 +346,9 @@ class Chair {
 
     // Stops the chair movement and rotation
     stop() {
-        console.log('stopping chair');
+        if(this.debug){
+            console.log('stopping chair');
+        }
         //this.controller.driveReady = false;
         //this.controller.rotationReady = false;
 
@@ -336,8 +362,10 @@ class Chair {
 
     stepBlockedByObstacle(step, obstacles){
         for (let obstacle of obstacles) {
-            if(obstacle[0] == step[0] && obstacle[1] == step[1]){
-                console.log(step, " blocked by obstacle")
+            if(obstacle[1] == (step[0] * 10) && obstacle[2] == (step[1] * 10)){
+                //if(this.debug){
+                    console.log("chairID:", this.getId() ,"step:",step, " was blocked by obstacle: ", obstacle)
+                //}
                 return true
             }
         }
@@ -347,5 +375,19 @@ class Chair {
     getNewWay() {
         
         // todo: re-call followPath(), because actor was stop() 'ed before 
+    }
+
+    getId(){
+        return this.chair.id;
+
+        //todo
+        //return this.simulation.getChairId;
+    }
+
+    updateObstaclePosition(id,x,y){
+        if (this.debug){
+            console.log("updating obstacle position: id ", id, " x:", Math.round(x), " y:",Math.round(y))
+        }
+        window.updateObstacle(id,Math.round(x), Math.round(y));
     }
 }
