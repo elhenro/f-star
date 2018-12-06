@@ -14,7 +14,9 @@ $(document).ready(function () {
     
     // todo: function to check path for validity: always only one step X or Y
     // let path = [[21,40],[22,40],[22,41],[23,41]];
-    window.chair = new Chair;
+
+    // would enabledirect controlon class
+    //window.chair = new Chair;
 
     window.go = function (index) {
         //console.log('Chair ' + index + ' los gehts!');

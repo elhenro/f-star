@@ -75,11 +75,8 @@ class Chair {
                 // prevent collision
                 if (self.stepBlockedByObstacle(nextTarget, this.window.obstacles)){
 
-                    self.getNewWay()
+                    //self.getNewWay()
 
-                    //if(this.debug){
-                        console.log("prevented collision with ...")
-                    //}
                     self.stop()
                     return
                 }
@@ -306,9 +303,8 @@ class Chair {
         }
 
         if (!target) {
-            console.log("no next target")
             this.errorState = true;
-            this.errorMsg = "no next target"
+            this.errorMsg = "no next target ( or arrived ? ),  chair ID: " + this.chair.id 
             this.stop();
             //this.followPath(this.controller.path);
             return "err"
@@ -366,8 +362,10 @@ class Chair {
 
     stepBlockedByObstacle(step, obstacles){
         for (let obstacle of obstacles) {
-            if(obstacle[0] == step[0] && obstacle[1] == step[1]){
-                console.log(step, " blocked by obstacle")
+            if(obstacle[0] == (step[0] * 10) && obstacle[1] == (step[1] * 10)){
+                //if(this.debug){
+                    console.log(step, " blocked by obstacle: ", obstacle)
+                //}
                 return true
             }
         }
