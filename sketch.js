@@ -2,6 +2,7 @@
 /*const chair = new Chair(200, 400);
 chair.logYourself();
 */
+
 let chairs = [];
 
 window.obstacles = [];
@@ -16,12 +17,12 @@ $(document).ready(function () {
     window.chair = new Chair;
 
     window.go = function (index) {
-        console.log('Chair ' + index + ' los gehts!');
+        //console.log('Chair ' + index + ' los gehts!');
 
         let chairPos = chairs[index].getLocationOnGrid(chairs[index].chair.position);
         let mockMap = getRoute(chairPos);
 
-        console.log('Path for ', chairs[index], " - ", mockMap);
+        //console.log('Path for ', chairs[index], " - ", mockMap);
 
         let path = [[19,20],[18,20],[17,20],[16,20],[15,20],[14,20],[13,20],[12,20],[11,20],[10,20],[9,20],[8,20],[7,20],[6,20]];
 

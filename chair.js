@@ -3,9 +3,15 @@ class Chair {
     constructor(posX = 0, posY = 0) {
         this.simulation = new Simulation();
         this.chair = this.simulation.createChair(posX, posY);
-        console.log(this.chair);
+        if(this.debug){
+            console.log(this.chair);
+        }
 
         let self = this;
+
+        // enable / disable console logging for more information
+        this.debug = false;
+        
         this.controller = {
             path: [], // comes from bottom of sketch.js
             direction: "",
@@ -71,13 +77,17 @@ class Chair {
 
                     self.getNewWay()
 
-                    console.log("prevented collision with ...")
+                    //if(this.debug){
+                        console.log("prevented collision with ...")
+                    //}
                     self.stop()
                     return
                 }
 
                 if (self.controller.driveReady === false) {
-                    console.log("not ready to move.");
+                    if(this.debug){
+                        console.log("not ready to move.");
+                    }
                     self.stop();
                 }
 
@@ -92,10 +102,13 @@ class Chair {
                 //console.log("checking if arrived at:", nextTarget, " current: ", self.chair.position)
                 if (self.isArrived(nextTarget)) {
 
-                    console.log("X X X X X X X --- arrived at ", nextTarget, "! :) ---  X X X X X X X X");
 
                     self.controller.stepIndex++;
-                    console.log("new target is: ", self.controller.path[self.controller.stepIndex]);
+                    if(this.debug){
+
+                        console.log("X X X X X X X --- arrived at ", nextTarget, "! :) ---  X X X X X X X X");
+                        console.log("new target is: ", self.controller.path[self.controller.stepIndex]);
+                    }
 
                     self.controller.driveReady = false;
                     self.controller.rotationReady = true;
@@ -110,8 +123,10 @@ class Chair {
 
                 // if is arrived at last step
                 if (self.isArrived(self.controller.path[(self.controller.path.length - 1)])) {
-                    alert("Juhu! I foudn the way, all by myself :)");
-                    console.log("arrived at final location ! <3");
+                    //alert("Juhu! I foudn the way, all by myself :)");
+                    if(this.debug){
+                        console.log("arrived at final location ! <3");
+                    }
 
                     // interval clears itself
                     clearInterval(self.controller.moveIntervalID);
@@ -138,7 +153,9 @@ class Chair {
 
             //target is neighbour tile
             if (this.isNeighbour(path[this.controller.stepIndex])) {
-                console.log("getting next direction for step number [", this.controller.stepIndex, "] : ", path[this.controller.stepIndex])
+                if(this.debug){
+                    console.log("getting next direction for step number [", this.controller.stepIndex, "] : ", path[this.controller.stepIndex])
+                }
 
                 if (this.whereToMove(path[this.controller.stepIndex]) != "err"){
                     this.controller.direction = this.whereToMove(path[this.controller.stepIndex]);
@@ -147,7 +164,9 @@ class Chair {
                     return
                 }
 
-                console.log("ADJUSTING ANGLE: ", this.controller.direction);
+                if(this.debug){
+                    console.log("ADJUSTING ANGLE: ", this.controller.direction);
+                }
                 if (this.adjustAngle === undefined) {
                     this.errorState = true;
                     this.errorMsg = "undefined adjustment angle"
@@ -206,7 +225,10 @@ class Chair {
             wag = 0;
         }
 
-        console.log("WAG: ", wag);
+        if(this.debug){
+            console.log("WAG: ", wag);
+        }
+
         this.controller.wantedAngularRotation = wag;
 
         this.controller.rotationIntervalID = setInterval(this.controller.rotationInterval, this.controller.rotationIntervalTime)
@@ -279,7 +301,9 @@ class Chair {
     // depending on the direction the chair has
     // to move to arrive at the target location
     whereToMove(target) {
-        console.log("called: whereToMove(", target, ")");
+        if(this.debug){
+            console.log("called: whereToMove(", target, ")");
+        }
 
         if (!target) {
             console.log("no next target")
@@ -290,7 +314,11 @@ class Chair {
             return "err"
         }
         
-        console.log("current position: ", this.getLocationOnGrid(this.simulation.getPosition(this.chair)));
+        if(this.debug){
+            console.log("current position: ", this.getLocationOnGrid(this.simulation.getPosition(this.chair)));
+        }
+
+
 
         let chairGridPos = this.getLocationOnGrid(this.simulation.getPosition(this.chair));
 
@@ -322,7 +350,9 @@ class Chair {
 
     // Stops the chair movement and rotation
     stop() {
-        console.log('stopping chair');
+        if(this.debug){
+            console.log('stopping chair');
+        }
         //this.controller.driveReady = false;
         //this.controller.rotationReady = false;
 
