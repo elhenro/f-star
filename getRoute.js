@@ -1,4 +1,4 @@
-function getRoute(startLoc) {
+function getRoute(startLoc, tloc) {
     //console.log(startLoc);
 
     function createAStarGrid() {
@@ -32,9 +32,9 @@ function getRoute(startLoc) {
 
     let graph = new Graph(createAStarGrid());
     let start = graph.grid[(startLoc[0] / 10)][(startLoc[1] / 10)];
-    let end = graph.grid[5][5];
+    let end = graph.grid[tloc[0]][tloc[1]];
 
-// result is an array containing the shortest path
+    // result is an array containing the shortest path
     let result = astar.search(graph, start, end);
 
     //console.log(graph);

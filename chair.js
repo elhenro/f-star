@@ -10,6 +10,7 @@ class Chair {
         let self = this;
 
         // enable / disable console logging for more information
+        //this.debug = true;
         this.debug = false;
         
         this.controller = {
