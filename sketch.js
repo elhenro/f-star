@@ -66,6 +66,10 @@ $(document).ready(function () {
     window.createChair(100, 200);
     window.createChair(65, 100);
 
+    // TESTING for path finding, rotating, collision
+    window.createChair(200, 500);
+    go(2, [5, 5]);
+
     function addObstacle(id, x, y) {
         window.obstacles = window.obstacles.concat([[id, x, y]]);
     }

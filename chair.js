@@ -10,7 +10,7 @@ class Chair {
         let self = this;
 
         // enable / disable console logging for more information
-        this.debug = true;
+        this.debug = false;
 
         this.controller = {
             path: [], // comes from sketch.js
@@ -30,26 +30,15 @@ class Chair {
             rotationIntervalID: null,
             moveIntervalID: null,
             rotationInterval: function () {
-                let angleAccuracy = 10;
+                let angleAccuracy = 50;
 
-                let actualAngle = self.chair.angle;
-                if (actualAngle < 0) {
-                    actualAngle = actualAngle + (2 * Math.PI);
-                } else if (actualAngle > (2 * Math.PI)) {
-                    actualAngle = actualAngle - (2 * Math.PI);
-                }
+                let actualAngle = (self.chair.angle % (Math.PI * 2));
                 let actualAngleSoft = (Math.round(self.chair.angle * angleAccuracy) / angleAccuracy);
-                if (actualAngleSoft < 0) {
-                    actualAngleSoft = actualAngleSoft + (2 * Math.PI);
-                } else if (actualAngleSoft > (2 * Math.PI)) {
-                    actualAngleSoft = actualAngleSoft - (2 * Math.PI);
-                }
-
 
                 let wantedAngleSoft = (Math.round(self.controller.wantedAngularRotation * angleAccuracy) / angleAccuracy);
 
                 let arrivedAtAngle = (actualAngleSoft === wantedAngleSoft);
-                console.log("comparing", actualAngleSoft, wantedAngleSoft);
+                console.log("comparing", actualAngleSoft, wantedAngleSoft, arrivedAtAngle);
 
                 // Chair has not the wanted rotation.
                 // Start rotation
@@ -58,17 +47,16 @@ class Chair {
                     self.controller.driveReady = false;
                     clearInterval(self.controller.moveIntervalID);
 
-                    if ((Math.round(self.chair.angularVelocity * 10) / 10) === 0) {
-                        if (actualAngle > wantedAngleSoft) {
-                            self.simulation.applyForce(self.chair, 'Rotation', null, -self.controller.initialSpeed);
-                        } else {
-                            self.simulation.applyForce(self.chair, 'Rotation', null, self.controller.initialSpeed);
-                        }
+                    // Start rotating (and choose which direction)
+                    if (actualAngle > wantedAngleSoft) {
+                        self.simulation.applyForce(self.chair, 'Rotation', null, -self.controller.initialSpeed);
+                    } else {
+                        self.simulation.applyForce(self.chair, 'Rotation', null, self.controller.initialSpeed);
                     }
 
                 } else if (arrivedAtAngle === true) {
                     if (this.debug) {
-                        console.log("adjusted rotation successfully: ", self.chair.angle, " ", self.controller.wantedAngularRotation)
+                        console.log("adjusted rotation successfully: ", self.chair.angle, self.controller.wantedAngularRotation)
                     }
 
                     self.controller.driveReady = true;
@@ -82,12 +70,6 @@ class Chair {
 
                     // set movement interval
                     self.controller.moveIntervalID = setInterval(self.controller.moveInterval, self.controller.moveIntervalTime)
-                }
-
-                if (actualAngle > wantedAngleSoft) {
-                    self.controller.rotationSpeed = -(self.controller.initialSpeed);
-                } else {
-                    self.controller.rotationSpeed = self.controller.initialSpeed;
                 }
             },
             moveInterval: function () {
