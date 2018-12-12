@@ -68,7 +68,7 @@ $(document).ready(function () {
 
     // TESTING for path finding, rotating, collision
     window.createChair(200, 500);
-    go(2, [5, 5]);
+    go(2, [30, 5]);
 
     function addObstacle(id, x, y) {
         window.obstacles = window.obstacles.concat([[id, x, y]]);

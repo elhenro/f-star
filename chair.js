@@ -38,7 +38,9 @@ class Chair {
                 let wantedAngleSoft = (Math.round(self.controller.wantedAngularRotation * angleAccuracy) / angleAccuracy);
 
                 let arrivedAtAngle = (actualAngleSoft === wantedAngleSoft);
-                console.log("comparing", actualAngleSoft, wantedAngleSoft, arrivedAtAngle);
+                if (this.debug) {
+                    console.log("comparing", actualAngleSoft, wantedAngleSoft, arrivedAtAngle);
+                }
 
                 // Chair has not the wanted rotation.
                 // Start rotation
@@ -47,11 +49,19 @@ class Chair {
                     self.controller.driveReady = false;
                     clearInterval(self.controller.moveIntervalID);
 
+                    let speed = self.controller.initialSpeed;
+                    if (actualAngle <= (wantedAngleSoft + 0.5) && actualAngle >= (wantedAngleSoft - 0.5)){
+                        speed = speed / 5;
+                    }
+                    console.log("comparing", actualAngleSoft, wantedAngleSoft, arrivedAtAngle);
+
+                    console.log("speed", speed);
+
                     // Start rotating (and choose which direction)
                     if (actualAngle > wantedAngleSoft) {
-                        self.simulation.applyForce(self.chair, 'Rotation', null, -self.controller.initialSpeed);
+                        self.simulation.applyForce(self.chair, 'Rotation', null, -speed);
                     } else {
-                        self.simulation.applyForce(self.chair, 'Rotation', null, self.controller.initialSpeed);
+                        self.simulation.applyForce(self.chair, 'Rotation', null, speed);
                     }
 
                 } else if (arrivedAtAngle === true) {
