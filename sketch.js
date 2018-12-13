@@ -13,7 +13,7 @@ window.updateObstacle = function (id, x, y) {
 };
 
 $(document).ready(function () {
-    window.go = function (index, coords) {
+    window.go = function (index, coords, finalRotationAngle = 0) {
         let chairPos = chairs[index].getLocationOnGrid(chairs[index].chair.position);
 
         let p = [coords[0], coords[1]];
@@ -28,7 +28,7 @@ $(document).ready(function () {
         }
 
         chairs[index].resetStepIndex();
-        chairs[index].followPath(mockMap);
+        chairs[index].followPath(mockMap, finalRotationAngle);
     };
 
     //window.chair = new Chair();
@@ -68,7 +68,7 @@ $(document).ready(function () {
 
     // TESTING for path finding, rotating, collision
     window.createChair(200, 500);
-    go(2, [30, 5]);
+    go(2, [5, 5], 4);
 
     function addObstacle(id, x, y) {
         window.obstacles = window.obstacles.concat([[id, x, y]]);
