@@ -3,7 +3,7 @@ class Simulation {
     }
 
     createChair(posX = 0, posY = 0) {
-        let chair = Bodies.rectangle(posX, posY, 20, 20);
+        let chair = Bodies.rectangle(posX, posY, 80, 80);
         // add chair to the world
         World.add(engine.world, [chair]);
 

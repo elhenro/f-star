@@ -2,7 +2,7 @@
 * Simulation engine
 */
 // module aliases
-var Engine = Matter.Engine,
+const Engine = Matter.Engine,
     Render = Matter.Render,
     World = Matter.World,
     Bodies = Matter.Bodies,
@@ -10,23 +10,26 @@ var Engine = Matter.Engine,
     Body = Matter.Body;
 
 // create an engine
-var engine = Engine.create();
+let engine = Engine.create();
 
 // create a renderer
-var render = Render.create({
+let render = Render.create({
     element: document.body,
     engine: engine,
     options: {
         showBroadphase: true,
-        showAngleIndicator: true
+        showVelocity: true,
+        showCollisions: true,
+        showAngleIndicator: true,
+        height: 600,
+        width: 600
     }
 });
 
 engine.world.gravity.y = 0;
 
-
 // Create outer walls
-let topWall = Bodies.rectangle(400, 1, 800, 1, {isStatic: true});
-let rightWall = Bodies.rectangle(799, 300, 1, 600, {isStatic: true});
-let bottomWall = Bodies.rectangle(400, 599, 800, 1, {isStatic: true});
-let leftWall = Bodies.rectangle(1, 300, 1, 600, {isStatic: true});
+let topWall = Bodies.rectangle(render.options.width / 2, 1, render.options.width, 1, {isStatic: true});
+let rightWall = Bodies.rectangle(render.options.width - 1, render.options.height / 2, 1, render.options.height, {isStatic: true});
+let bottomWall = Bodies.rectangle(render.options.width / 2, render.options.height - 1, render.options.width, 1, {isStatic: true});
+let leftWall = Bodies.rectangle(1, render.options.height / 2, 1, render.options.height, {isStatic: true});

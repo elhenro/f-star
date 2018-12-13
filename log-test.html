@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>F-Star</title>
+    <link rel="shortcut icon" type="image/png" href="assets/mario-star-clipart-1.jpg"/>
+    <!-- JS Libraries -->
+    <script src="assets/libs/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<script src="log.js"></script>
+<script>
+    let environment = 'development';
+    let consti = new Consti(environment);
+
+    consti.log('test', 123);
+    consti.error('test', 123);
+    consti.warn('test', 123);
+
+</script>
+</body>
+</html>

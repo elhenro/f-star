@@ -41,7 +41,7 @@ class Chair {
                     let wantedAngleSoft = (Math.round(self.controller.wantedAngularRotation * angleAccuracy) / angleAccuracy);
 
                     let arrivedAtAngle = (actualAngleSoft === wantedAngleSoft);
-                    if (this.debug) console.log("comparing", actualAngleSoft, wantedAngleSoft, arrivedAtAngle);
+                    //if (this.debug) console.log("comparing", actualAngleSoft, wantedAngleSoft, arrivedAtAngle);
 
                     // Chair is does not look towards the wanted direction.
                     // Start rotation
@@ -211,16 +211,17 @@ class Chair {
 
     // Returns the grid cell for a x y position
     getLocationOnGrid(position) {
-        let xVal = Math.round(position.x * 10) / 10;
-        let yVal = Math.round(position.y * 10) / 10;
-        return {x: xVal, y: yVal};
+        let columns = 10;
+        let rows = 10;
+
+        let x = Math.round(position.x * 10) / 10;
+        let y = Math.round(position.y * 10) / 10;
+        return {x: x, y: y};
     }
 
 
     adjustAngle(direction) {
-        if (this.debug) {
-            console.log("started rotating until ", direction);
-        }
+        if (this.debug) console.log("started rotating until ", direction);
 
         let wag;
         if (direction === "up") {
