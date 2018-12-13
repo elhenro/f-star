@@ -1,19 +1,16 @@
-function getRoute(startLoc, tloc) {
-    //console.log(startLoc);
+function getRoute(startLoc, targetLoc) {
+    let gridConst = 100; //todo: rename
 
     function createAStarGrid() {
         let blockedGridLocs = [];
         /*for (let obstacle of obstacles) {
             blockedGridLocs.push(getLocationOnGrid(obstacle.position.x, obstacle.position.y));
         }*/
-
-        //console.log('blocked grid cells', blockedGridLocs);
-
         // create empty grid
         let gridGraph = [];
-        for (let i = 0; i < 400 / 10; i++) {
+        for (let i = 0; i < render.options.height / gridConst; i++) {
             let gridGraphRow = [];
-            for (let j = 0; j < 600 / 10; j++) {
+            for (let j = 0; j < render.options.width / gridConst; j++) {
                 gridGraphRow.push(1);
             }
             gridGraph.push(gridGraphRow);
@@ -27,18 +24,18 @@ function getRoute(startLoc, tloc) {
         }
 
         //console.log(gridGraph);
-        return gridGraph
+        return gridGraph;
     }
 
     let graph = new Graph(createAStarGrid());
-    console.log(Math.round(startLoc.x), Math.round(startLoc.y));
-    let start = graph.grid[(Math.round(startLoc.x / 10))][Math.round(startLoc.y / 10)];
-    let end = graph.grid[tloc[0]][tloc[1]];
+    console.log('start from grid node', startLoc.x, startLoc.y);
+    let start = graph.grid[startLoc.x][startLoc.y];
+    let end = graph.grid[targetLoc[0]][targetLoc[1]];
 
-    // result is an array containing the shortest path
+    // result is an array containing the path
     let result = astar.search(graph, start, end);
 
-    //console.log(graph);
+    console.log('Graph', graph);
     //console.log(result);
 
     let mockMap = [];

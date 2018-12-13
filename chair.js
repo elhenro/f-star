@@ -211,11 +211,12 @@ class Chair {
 
     // Returns the grid cell for a x y position
     getLocationOnGrid(position) {
-        let columns = 10;
-        let rows = 10;
+        let columns = 100;
+        let rows = 100;
 
-        let x = Math.round(position.x * 10) / 10;
-        let y = Math.round(position.y * 10) / 10;
+        let x = Math.round(position.x / columns);
+        let y = Math.round(position.y / rows);
+
         return {x: x, y: y};
     }
 
@@ -278,12 +279,13 @@ class Chair {
         }
 
         let chairGridPos = this.getLocationOnGrid(this.simulation.getPosition(this.chair));
+        let chairIsArrived = (chairGridPos.x === target[0]) && (chairGridPos.y === target[1]);
         if (this.debug) {
-            console.log(chairGridPos, target);
-            console.log("Arrivalcheck: comparing: ", Math.round(chairGridPos.x), " and ", (target[0] * 10), " , also ", Math.round(chairGridPos.y), " and ", (target[1] * 10));
-            console.log("arrival check returns: ", ((Math.round(chairGridPos.x) === (target[0] * 10)) && (Math.round(chairGridPos.y) === (target[1] * 10))))
+            console.log('Chair grid position and target', chairGridPos, target);
+            console.log('Chair is arrived', chairIsArrived);
         }
-        return ((Math.round(chairGridPos.x) === (target[0] * 10)) && (Math.round(chairGridPos.y) === (target[1] * 10)));
+
+        return chairIsArrived;
     }
 
     // Returns "up", "right", "down" or "left"
@@ -296,7 +298,7 @@ class Chair {
 
         if (!target) {
             this.errorState = true;
-            this.errorMsg = "no next target ( or arrived ? ),  chair ID: " + this.chair.id
+            this.errorMsg = "no next target ( or arrived ? ),  chair ID: " + this.chair.id;
             this.stop();
             //this.followPath(this.controller.path);
             return "err"
@@ -309,10 +311,10 @@ class Chair {
 
         let chairGridPos = this.getLocationOnGrid(this.simulation.getPosition(this.chair));
 
-        let xPos = Math.round(chairGridPos.x);
-        let yPos = Math.round(chairGridPos.y);
-        let xTarget = target[0] * 10;
-        let yTarget = target[1] * 10;
+        let xPos = chairGridPos.x;
+        let yPos = chairGridPos.y;
+        let xTarget = target[0];
+        let yTarget = target[1];
 
         if (xPos === xTarget) {
             if (yPos > yTarget) {

@@ -14,17 +14,18 @@ let engine = Engine.create();
 
 // create a renderer
 let render = Render.create({
-    element: document.body,
-    engine: engine,
-    options: {
-        showBroadphase: true,
-        showVelocity: true,
-        showCollisions: true,
-        showAngleIndicator: true,
-        height: 600,
-        width: 600
-    }
-});
+        element: document.body,
+        engine: engine,
+        options: {
+            showBroadphase: true,
+            showVelocity: true,
+            showCollisions: true,
+            showAngleIndicator: true,
+            height: 600,
+            width: 600
+        }
+    })
+;
 
 engine.world.gravity.y = 0;
 

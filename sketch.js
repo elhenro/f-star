@@ -16,10 +16,10 @@ $(document).ready(function () {
     window.go = function (index, coords, finalRotationAngle = 0) {
         let chairPos = chairs[index].getLocationOnGrid(chairs[index].chair.position);
 
-        let p = [coords[0], coords[1]];
-        let mockMap = getRoute(chairPos, p);
+        let end = [coords[0], coords[1]];
+        let mockMap = getRoute(chairPos, end);
 
-        console.log(mockMap);
+        console.log('Path', mockMap);
         console.log("planned route from ", mockMap[0], " to ", mockMap[mockMap.length - 1]);
 
         if (chairs[index].chair.debug) {
@@ -39,10 +39,7 @@ $(document).ready(function () {
 
         addObstacle(chair.getId(), posX, posY);
 
-        if (chair.debug) {
-            console.log(chair.getId());
-            console.log(window.obstacles)
-        }
+        if (chair.debug) console.log('obstacles', window.obstacles);
     };
 
     window.showChairs = function () {
@@ -52,7 +49,7 @@ $(document).ready(function () {
     window.pathTo = function (posX, posY) {
         // todo: (2.) get path from aframe
         let path = pathTo([posX, posY]);
-        console.log(path)
+        console.log('Path', path)
     };
 
     // TESTING for collision:
@@ -63,13 +60,15 @@ $(document).ready(function () {
    */
 
     // TESTING create two chairs as obstacles
-    window.createChair(100, 200);
-    window.createChair(65, 100);
+/*    window.createChair(100, 200);
+    window.createChair(65, 100);*/
 
     // TESTING for path finding, rotating, collision
-    window.createChair(200, 500);
-    go(2, [5, 10], 4);
-
+    window.createChair(360, 410);
+    go(0, [1, 1], 4);
+    /*window.createChair(100, 85);
+    go(1, [5, 5], 4);
+*/
     function addObstacle(id, x, y) {
         window.obstacles = window.obstacles.concat([[id, x, y]]);
     }
