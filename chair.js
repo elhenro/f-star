@@ -127,6 +127,9 @@ class Chair {
                     self.stop();
 
                     // NEXT
+                    let startLoc = self.getLocationOnGrid(self.chair.position);
+                    self.controller.path = getRoute(startLoc, self.controller.path[self.controller.path.length - 1]);
+                    self.resetStepIndex();
                     self.followPath(self.controller.path);
                 }
 
