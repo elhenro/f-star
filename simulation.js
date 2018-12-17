@@ -3,7 +3,16 @@ class Simulation {
     }
 
     createChair(posX = 0, posY = 0) {
-        let chair = Bodies.rectangle(posX, posY, 50, 50);
+        let randomDigi = Math.floor(Math.random() * 5)+1;
+        let chair = Bodies.rectangle(posX, posY, 80, 80, {
+            render: {
+                sprite: {
+                    texture: "assets/images/emoji_" + randomDigi + ".png",
+                    xScale: 0.5,
+                    yScale: 0.5
+                }
+            }
+        });
         // add chair to the world
         World.add(engine.world, [chair]);
 
@@ -27,10 +36,5 @@ class Simulation {
                 Body.setAngularVelocity(actor, speed);
                 break;
         }
-    }
-
-    getChairId(){
-        // not working yet.. 
-        return this.chair.id;
     }
 }

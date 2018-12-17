@@ -47,24 +47,16 @@ $(document).ready(function () {
     };
 
     window.pathTo = function (posX, posY) {
-        // todo: (2.) get path from aframe
         let path = pathTo([posX, posY]);
         console.log('Path', path);
     };
 
-    // TESTING for collision:
-    //  box 1 drives left to collide with box 2
-    /*   window.createChair(100, 200);
-       window.createChair(200, 200);
-       go(1, [5, 20]);
-   */
-
-    // TESTING create two chairs as obstacles
-    /*    window.createChair(100, 200);
-        window.createChair(65, 100);*/
+    function addObstacle(id, x, y) {
+        window.obstacles = window.obstacles.concat([[id, x, y]]);
+    }
 
     // TESTING for path finding, rotating, collision
-/*    window.createChair(100, 100);
+    window.createChair(100, 100);
     window.createChair(100, 500);
     window.createChair(500, 500);
     window.createChair(500, 100);
@@ -72,17 +64,5 @@ $(document).ready(function () {
     go(0, [1, 3]);
     go(1, [2, 3]);
     go(2, [4, 3]);
-    go(3, [5, 3]);*/
-    createChair(400, 500);
-    createChair(200, 500);
-    go(0, [1, 5], 4);
-
-
-    /*window.createChair(100, 85);
-    go(1, [5, 5], 4);
-    */
-
-    function addObstacle(id, x, y) {
-        window.obstacles = window.obstacles.concat([[id, x, y]]);
-    }
+    go(3, [5, 3]);
 });

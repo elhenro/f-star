@@ -21,6 +21,7 @@ let render = Render.create({
             showVelocity: true,
             showCollisions: true,
             showAngleIndicator: true,
+            wireframes: false,
             showIds: true,
             height: 600,
             width: 600
