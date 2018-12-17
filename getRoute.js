@@ -1,11 +1,22 @@
 function getRoute(startLoc, targetLoc) {
     let gridConst = 100; //todo: rename
 
+    // todo: use the chair method instead of rewriting the function here
+    function getLocationOnGrid(position) {
+        let columns = 100;
+        let rows = 100;
+
+        let x = Math.round(position.x / columns);
+        let y = Math.round(position.y / rows);
+
+        return {x: x, y: y};
+    }
+
     function createAStarGrid() {
         let blockedGridLocs = [];
-        /*for (let obstacle of obstacles) {
-            blockedGridLocs.push(getLocationOnGrid(obstacle.position.x, obstacle.position.y));
-        }*/
+        /*        for (let obstacle of this.chairs) {
+                    blockedGridLocs.push(getLocationOnGrid(obstacle.position));
+                }*/
         // create empty grid
         let gridGraph = [];
         for (let i = 0; i < render.options.height / gridConst; i++) {
@@ -17,13 +28,12 @@ function getRoute(startLoc, targetLoc) {
         }
 
         // update grid with blocked locations
-        for (let blockedGridLoc of blockedGridLocs) {
-            let x = blockedGridLoc[0];
-            let y = blockedGridLoc[1];
-            gridGraph[y][x] = 0;
+        if (obstacles.length > 0) {
+            for (let obstacle of obstacles) {
+                let position = getLocationOnGrid({x: obstacle[1], y: obstacle[2]})
+                gridGraph[position.x][position.y] = 0;
+            }
         }
-
-        //console.log(gridGraph);
         return gridGraph;
     }
 

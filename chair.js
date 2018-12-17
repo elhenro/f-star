@@ -102,6 +102,11 @@ class Chair {
 
                 // if is ready to move
                 if ((self.controller.driveReady === true) && (nextTarget != undefined)) {
+                    /*                  if (self.chair.position.x <= nextTarget[0] ){
+                                          if (chairGridPos.y <= ((target[1] * 100) + 5) || chairGridPos.y >= ((target[1] * 100) - 5)) {
+                                              chairIsArrived = true;
+                                          }
+                                      }*/
                     self.move(self.controller.direction);
                 }
 
@@ -127,8 +132,8 @@ class Chair {
                     self.stop();
 
                     // NEXT
-                    let startLoc = self.getLocationOnGrid(self.chair.position);
-                    self.controller.path = getRoute(startLoc, self.controller.path[self.controller.path.length - 1]);
+                    let currentLoc = self.getLocationOnGrid(self.chair.position);
+                    self.controller.path = getRoute(currentLoc, self.controller.path[self.controller.path.length - 1]);
                     self.resetStepIndex();
                     self.followPath(self.controller.path);
                 }
@@ -191,7 +196,7 @@ class Chair {
             // target is not neighbour tile
             if (this.isNeighbour(path[this.controller.stepIndex]) === false) {
                 this.errorState = true;
-                this.errorMsg = "warning -- current target out of reach: ", path[this.controller.stepIndex], " position: ", this.chair.position.x, " ", this.chair.position.y;
+                this.errorMsg = "warning -- current target out of reach: " + path[this.controller.stepIndex] + " position: " + this.chair.position.x + " " + this.chair.position.y;
             }
             // if error was produced
         } else if (this.controller.errorState) {
@@ -228,20 +233,22 @@ class Chair {
         if (this.debug) console.log("started rotating until ", direction);
 
         let wag;
-        if (direction === "up") {
-            wag = (Math.PI * 0.5)
-        } else if (direction === "down") {
-            wag = -(Math.PI * 0.5)
-        } else if (direction === "right") {
-            wag = Math.PI
-        } else if (direction === "left") {
-            wag = 0
-        } else {
-            wag = 0;
-        }
+        /*     if (direction === "up") {
+                 wag = (Math.PI * 0.5)
+             } else if (direction === "down") {
+                 wag = -(Math.PI * 0.5)
+             } else if (direction === "right") {
+                 wag = Math.PI
+             } else if (direction === "left") {
+                 wag = 0
+             } else {
+                 wag = 0;
+             }*/
+
+        wag = Math.atan2(this.chair.position.y - (this.controller.path[this.controller.stepIndex][1] * 100), this.chair.position.x - (this.controller.path[this.controller.stepIndex][0] * 100));
 
         if (this.debug) {
-            console.log("WAG: ", wag);
+            console.log(this.chair.id, "WAG: ", wag);
         }
 
         this.controller.wantedAngularRotation = wag;
@@ -249,21 +256,21 @@ class Chair {
         this.controller.rotationIntervalID = setInterval(this.controller.rotationInterval, this.controller.rotationIntervalTime)
     }
 
-    getNeighbourTile(coordinates, direction) {
-        let stepSize = 1;
-        if (direction === "up") {
-            return [coordinates[0], (coordinates[1] - stepSize)]
-        }
-        if (direction === "down") {
-            return [coordinates[0], (coordinates[1] + stepSize)]
-        }
-        if (direction === "right") {
-            return [(coordinates[0] + stepSize), coordinates[1]]
-        }
-        if (direction === "left") {
-            return [(coordinates[0] - stepSize), coordinates[1]]
-        }
-    }
+    /*    getNeighbourTile(coordinates, direction) {
+            let stepSize = 1;
+            if (direction === "up") {
+                return [coordinates[0], (coordinates[1] - stepSize)]
+            }
+            if (direction === "down") {
+                return [coordinates[0], (coordinates[1] + stepSize)]
+            }
+            if (direction === "right") {
+                return [(coordinates[0] + stepSize), coordinates[1]]
+            }
+            if (direction === "left") {
+                return [(coordinates[0] - stepSize), coordinates[1]]
+            }
+        }*/
 
     // Accelerates the chair
     move() {
@@ -275,16 +282,22 @@ class Chair {
 
     // check if actor has arrived ar target coordinates like: [position.x, position.y]
     isArrived(target) {
+        let bufferRadius = 5;
+
         if (typeof target === 'undefined') {
             console.log("warning: target is not defined: ", target);
             this.controller.errorState = true;
             return;
         }
 
-        let chairGridPos = this.getLocationOnGrid(this.simulation.getPosition(this.chair));
-        let chairIsArrived = (chairGridPos.x === target[0]) && (chairGridPos.y === target[1]);
+        let chairPos = this.simulation.getPosition(this.chair);
+
+        let distanceToNextStep = Math.sqrt(Math.pow(chairPos.x - (target[0] * 100), 2) + Math.pow(chairPos.y - (target[1] * 100), 2));
+        console.log(this.chair.id, distanceToNextStep);
+        let chairIsArrived = (distanceToNextStep < bufferRadius);
+        //let chairIsArrived = (Math.round(chairGridPos.x) === (target[0] * 100)) && (Math.round(chairGridPos.y) === (target[1] * 100));
         if (this.debug) {
-            console.log('Chair grid position and target', chairGridPos, target);
+            console.log('Chair grid position and target', chairPos, target);
             console.log('Chair is arrived', chairIsArrived);
         }
 
@@ -360,7 +373,7 @@ class Chair {
         for (let obstacle of obstacles) {
             if (obstacle[1] == (step[0] * 10) && obstacle[2] == (step[1] * 10)) {
                 //if(this.debug){
-                console.log("chairID:", this.getId(), "step:", step, " was blocked by obstacle: ", obstacle)
+                console.log("chairID:", this.getId(), "step:", step, " was blocked by obstacle: ", obstacle);
                 //}
                 return true
             }
