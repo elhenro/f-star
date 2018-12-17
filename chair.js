@@ -32,7 +32,7 @@ class Chair {
             moveIntervalID: null,
             rotationInterval: function () {
                 if (self.controller.rotationReady) {
-                    let angleAccuracy = 100;
+                    let angleAccuracy = 80;
                     let angleSlowDownRegion = 0.25;
 
                     let actualAngle = (self.chair.angle % (Math.PI * 2));
@@ -183,15 +183,7 @@ class Chair {
                     return
                 }
 
-                if (this.debug) {
-                    console.log("ADJUSTING ANGLE: ", this.controller.direction);
-                }
-                if (this.adjustAngle === undefined) {
-                    this.errorState = true;
-                    this.errorMsg = "undefined adjustment angle"
-                } else {
-                    this.adjustAngle(this.controller.direction);
-                }
+                this.adjustAngle();
             } else
             // target is not neighbour tile
             if (this.isNeighbour(path[this.controller.stepIndex]) === false) {
@@ -229,48 +221,14 @@ class Chair {
     }
 
 
-    adjustAngle(direction) {
-        if (this.debug) console.log("started rotating until ", direction);
+    adjustAngle() {
+        let wag = Math.atan2(this.chair.position.y - (this.controller.path[this.controller.stepIndex][1] * 100), this.chair.position.x - (this.controller.path[this.controller.stepIndex][0] * 100));
 
-        let wag;
-        /*     if (direction === "up") {
-                 wag = (Math.PI * 0.5)
-             } else if (direction === "down") {
-                 wag = -(Math.PI * 0.5)
-             } else if (direction === "right") {
-                 wag = Math.PI
-             } else if (direction === "left") {
-                 wag = 0
-             } else {
-                 wag = 0;
-             }*/
-
-        wag = Math.atan2(this.chair.position.y - (this.controller.path[this.controller.stepIndex][1] * 100), this.chair.position.x - (this.controller.path[this.controller.stepIndex][0] * 100));
-
-        if (this.debug) {
-            console.log(this.chair.id, "WAG: ", wag);
-        }
+        if (this.debug) console.log(this.chair.id, "Started rotating to: ", wag);
 
         this.controller.wantedAngularRotation = wag;
-
         this.controller.rotationIntervalID = setInterval(this.controller.rotationInterval, this.controller.rotationIntervalTime)
     }
-
-    /*    getNeighbourTile(coordinates, direction) {
-            let stepSize = 1;
-            if (direction === "up") {
-                return [coordinates[0], (coordinates[1] - stepSize)]
-            }
-            if (direction === "down") {
-                return [coordinates[0], (coordinates[1] + stepSize)]
-            }
-            if (direction === "right") {
-                return [(coordinates[0] + stepSize), coordinates[1]]
-            }
-            if (direction === "left") {
-                return [(coordinates[0] - stepSize), coordinates[1]]
-            }
-        }*/
 
     // Accelerates the chair
     move() {

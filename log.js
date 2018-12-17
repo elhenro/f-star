@@ -2,6 +2,7 @@ class Consti {
     constructor(env = null) {
         this.GLOBAL = {
             environment: env,
+            alwaysLog: 1
         }
     }
 
@@ -12,7 +13,7 @@ class Consti {
             // Development
             case 'development':
             case 'dev':
-                console.log(args);
+                console.log(this.GLOBAL.alwaysLog, args);
                 break;
 
             // Production/Live

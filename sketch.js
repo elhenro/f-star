@@ -64,7 +64,7 @@ $(document).ready(function () {
         window.createChair(65, 100);*/
 
     // TESTING for path finding, rotating, collision
-    window.createChair(100, 100);
+/*    window.createChair(100, 100);
     window.createChair(100, 500);
     window.createChair(500, 500);
     window.createChair(500, 100);
@@ -72,15 +72,16 @@ $(document).ready(function () {
     go(0, [1, 3]);
     go(1, [2, 3]);
     go(2, [4, 3]);
-    go(3, [5, 3]);
-   /* createChair(400, 500);
+    go(3, [5, 3]);*/
+    createChair(400, 500);
     createChair(200, 500);
-    go(0, [1, 1], 4);*/
-    /* wgo(0, [1, 1], 4);*/
+    go(0, [1, 5], 4);
+
 
     /*window.createChair(100, 85);
     go(1, [5, 5], 4);
-*/
+    */
+
     function addObstacle(id, x, y) {
         window.obstacles = window.obstacles.concat([[id, x, y]]);
     }
