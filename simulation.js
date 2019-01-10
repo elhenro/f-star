@@ -3,7 +3,7 @@ class Simulation {
     }
 
     createChair(posX = 0, posY = 0) {
-        let randomDigi = Math.floor(Math.random() * 5)+1;
+        let randomDigi = Math.floor(Math.random() * 5) + 1;
         let chair = Bodies.rectangle(posX, posY, 80, 80, {
             render: {
                 sprite: {

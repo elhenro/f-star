@@ -10,7 +10,7 @@ class Chair {
         let self = this;
 
         // enable / disable console logging for more information
-        this.debug = true;
+        this.debug = false;
 
         this.controller = {
             path: [], // comes from sketch.js
@@ -58,7 +58,7 @@ class Chair {
                         // Start rotating
                         if (actualAngle > wantedAngleSoft) {
                             self.simulation.applyForce(self.chair, 'Rotation', null, -speed);
-                        } else if (actualAngle < wantedAngleSoft){
+                        } else if (actualAngle < wantedAngleSoft) {
                             self.simulation.applyForce(self.chair, 'Rotation', null, speed);
                         }
 
@@ -103,12 +103,10 @@ class Chair {
                 }
 
                 // if is arrived at current target
-                if (this.debug) {
-                    console.log("checking if arrived at:", nextTarget, " current: ", self.chair.position)
-                }
+                if (this.debug) console.log("checking if arrived at:", nextTarget, " current: ", self.chair.position)
 
                 if (self.isArrived(nextTarget)) {
-                    let position = self.getLocationOnGrid(self.simulation.getPosition(self.chair));
+                    let position = self.simulation.getPosition(self.chair);
                     self.updateObstaclePosition(self.getId(), position.x, position.y);
 
                     self.controller.stepIndex++;
@@ -243,7 +241,6 @@ class Chair {
         let chairPos = this.simulation.getPosition(this.chair);
 
         let distanceToNextStep = Math.sqrt(Math.pow(chairPos.x - (target[0] * 100), 2) + Math.pow(chairPos.y - (target[1] * 100), 2));
-        console.log(this.chair.id, distanceToNextStep);
         let chairIsArrived = (distanceToNextStep < bufferRadius);
         //let chairIsArrived = (Math.round(chairGridPos.x) === (target[0] * 100)) && (Math.round(chairGridPos.y) === (target[1] * 100));
         if (this.debug) {
@@ -341,7 +338,9 @@ class Chair {
         if (this.debug) {
             console.log("updating obstacle position: id ", id, " x:", Math.round(x), " y:", Math.round(y))
         }
+
         window.updateObstacle(id, Math.round(x), Math.round(y));
+        console.log(this.chair.id, 'obstacles', window.obstacles);
     }
 
     resetStepIndex() {
