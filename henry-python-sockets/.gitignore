@@ -1,0 +1,13 @@
+calibrate
+in.jpg
+out.jpg
+calibration-result.png
+testDataPiImagesSchachbrett.tar.gz
+testData
+*.jpg
+.vscode/
+__pycache__/
+out.jpeg
+calibresult.png
+out_undistorted.jpeg
+test2_corners_7.jpeg
