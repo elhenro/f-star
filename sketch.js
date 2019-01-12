@@ -61,8 +61,8 @@ $(document).ready(function () {
     window.createChair(500, 500);
     window.createChair(500, 100);
 
-    go(0, [1, 3]);
+/*    go(0, [1, 3]);
     go(1, [2, 3]);
     go(2, [4, 3]);
-    go(3, [5, 3]);
+    go(3, [5, 3]);*/
 });

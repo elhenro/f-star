@@ -32,6 +32,38 @@
         min-width: 96px;
         border: 1px solid white;
     }
+
+    .chair-control{
+        display: flex;
+        justify-content: space-between;
+        max-width: 900px;
+    }
+
+    .chair-control article{
+        text-align: center;
+    }
+
+    .chair-control input[type='number']{
+        width: 60px;
+        font-size: 2em;
+        text-align: center;
+    }
+
+    .chair-control button{
+        width: 100%;
+        height: 30px;
+        padding: 0;
+        font-size: 1em;
+    }
+
+    .chair-control button.go{
+        background: #00b800;
+    }
+
+    .chair-control button.stop{
+        background: #b80003;
+        color: white;
+    }
 </style>
 <table class="grid" cellspacing="0">
     <tr>
@@ -83,11 +115,42 @@
         <th></th>
     </tr>
 </table>
+
 <script src="getRoute.js"></script>
 <script src="matter.config.js"></script>
 <script src="simulation.js"></script>
 <script src="chair.js"></script>
 <script src="sketch.js"></script>
 <script src="matter-start.js"></script>
+
+<section class="chair-control">
+
+</section>
+
+<script>
+    $(document).ready(function () {
+        for (let i = 0; i < chairs.length; i++) {
+            $('.chair-control').append('<article>' +
+                '    <h3>Stuhl ' + i + '</h3>' +
+                '    <input class="x_' + i + '" type="number" placeholder="x">' +
+                '    <input class="y_' + i + '" type="number" placeholder="y">' +
+                '    <button class="go" data-index="' + i + '">Go</button>' +
+                '    <button class="stop" data-index="' + i + '">Stop</button>' +
+                '</article>');
+        }
+    });
+
+    $('body').on('click', '.go', function () {
+        let chairIndex = $(this).data('index');
+        let targetX = $('.x_' + chairIndex).val();
+        let targetY = $('.y_' + chairIndex).val();
+        go(chairIndex, [targetX, targetY]);
+    });
+
+    $('body').on('click', '.stop', function () {
+        let chairIndex = $(this).data('index');
+        stop(chairIndex);
+    });
+</script>
 </body>
 </html>
