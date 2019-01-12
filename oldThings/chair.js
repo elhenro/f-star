@@ -261,10 +261,10 @@ export default class ChairController {
         }
 
         if (this.debug) {
-            console.log("current position: ", this.getLocationOnGrid(this.simulation.getPosition(this.chair)));
+            console.log("current position: ", this.getLocationOnGrid(this.chairControl.getPosition/*this.simulation.getPosition(this.chair))*/));
         }
 
-        let chairGridPos = this.getLocationOnGrid(this.simulation.getPosition(this.chair));
+        let chairGridPos = this.getLocationOnGrid(this.chairControl.getPosition/*this.simulation.getPosition(this.chair)*/);
 
         let xPos = chairGridPos.x;
         let yPos = chairGridPos.y;
