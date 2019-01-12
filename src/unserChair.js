@@ -1,9 +1,7 @@
 import Simulation from './Simulation';
 
-let astar = require("./../oldThings/assets/libs/a-star.js");
 import GetRoute from "./../oldThings/getRoute.js";
 
-//let penis = require("./../oldThings/chair.js");
 import ChairController from './../oldThings/chair.js';
 
 const simulation = new Simulation({
@@ -25,7 +23,9 @@ control.onReady = () => {
     let target = {x: 3, y: 4};
     let chairPos =  control.getChairs()[0].getPosition()
     //chairs[index].getLocationOnGrid(chairs[index].chair.position);
-    let path = new GetRoute(chairPos, target);
+
+    let obstacles = []; // todo
+    let path = new GetRoute(chairPos, target, obstacles);
 
     c1.followPath(path)
     //c1.adjustAngle(180)
