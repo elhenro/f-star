@@ -28,6 +28,6 @@ module.exports = {
     mode: 'development',
     watch: true,
     devServer: {
-        open: true
+        open: false
     }
 };
