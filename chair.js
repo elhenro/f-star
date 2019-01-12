@@ -169,7 +169,7 @@ class Chair {
                 if (this.whereToMove(path[this.controller.stepIndex]) != "err") {
                     this.controller.direction = this.whereToMove(path[this.controller.stepIndex]);
                 } else {
-                    console.log("!! ERROR: ", this.errorMsg);
+                    console.log(this.errorMsg);
                     return
                 }
 
