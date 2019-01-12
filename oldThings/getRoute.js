@@ -1,5 +1,8 @@
-function getRoute(startLoc, targetLoc) {
-    let gridConst = 100; //todo: rename
+import Astar from "./../oldThings/assets/libs/a-star.js";
+
+export default class GetRoute {
+    constructor(startLoc, targetLoc) {
+    let gridConst = 100;
 
     // todo: use the chair method instead of rewriting the function here
     function getLocationOnGrid(position) {
@@ -36,7 +39,7 @@ function getRoute(startLoc, targetLoc) {
     let graph = new Graph(createAStarGrid());
     console.log('start from grid node', startLoc.x, startLoc.y);
     let start = graph.grid[startLoc.x][startLoc.y];
-    let end = graph.grid[targetLoc[0]][targetLoc[1]];
+    let end = graph.grid[targetLoc.x][targetLoc.y];
 
     // result is an array containing the path
     let result = astar.search(graph, start, end);
@@ -50,4 +53,5 @@ function getRoute(startLoc, targetLoc) {
     }
 
     return mockMap;
+  }
 }
