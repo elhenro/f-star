@@ -1,10 +1,11 @@
 import GetRoute from "../oldThings/getRoute.js";
 export default class ChairController {
-    constructor(/*posX = 0, posY = 0*/ chairControl) {
+    constructor(/*posX = 0, posY = 0*/ chairControl, id) {
         let self = this;
 
         // enable / disable console logging for more information
         this.debug = false;
+        this.id = id;
 
         this.chairControl = chairControl;
 
@@ -341,17 +342,17 @@ export default class ChairController {
     }
 
     getId() {
-        return 1 /*this.chair.id*/;
+        return this.id;
     }
 
     updateObstaclePosition(id, x, y) {
-        /*if (this.debug) {
+        if (this.debug) {
             console.log("updating obstacle position: id ", id, " x:", Math.round(x), " y:", Math.round(y))
-            console.log(id, 'obstacles', window.obstacles);
-        }*/
+            //console.log(id, 'obstacles', window.obstacles);
+        }
 
         // todo
-        //window.updateObstacle(id, Math.round(x), Math.round(y));
+        window.updateObstacle(id, Math.round(x), Math.round(y));
     }
 
     resetStepIndex() {
