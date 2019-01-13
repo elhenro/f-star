@@ -3,7 +3,7 @@ import GetRoute from "../oldThings/getRoute.js";
 import ChairController from '../oldThings/chair.js';
 
 window.chairs = [
-    {x: 100, y: 100},
+    {x: 103, y: 103},
     {x: 200, y: 200},
     {x: 400, y: 400}
 ];

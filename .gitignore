@@ -2,3 +2,4 @@ node_modules
 .idea/
 old/node_modules/
 dist
+oldThings/henry-python-sockets
