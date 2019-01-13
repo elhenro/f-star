@@ -56,7 +56,8 @@ control.onReady = () => {
     }
 
     console.log("chair simulation spawned:",chairControllers);
-    console.log('obstacles found: ', window.obstacles);
+    // is empty?
+    //console.log('obstacles found: ', window.obstacles);
 
     let path = new GetRoute(chairControllers[0].chairControl.getPosition(), {x: 3, y: 4}, window.obstacles);
     //chairControllers[0].followPath(path);
