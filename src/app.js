@@ -1,7 +1,5 @@
 import Simulation from './Simulation';
-
 import GetRoute from "../oldThings/getRoute.js";
-
 import ChairController from '../oldThings/chair.js';
 
 let chairs = [
@@ -22,7 +20,6 @@ const control = simulation.getChairControl();
 
 control.onReady = () => {
     window.obstacles = [];
-
     window.updateObstacle = function (id, x, y) {
         window.obstacles.forEach(function (obstacle, i) {
             // if id matches
