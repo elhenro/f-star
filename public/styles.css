@@ -1,4 +1,5 @@
 body {
+    background: black;
     margin: 0;
     padding: 0;
 }
@@ -50,4 +51,8 @@ table th {
 .chair-control button.stop {
     background: #b80003;
     color: white;
+}
+
+.simulationContainer {
+    
 }
