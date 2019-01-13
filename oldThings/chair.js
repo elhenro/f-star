@@ -62,12 +62,6 @@ export default class ChairController {
                             else self.chairControl.move({motionType: 'Rotation', velocity: speed});
                         }
 
-                        /*if (wantedAngle - actualAngle >= 180) {
-                            self.chairControl.move({motionType: 'Rotation', velocity: -speed})
-                        } else if (wantedAngle - actualAngle < 180) {
-                            self.chairControl.move({motionType: 'Rotation', velocity: -speed})
-                        }*/
-
                     } else if (arrivedAtAngle === true) {
                         if (this.debug) console.log("adjusted rotation successfully: ", actualAngle, wantedAngle);
 
@@ -105,11 +99,6 @@ export default class ChairController {
                         self.stop();
                         return;
                     } else {
-                        // update obstacles with own id and positions (round up 5)
-                        let position = self.chairControl.getPosition();
-                        self.updateObstaclePosition(self.getId(), self.round5(position.x), self.round5(position.y));
-
-                        // actually move
                         self.move(self.controller.direction);
                     }
                 }
@@ -118,9 +107,8 @@ export default class ChairController {
                 if (this.debug) console.log("checking if arrived at:", nextTarget, " current: ", self.chairControl.getPosition())
 
                 if (self.isArrived(nextTarget)) {
-                    //test: move up outside of arrived, do it every time instead: be more acurate
-                    //let position = self.chairControl.getPosition();
-                    //self.updateObstaclePosition(self.getId(), position.x, position.y);
+                    let position = self.chairControl.getPosition();
+                    self.updateObstaclePosition(self.getId(), position.x, position.y);
 
                     self.controller.stepIndex++;
                     if (self.debug) {
@@ -390,7 +378,6 @@ export default class ChairController {
 
         // todo
         window.updateObstacle(id, Math.round(x), Math.round(y));
-        //console.log("updated obstacles. now it is: ", window.obstacles);
     }
 
     resetStepIndex() {
