@@ -4,14 +4,10 @@ import GetRoute from "../oldThings/getRoute.js";
 
 import ChairController from '../oldThings/chair.js';
 
-let chairs = [{
-    x: 100,
-    y: 100
-},
-    {
-        x: 200,
-        y: 200
-    }];
+let chairs = [
+    {x: 100, y: 100},
+    {x: 200, y: 200},
+];
 
 let chairControllers = [];
 
