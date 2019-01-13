@@ -5,7 +5,7 @@ export default class ChairController {
         let self = this;
 
         // enable / disable console logging for more information
-        this.debug = false;
+        this.debug = true;
         this.id = id;
 
         this.chairControl = chairControl;
@@ -121,7 +121,7 @@ export default class ChairController {
                     // todo... L
                     currentLoc.x = currentLoc.x * 100;
                     currentLoc.y = currentLoc.y * 100;
-                    if(self.controller.path[self.controller.path.length - 1]){
+                    if (self.controller.path[self.controller.path.length - 1]) {
                         self.controller.path = new GetRoute(currentLoc, {
                             x: self.controller.path[self.controller.path.length - 1][0],
                             y: self.controller.path[self.controller.path.length - 1][1]
@@ -129,7 +129,9 @@ export default class ChairController {
                         self.resetStepIndex(); //todo: kill
                         self.followPath(self.controller.path);
                     } else {
-                        if(this.debug){console.log("no new path")}
+                        if (this.debug) {
+                            console.log("no new path")
+                        }
                     }
                 }
 
@@ -246,8 +248,8 @@ export default class ChairController {
 
         if (typeof target === 'undefined') {
             // arrival case
-            let pos = this.chairControl.getPosition()
-            if(this.debug) console.log(this.getId(), " arrived at: target : ", Math.round(pos.x), Math.round(pos.y));
+            let pos = this.chairControl.getPosition();
+            if (this.debug) console.log(this.getId(), " arrived at: target : ", Math.round(pos.x), Math.round(pos.y));
             //this.controller.errorState = true;
             this.controller.rotationReady = false;
             this.controller.driveReady = false;
@@ -260,9 +262,12 @@ export default class ChairController {
         let distanceToNextStep = Math.sqrt(Math.pow(chairPos.x - (target[0] * 100), 2) + Math.pow(chairPos.y - (target[1] * 100), 2));
         let chairIsArrived = (distanceToNextStep < bufferRadius);
         if (this.debug) {
-            console.log('Chair grid position and target', chairPos.x, chairPos.y, target[0] * 100, target[1] * 100);
-            console.log("stepindex:", this.controller.stepIndex)
-            console.log('Chair is arrived', chairIsArrived);
+            console.log({
+                'Position': chairPos,
+                'Target': target,
+                'Setp Index': this.stepIndex,
+                'Is arrived': chairIsArrived
+            });
         }
 
         return chairIsArrived;
@@ -326,7 +331,7 @@ export default class ChairController {
     }
 
     stepBlockedByObstacle(step, obstacles) {
-        if(this.debug){
+        if (this.debug) {
             console.log("checking if next step blocked by obstacle ", step, obstacles)
         }
         for (let obstacle of obstacles) {

@@ -42,8 +42,8 @@ export default class GetRoute {
         let graph = new astar.Graph(createAStarGrid());
         //console.log('calculating new route from: ', startLoc.x, startLoc.y);
         //console.log(startLoc, targetLoc)
-
-        let start = graph.grid[startLoc.x / gridConst][startLoc.y / gridConst];
+        let startGridNode = getLocationOnGrid(startLoc);
+        let start = graph.grid[startGridNode.x][startGridNode.y];
         let end = graph.grid[targetLoc.x][targetLoc.y];
 
         // result is an array containing the path
