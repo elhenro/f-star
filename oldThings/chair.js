@@ -5,7 +5,7 @@ export default class ChairController {
         let self = this;
 
         // enable / disable console logging for more information
-        this.debug = false;
+        this.debug = window.debug || false;
         this.id = id;
 
         this.chairControl = chairControl;
