@@ -148,6 +148,7 @@ export default class ChairController {
                     self.controller.driveReady = false;
                     self.controller.rotationReady = true;
 
+                    if(self.debug) console.log("resetting arrived actor: ", self.getId())
                     self.resetReady();
                     if (self.debug) console.log("rotating to final rotation angle", self.controller.finalRotationAngle);
                     self.controller.wantedAngularRotation = self.controller.finalRotationAngle;
@@ -235,6 +236,9 @@ export default class ChairController {
 
         if (this.debug) console.log(p1, p2)
         let angle = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+
+        // dirty // davids schnitstelle macht + 90 ... 
+        //if (angle == -90) angle = 0;
 
         if (this.debug) console.log(this.chairControl.getPosition(), "Started rotating to: ", angle);
 
