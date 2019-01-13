@@ -387,7 +387,7 @@ export default class ChairController {
         c.wantedAngularRotation     = w.wantedAngularRotation;
         c.rotationSpeed             = w.rotationSpeed;
         c.driveReady                = w.driveReady;
-        c.rotationReady             = w.resetReady;
+        c.rotationReady             = w.rotationReady;
         c.stepIndex                 = w.stepIndex;
         c.moveSpeed                 = w.moveSpeed;
         c.timeout                   = w.timeout;
