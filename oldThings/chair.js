@@ -1,28 +1,25 @@
-class Chair {
-    // Creates a new chair
-    constructor(posX = 0, posY = 0) {
-        this.simulation = new Simulation();
-        this.chair = this.simulation.createChair(posX, posY);
-        if (this.debug) {
-            console.log(this.chair);
-        }
-
+import GetRoute from "../oldThings/getRoute.js";
+export default class ChairController {
+    constructor(/*posX = 0, posY = 0*/ chairControl, id) {
         let self = this;
 
         // enable / disable console logging for more information
         this.debug = false;
+        this.id = id;
+
+        this.chairControl = chairControl;
 
         this.controller = {
-            path: [], // comes from sketch.js
+            path: [], // comes from app.js
             finalRotationAngle: null,
             direction: "",
             wantedAngularRotation: null,
-            initialSpeed: 0.05,
-            rotationSpeed: 0.05,
+            initialSpeed: 0.1,
+            rotationSpeed: 0.1,
             driveReady: false,
             rotationReady: true,
             stepIndex: 0,
-            moveSpeed: 0.6,
+            moveSpeed: 0.3,
             timeout: 50,
             forceX: 0,
             forceY: 0,
@@ -33,14 +30,10 @@ class Chair {
             rotationInterval: function () {
                 if (self.controller.rotationReady) {
                     let angleAccuracy = 80;
-                    let angleSlowDownRegion = 0.25;
-
-                    let actualAngle = (self.chair.angle % (Math.PI * 2));
-                    let actualAngleSoft = (Math.round(self.chair.angle * angleAccuracy) / angleAccuracy);
-
-                    let wantedAngleSoft = (Math.round(self.controller.wantedAngularRotation * angleAccuracy) / angleAccuracy);
-
-                    let arrivedAtAngle = (actualAngleSoft === wantedAngleSoft);
+                    let angleSlowDownRegion = 1;
+                    let wantedAngle = self.controller.wantedAngularRotation;
+                    let actualAngle = Math.round(self.chairControl.getPosition().bearing - 90) // !!! OK!!!   //(self.chair.angle % (Math.PI * 2));
+                    let arrivedAtAngle = (actualAngle === wantedAngle);
 
                     // Chair is does not look towards the wanted direction.
                     // Start rotation
@@ -51,19 +44,20 @@ class Chair {
                         let speed = self.controller.initialSpeed;
 
                         // If chair angle is close to wanted angle, decrease speed
-                        if (actualAngle <= (wantedAngleSoft + angleSlowDownRegion) && actualAngle >= (wantedAngleSoft - angleSlowDownRegion)) {
-                            speed = speed / 10;
+                        if (actualAngle <= (wantedAngle + angleSlowDownRegion) && actualAngle >= (wantedAngle - angleSlowDownRegion)) {
+                            speed = speed / 30;
                         }
-
-                        // Start rotating
-                        if (actualAngle > wantedAngleSoft) {
-                            self.simulation.applyForce(self.chair, 'Rotation', null, -speed);
-                        } else if (actualAngle < wantedAngleSoft) {
-                            self.simulation.applyForce(self.chair, 'Rotation', null, speed);
+                        
+                        // Start rotatinwantedAngleg
+                        if(this.debug){console.log(actualAngle, wantedAngle)};
+                        if (actualAngle > wantedAngle) {
+                            self.chairControl.move({motionType: 'Rotation',velocity: -speed})
+                        } else if (actualAngle < wantedAngle) {
+                            self.chairControl.move({motionType: 'Rotation',velocity: speed})
                         }
 
                     } else if (arrivedAtAngle === true) {
-                        if (this.debug) console.log("adjusted rotation successfully: ", self.chair.angle, self.controller.wantedAngularRotation);
+                        if (this.debug) console.log("adjusted rotation successfully: ", actualAngle, wantedAngle);
 
                         self.controller.driveReady = true;
                         self.controller.rotationReady = false;
@@ -85,10 +79,11 @@ class Chair {
                 }
 
                 // prevent collision todo: does not work
+                /*
                 if (self.stepBlockedByObstacle(nextTarget, this.window.obstacles)) {
                     self.stop();
                     return;
-                }
+                }*/
 
                 if (self.controller.driveReady === false) {
                     if (this.debug) {
@@ -106,12 +101,12 @@ class Chair {
                 if (this.debug) console.log("checking if arrived at:", nextTarget, " current: ", self.chair.position)
 
                 if (self.isArrived(nextTarget)) {
-                    let position = self.simulation.getPosition(self.chair);
+                    let position = self.chairControl.getPosition;
                     self.updateObstaclePosition(self.getId(), position.x, position.y);
 
                     self.controller.stepIndex++;
                     if (self.debug) {
-                        console.log(self.chair.id, "X X X X X X X --- arrived at ", nextTarget, "! :) ---  X X X X X X X X");
+                        console.log(this.chairControl, "X X X X X X X --- arrived at ", nextTarget, "! :) ---  X X X X X X X X");
                         console.log("new target is: ", self.controller.path[self.controller.stepIndex]);
                     }
 
@@ -122,9 +117,12 @@ class Chair {
                     self.stop();
 
                     // NEXT
-                    let currentLoc = self.getLocationOnGrid(self.chair.position);
-                    self.controller.path = getRoute(currentLoc, self.controller.path[self.controller.path.length - 1]);
-                    self.resetStepIndex();
+                    let currentLoc = self.getLocationOnGrid(self.chairControl.getPosition());
+                    // todo... L
+                    currentLoc.x = currentLoc.x * 100;
+                    currentLoc.y = currentLoc.y * 100;
+                    self.controller.path = new GetRoute(currentLoc, {x:self.controller.path[self.controller.path.length - 1][0],y:self.controller.path[self.controller.path.length -1][1]});
+                    self.resetStepIndex(); //todo: kill
                     self.followPath(self.controller.path);
                 }
 
@@ -138,8 +136,8 @@ class Chair {
                     self.controller.driveReady = false;
                     self.controller.rotationReady = true;
 
-                    self.controller.wantedAngularRotation = self.controller.finalRotationAngle;
-                    if (self.debug) console.log("rotating to final rotation angle", self.controller.finalRotationAngle, self.controller.wantedAngularRotation);
+                    wantedAngle = self.controller.finalRotationAngle;
+                    if (self.debug) console.log("rotating to final rotation angle", self.controller.finalRotationAngle, wantedAngle);
                     self.controller.rotationInterval();
                 }
 
@@ -210,22 +208,30 @@ class Chair {
         return {x: x, y: y};
     }
 
-
+    // spin me right round, sets the rotation interval
     adjustAngle() {
-        let wag = Math.atan2(this.chair.position.y - (this.controller.path[this.controller.stepIndex][1] * 100), this.chair.position.x - (this.controller.path[this.controller.stepIndex][0] * 100));
+        //console.log(this.controller.path[this.controller.stepIndex]);
 
-        if (this.debug) console.log(this.chair.id, "Started rotating to: ", wag);
+        //let angle = Math.atan2(pos.y - (this.controller.path[this.controller.stepIndex][1] * 100), pos.x - (this.controller.path[this.controller.stepIndex][0] * 100));
+        let p1 = this.getLocationOnGrid(this.chairControl.getPosition());
+        let p2 = { x: this.controller.path[this.controller.stepIndex][0], y: this.controller.path[this.controller.stepIndex][1]};
+    
+        console.log(p1,p2)
+        let angle = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 
-        this.controller.wantedAngularRotation = wag;
+        if (this.debug) console.log(this.chairControl.getPosition(), "Started rotating to: ", angle);
+
+        this.controller.wantedAngularRotation = angle;
         this.controller.rotationIntervalID = setInterval(this.controller.rotationInterval, this.controller.rotationIntervalTime)
     }
 
     // Accelerates the chair
     move() {
-        this.simulation.applyForce(this.chair, 'Straight', {
+        /*this.simulation.applyForce(this.chair, 'Straight', {
             x: Math.cos(this.chair.angle - Math.PI),
             y: Math.sin(this.chair.angle - Math.PI)
-        }, this.controller.moveSpeed);
+        }, this.controller.moveSpeed);*/
+        this.chairControl.move({motionType:'Straight', velocity: this.controller.moveSpeed})
     }
 
     // check if actor has arrived ar target coordinates like: [position.x, position.y]
@@ -238,13 +244,16 @@ class Chair {
             return;
         }
 
-        let chairPos = this.simulation.getPosition(this.chair);
+        let chairPos = this.chairControl.getPosition();//this.simulation.getPosition(this.chair);
 
         let distanceToNextStep = Math.sqrt(Math.pow(chairPos.x - (target[0] * 100), 2) + Math.pow(chairPos.y - (target[1] * 100), 2));
+        console.log(this.controller.stepIndex);
+        console.log(distanceToNextStep);
         let chairIsArrived = (distanceToNextStep < bufferRadius);
         //let chairIsArrived = (Math.round(chairGridPos.x) === (target[0] * 100)) && (Math.round(chairGridPos.y) === (target[1] * 100));
         if (this.debug) {
-            console.log('Chair grid position and target', chairPos, target);
+            console.log('Chair grid position and target', chairPos.x, chairPos.y, target[0]*100, target[1]*100);
+            console.log("stepindex:",this.controller.stepIndex)
             console.log('Chair is arrived', chairIsArrived);
         }
 
@@ -259,17 +268,17 @@ class Chair {
 
         if (!target) {
             this.errorState = true;
-            this.errorMsg = "no next target ( or arrived ? ),  chair ID: " + this.chair.id;
+            this.errorMsg = "no next target ( or arrived ? ),  chair ID: " + this.chairControl;
             this.stop();
             //this.followPath(this.controller.path);
             return "err";
         }
 
         if (this.debug) {
-            console.log("current position: ", this.getLocationOnGrid(this.simulation.getPosition(this.chair)));
+            console.log("current position: ", this.getLocationOnGrid(this.chairControl.getPosition()/*this.simulation.getPosition(this.chair))*/));
         }
 
-        let chairGridPos = this.getLocationOnGrid(this.simulation.getPosition(this.chair));
+        let chairGridPos = this.getLocationOnGrid(this.chairControl.getPosition()/*this.simulation.getPosition(this.chair)*/);
 
         let xPos = chairGridPos.x;
         let yPos = chairGridPos.y;
@@ -309,8 +318,9 @@ class Chair {
         clearInterval(this.controller.rotationIntervalID);
 
         // nur zum testen in simulation
-        this.simulation.applyForce(this.chair, 'Straight', {x: 0, y: 0}, this.controller.moveSpeed);
-        this.simulation.applyForce(this.chair, 'Rotation', null, 0);
+        this.chairControl.stop()
+        //this.simulation.applyForce(this.chair, 'Straight', {x: 0, y: 0}, this.controller.moveSpeed);
+        //this.simulation.applyForce(this.chair, 'Rotation', null, 0);
     }
 
     stepBlockedByObstacle(step, obstacles) {
@@ -331,16 +341,17 @@ class Chair {
     }
 
     getId() {
-        return this.chair.id;
+        return this.id;
     }
 
     updateObstaclePosition(id, x, y) {
         if (this.debug) {
             console.log("updating obstacle position: id ", id, " x:", Math.round(x), " y:", Math.round(y))
+            //console.log(id, 'obstacles', window.obstacles);
         }
 
+        // todo
         window.updateObstacle(id, Math.round(x), Math.round(y));
-        console.log(this.chair.id, 'obstacles', window.obstacles);
     }
 
     resetStepIndex() {
