@@ -53,6 +53,7 @@ table th {
     color: white;
 }
 
-.simulationContainer {
-    
+.simulationContainer table, .simulationContainer main {
+    margin-top: 2em;
+    margin-left: 15%;
 }
