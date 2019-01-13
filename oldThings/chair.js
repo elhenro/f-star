@@ -96,7 +96,7 @@ export default class ChairController {
                     } else {
                         // update obstacles with own id and positions (round up 5)
                         let position = self.chairControl.getPosition();
-                        self.updateObstaclePosition(self.getId(), self.round5(position.x), self.round5(position.y));
+                        self.updateObstaclePosition(self.getId(), /*self.round5(*/position.x/*)*/, /*self.round5(*/position.y/*)*/);
 
                         // actually move
                         self.move(self.controller.direction);
@@ -411,6 +411,6 @@ export default class ChairController {
         c.arrivedState              = w.arrivedState;
     }
     round5(x) {
-        return Math.ceil(x/10)*10;
+        return Math.ceil(x/5)*5;
     }
 }
