@@ -66,9 +66,9 @@ control.onReady = () => {
         window.obstacles.push(obstacle)
     }
 
-    window.go = function(index, target){
+    window.go = function(index, target, finalRotationAngle = 0){
         let path = new GetRoute(chairControllers[index].chairControl.getPosition(), target, window.obstacles);
-        chairControllers[index].followPath(path);
+        chairControllers[index].followPath(path, finalRotationAngle);
     };
 
     window.control = control.getChairs();
