@@ -8,6 +8,28 @@ window.chairs = [
     {x: 400, y: 400}
 ];
 
+// config for start values all actors are spawned with
+//set default chair speeds etc.
+window.chairConfig = {
+    finalRotationAngle        : null,
+    direction                 : "",
+    wantedAngularRotation     : null,
+    rotationSpeed             : 0.5,
+    driveReady                : false,
+    rotationReady             : true,
+    stepIndex                 : 0,
+    moveSpeed                 : 0.5,
+    timeout                   : 50,
+    forceX                    : 0,
+    forceY                    : 0,
+    rotationIntervalTime      : 20,
+    moveIntervalTime          : 10,
+    rotationIntervalID        : null,
+    moveIntervalID            : null,
+    arrivedState              : false,
+    rotationSpeed             : 0.5,
+};
+
 let chairControllers = [];
 
 window.debug = false;

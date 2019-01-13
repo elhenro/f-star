@@ -373,24 +373,25 @@ export default class ChairController {
     }
 
     resetReady() {
-        // reset all values 
+        // reset all values to defaults set in app.js window.chairConfig
         let c = this.controller;
+        let w = window.chairConfig;
 
-        c.finalRotationAngle        = null;
-        c.direction                 = "";
-        c.wantedAngularRotation     = null;
-        c.rotationSpeed             = 0.5; //defaults ...
-        c.driveReady                = false;
-        c.rotationReady             = true;
-        c.stepIndex                 = 0;
-        c.moveSpeed                 = 0.5;
-        c.timeout                   = 50;
-        c.forceX                    = 0;
-        c.forceY                    = 0;
-        c.rotationIntervalTime      = 20;
-        c.moveIntervalTime          = 10;
-        c.rotationIntervalID        = null;
-        c.moveIntervalID            = null;
-        c.arrivedState              = false;
+        c.finalRotationAngle        = w.finalRotationAngle;
+        c.direction                 = w.direction;
+        c.wantedAngularRotation     = w.wantedAngularRotation
+        c.rotationSpeed             = w.rotationSpeed
+        c.driveReady                = w.driveReady;
+        c.rotationReady             = w.resetReady;
+        c.stepIndex                 = w.stepIndex;
+        c.moveSpeed                 = w.moveSpeed;
+        c.timeout                   = w.timeout;
+        c.forceX                    = w.forceX;
+        c.forceY                    = w.forceY;
+        c.rotationIntervalTime      = w.rotationIntervalTime;
+        c.moveIntervalTime          = w.moveIntervalTime;
+        c.rotationIntervalID        = w.rotationIntervalID;
+        c.moveIntervalID            = w.moveIntervalID;
+        c.arrivedState              = w.arrivedState;
     }
 }
