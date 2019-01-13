@@ -32,7 +32,7 @@ export default class ChairController {
                 if (self.controller.rotationReady) {
                     let angleSlowDownRegion = 10;
                     let wantedAngle = self.controller.wantedAngularRotation;
-                    let actualAngle = Math.round(self.chairControl.getPosition().bearing - 90) // !!! OK!!! todo: why????
+                    let actualAngle = Math.round(self.chairControl.getPosition().bearing - 90); // !!! OK!!! todo: why????
                     let arrivedAtAngle = (actualAngle === wantedAngle);
 
                     // Chair is does not look towards the wanted direction.
@@ -48,6 +48,7 @@ export default class ChairController {
                             speed = speed / 10;
                         }
 
+                        console.log('comparing rotations:', actualAngle, wantedAngle);
                         // Start rotatinwantedAngleg
                         if (this.debug) console.log(actualAngle, wantedAngle);
                         if (actualAngle > wantedAngle) {
@@ -128,7 +129,7 @@ export default class ChairController {
                             y: self.controller.path[self.controller.path.length - 1][1]
                         });
                         self.resetStepIndex(); //todo: kill
-                        self.followPath(self.controller.path);
+                        self.followPath(self.controller.path, self.controller.finalRotationAngle);
                     } else {
                         if (this.debug) {
                             console.log("no new path")
@@ -138,7 +139,7 @@ export default class ChairController {
 
                 // if is arrived at last step
                 if (self.isArrived(self.controller.path[(self.controller.path.length - 1)])) {
-                    if(!self.controller.arrivedState) console.log("arrived at final location! <3");
+                    if (!self.controller.arrivedState) console.log("arrived at final location! <3");
                     self.controller.arrivedState = true;
 
                     // interval clears itself
@@ -148,15 +149,15 @@ export default class ChairController {
                     self.controller.rotationReady = true;
 
                     self.resetReady();
-                    //let wantedAngle = self.controller.finalRotationAngle;
-                    //if (self.debug) console.log("rotating to final rotation angle", self.controller.finalRotationAngle, wantedAngle);
-                    //self.controller.rotationInterval();
+                    if (self.debug) console.log("rotating to final rotation angle", self.controller.finalRotationAngle);
+                    self.controller.wantedAngularRotation = self.controller.finalRotationAngle;
+                    self.controller.rotationInterval();
                 }
 
-                if (nextTarget == undefined) {
+                if (nextTarget == undefined && self.controller.arrivedState !== true) {
                     self.errorState = true;
                     self.stop();
-                    if(this.debug){
+                    if (this.debug) {
                         self.errorMsg = "no target";
                         console.log(self.errorMsg);
                     }
@@ -170,7 +171,7 @@ export default class ChairController {
     followPath(path, finalRotationAngle) {
         if (!this.controller.errorState) {
             this.controller.path = path;
-            if (typeof finalRotationAngle !== 'undefined') this.controller.finalRotationAngle = finalRotationAngle;
+            this.controller.finalRotationAngle = finalRotationAngle;
 
             //target is neighbour tile
             if (this.isNeighbour(path[this.controller.stepIndex])) {
@@ -379,8 +380,8 @@ export default class ChairController {
 
         c.finalRotationAngle        = w.finalRotationAngle;
         c.direction                 = w.direction;
-        c.wantedAngularRotation     = w.wantedAngularRotation
-        c.rotationSpeed             = w.rotationSpeed
+        c.wantedAngularRotation     = w.wantedAngularRotation;
+        c.rotationSpeed             = w.rotationSpeed;
         c.driveReady                = w.driveReady;
         c.rotationReady             = w.resetReady;
         c.stepIndex                 = w.stepIndex;

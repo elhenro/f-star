@@ -40,7 +40,7 @@ $(document).ready(function () {
             let y = (Math.round(e.pageY / 100) * 100) / 100;
             if (x <= 6 && y <= 6) {
                 let target = {x: x, y: y};
-                window.go(selectedChair, target);
+                window.go(selectedChair, target, 245);
             }
         }
     })
