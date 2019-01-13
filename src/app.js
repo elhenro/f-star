@@ -11,27 +11,27 @@ window.chairs = [
 // config for start values all actors are spawned with
 //set default chair speeds etc.
 window.chairConfig = {
-    finalRotationAngle: null,
-    direction: "",
-    wantedAngularRotation: null,
-    rotationSpeed: 0.5,
-    driveReady: false,
-    rotationReady: true,
-    stepIndex: 0,
-    moveSpeed: 0.5,
-    timeout: 50,
-    forceX: 0,
-    forceY: 0,
-    rotationIntervalTime: 20,
-    moveIntervalTime: 10,
-    rotationIntervalID: null,
-    moveIntervalID: null,
-    arrivedState: false,
+    finalRotationAngle        : null,
+    direction                 : "",
+    wantedAngularRotation     : null,
+    rotationSpeed             : 0.5,
+    driveReady                : false,
+    rotationReady             : true,
+    stepIndex                 : 0,
+    moveSpeed                 : 0.5,
+    timeout                   : 50,
+    forceX                    : 0,
+    forceY                    : 0,
+    rotationIntervalTime      : 20,
+    moveIntervalTime          : 10,
+    rotationIntervalID        : null,
+    moveIntervalID            : null,
+    arrivedState              : false,
 };
 
 let chairControllers = [];
 
-window.debug = true;
+window.debug = false;
 
 const simulation = new Simulation({
     element: document.querySelector('main'),
@@ -49,14 +49,14 @@ control.onReady = () => {
             // if id matches
             if (obstacle[0] === id) {
                 // update x and y value for this id
-                window.obstacles[i][1] = x;
-                window.obstacles[i][2] = y;
-            } else if (obstacle[0], obstacle[1], obstacle[2]) {
-                window.obstacles[i][0] = id;
-                window.obstacles[i][1] = x;
-                window.obstacles[i][2] = y;
+                window.obstacles[id][1] = x;
+                window.obstacles[id][2] = y;
+            } else if(obstacle[0],obstacle[1],obstacle[2]){
+                window.obstacles[id][0] = id;
+                window.obstacles[id][1] = x;
+                window.obstacles[id][2] = y;
             } else {
-                console.log("failed to add obstacle: ", window.obstacles)
+                if (window.debug) console.warn("failed to add obstacle: ",window.obstacles)
             }
         });
     };
@@ -65,7 +65,8 @@ control.onReady = () => {
         window.obstacles.push(obstacle)
     }
 
-    window.go = function (index, target, finalRotationAngle) {
+    window.go = function(index, target, finalRotationAngle = 0){
+        if (window.debug) console.warn("getting new path with obstacles: ", window.obstacles)
         let path = new GetRoute(chairControllers[index].chairControl.getPosition(), target, window.obstacles);
         chairControllers[index].followPath(path, finalRotationAngle);
     };
@@ -73,12 +74,12 @@ control.onReady = () => {
     window.control = control.getChairs();
     //console.log(window.control);
 
-    for (let i = 0; i < window.chairs.length; i++) {
+    for (let i = 0; i < window.chairs.length; i++){
         chairControllers.push(new ChairController(window.control[i], i));
         //addObstacle([i, window.control[i].getPosition().x, window.control[i].getPosition().y]); //todo: obj
     }
 
-    console.log("chair simulation spawned:", chairControllers);
+    if (window.debug) console.log("chair simulation spawned:",chairControllers);
     // is empty?
     //console.log('obstacles found: ', window.obstacles);
 
