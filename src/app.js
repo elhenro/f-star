@@ -45,8 +45,8 @@ const control = simulation.getChairControl();
 control.onReady = () => {
     window.obstacles = [];
     window.updateObstacle = function (id, x, y) {
-        let obsX = roundToNearest(x, 10);//Math.ceil(x/10)*10;
-        let obsY = roundToNearest(y, 10);//Math.ceil(y/10)*10;
+        let obsX = roundToNearest(x, 10);
+        let obsY = roundToNearest(y, 10);
 
         window.obstacles.forEach(function (obstacle, i) {
             // if id matches

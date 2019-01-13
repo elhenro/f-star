@@ -23,10 +23,10 @@ export default class ChairController {
             timeout: 50,
             forceX: 0,
             forceY: 0,
-            rotationIntervalTime: 20,
-            moveIntervalTime: 10,
+            rotationIntervalTime: 5,
+            moveIntervalTime: 3,
             rotationIntervalID: null,
-            moveIntervalID: null,
+            moveIntervalID: null, 
             arrivedState: false,
             rotationInterval: function () {
                 if (self.controller.rotationReady) {
@@ -108,6 +108,11 @@ export default class ChairController {
 
                         // actually move
                         self.move(self.controller.direction);
+
+                        self.setTimeoutInterval();
+                        //if(!self.controller.timeOutSet){
+                        // self.controller.timeoutIntervalSeconds = 0; //reset
+                        //}
                     }
                 }
 
@@ -118,6 +123,10 @@ export default class ChairController {
                     //test: move up outside of arrived, do it every time instead: be more acurate
                     //let position = self.chairControl.getPosition();
                     //self.updateObstaclePosition(self.getId(), position.x, position.y);
+
+                    //self.controller.timeOutIntervalReset = true;
+                    //self.setTimeoutInterval();
+
 
                     self.controller.stepIndex++;
                     if (self.debug) {
@@ -178,6 +187,28 @@ export default class ChairController {
                     }
                 }
             },
+            // @MArco: Timoutinterval der ab jedem step anfängt bis 10 zu zählen (1000ms interval)
+            // bei 10 soll er den actor wieder zurück schicken zum letzten punkt
+            // und dann pathfinding neu starten
+            //
+            //  funktioniert noch nicht ab jedem step
+            timeoutIntervalID: null,
+            timeOutSet: false,
+            timeoutIntervalTime: 1000,
+            timeoutIntervalSeconds: 0,
+            timeOutIntervalReset: false,
+            timeoutInterval: function (){
+                if(self.controller.timeoutIntervalSeconds > 10/* || self.controller.timeOutIntervalReset*/){
+                    console.log("timed out")
+                    self.controller.timeOutIntervalReset = false;
+                    clearInterval(self.controller.timeoutIntervalID);
+                    self.controller.timeoutIntervalSeconds = 0; //reset
+                    self.controller.timeOutSet = false;
+                } else {
+                    self.controller.timeoutIntervalSeconds += 1;
+                    console.log(self.controller.timeoutIntervalSeconds)
+                }
+            },
             errorState: false,
             errorMsg: "",
         };
@@ -203,6 +234,7 @@ export default class ChairController {
                     return
                 }
 
+                // continue
                 this.adjustAngle();
             } else
             // target is not neighbour tile
@@ -428,5 +460,16 @@ export default class ChairController {
         //let rounded = Math.ceil(Math.round(num*pow)/pow /10)*10 - 10
         //console.log("round ", num , " to ", rounded)
         return rounded;
+    }
+
+    setTimeoutInterval(){
+        // if no timeout
+        if(!this.controller.timeOutSet){
+            // start new
+            this.controller.timeOutSet = true;
+            this.controller.timeoutIntervalSeconds = 0;
+            this.controller.rotationIntervalID = setInterval(this.controller.timeoutInterval, this.controller.timeoutIntervalTime)
+        } else {
+        }
     }
 }
