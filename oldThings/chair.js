@@ -227,10 +227,6 @@ export default class ChairController {
 
     // Accelerates the chair
     move() {
-        /*this.simulation.applyForce(this.chair, 'Straight', {
-            x: Math.cos(this.chair.angle - Math.PI),
-            y: Math.sin(this.chair.angle - Math.PI)
-        }, this.controller.moveSpeed);*/
         this.chairControl.move({motionType:'Straight', velocity: this.controller.moveSpeed})
     }
 
@@ -250,7 +246,6 @@ export default class ChairController {
         console.log(this.controller.stepIndex);
         console.log(distanceToNextStep);
         let chairIsArrived = (distanceToNextStep < bufferRadius);
-        //let chairIsArrived = (Math.round(chairGridPos.x) === (target[0] * 100)) && (Math.round(chairGridPos.y) === (target[1] * 100));
         if (this.debug) {
             console.log('Chair grid position and target', chairPos.x, chairPos.y, target[0]*100, target[1]*100);
             console.log("stepindex:",this.controller.stepIndex)
@@ -267,6 +262,7 @@ export default class ChairController {
         if (this.debug) console.log("called: whereToMove(", target, ")");
 
         if (!target) {
+            // arrived at target (or error and no next target)
             this.errorState = true;
             this.errorMsg = "no next target ( or arrived ? ),  chair ID: " + this.chairControl;
             this.stop();
@@ -311,24 +307,17 @@ export default class ChairController {
         if (this.debug) {
             console.log('stopping chair');
         }
-        //this.controller.driveReady = false;
-        //this.controller.rotationReady = false;
-
         clearInterval(this.controller.moveIntervalID);
         clearInterval(this.controller.rotationIntervalID);
-
-        // nur zum testen in simulation
         this.chairControl.stop()
-        //this.simulation.applyForce(this.chair, 'Straight', {x: 0, y: 0}, this.controller.moveSpeed);
-        //this.simulation.applyForce(this.chair, 'Rotation', null, 0);
     }
 
     stepBlockedByObstacle(step, obstacles) {
         for (let obstacle of obstacles) {
             if (obstacle[1] == (step[0] * 10) && obstacle[2] == (step[1] * 10)) {
-                //if(this.debug){
-                console.log("chairID:", this.getId(), "step:", step, " was blocked by obstacle: ", obstacle);
-                //}
+                if(this.debug){
+                    console.log("chairID:", this.getId(), "step:", step, " was blocked by obstacle: ", obstacle);
+                }
                 return true
             }
         }
@@ -336,8 +325,8 @@ export default class ChairController {
     }
 
     getNewWay() {
-
-        // todo: re-call followPath(), because actor was stop() 'ed before 
+        // TODO: !
+        // re-call followPath(), because actor was stop() 'ed before 
     }
 
     getId() {
@@ -347,7 +336,6 @@ export default class ChairController {
     updateObstaclePosition(id, x, y) {
         if (this.debug) {
             console.log("updating obstacle position: id ", id, " x:", Math.round(x), " y:", Math.round(y))
-            //console.log(id, 'obstacles', window.obstacles);
         }
 
         // todo
