@@ -147,9 +147,10 @@ export default class ChairController {
                     self.controller.driveReady = false;
                     self.controller.rotationReady = true;
 
-                    let wantedAngle = self.controller.finalRotationAngle;
-                    if (self.debug) console.log("rotating to final rotation angle", self.controller.finalRotationAngle, wantedAngle);
-                    self.controller.rotationInterval();
+                    self.resetReady();
+                    //let wantedAngle = self.controller.finalRotationAngle;
+                    //if (self.debug) console.log("rotating to final rotation angle", self.controller.finalRotationAngle, wantedAngle);
+                    //self.controller.rotationInterval();
                 }
 
                 if (nextTarget == undefined) {
@@ -223,8 +224,6 @@ export default class ChairController {
 
     // spin me right round, sets the rotation interval
     adjustAngle() {
-        //console.log(this.controller.path[this.controller.stepIndex]);
-
         //let angle = Math.atan2(pos.y - (this.controller.path[this.controller.stepIndex][1] * 100), pos.x - (this.controller.path[this.controller.stepIndex][0] * 100));
         let p1 = this.getLocationOnGrid(this.chairControl.getPosition());
         let p2 = {
@@ -371,5 +370,27 @@ export default class ChairController {
         this.controller.stepIndex = 0;
         this.controller.rotationReady = true;
         this.controller.errorState = false;
+    }
+
+    resetReady() {
+        // reset all values 
+        let c = this.controller;
+
+        c.finalRotationAngle        = null;
+        c.direction                 = "";
+        c.wantedAngularRotation     = null;
+        c.rotationSpeed             = 0.5; //defaults ...
+        c.driveReady                = false;
+        c.rotationReady             = true;
+        c.stepIndex                 = 0;
+        c.moveSpeed                 = 0.5;
+        c.timeout                   = 50;
+        c.forceX                    = 0;
+        c.forceY                    = 0;
+        c.rotationIntervalTime      = 20;
+        c.moveIntervalTime          = 10;
+        c.rotationIntervalID        = null;
+        c.moveIntervalID            = null;
+        c.arrivedState              = false;
     }
 }

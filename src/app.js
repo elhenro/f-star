@@ -10,7 +10,7 @@ window.chairs = [
 
 let chairControllers = [];
 
-window.debug = true;
+window.debug = false;
 
 const simulation = new Simulation({
     element: document.querySelector('main'),
