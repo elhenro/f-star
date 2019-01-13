@@ -152,7 +152,7 @@ export default class ChairController {
                     if (self.debug) console.log("rotating to final rotation angle", self.controller.finalRotationAngle);
                     self.controller.wantedAngularRotation = self.controller.finalRotationAngle;
                     console.log(self.controller);
-                    self.controller.rotationInterval();
+                    self.adjustAngle(self.controller.finalRotationAngle);
                 }
 
                 if (nextTarget == undefined && self.controller.arrivedState !== true) {
@@ -225,21 +225,23 @@ export default class ChairController {
     }
 
     // spin me right round, sets the rotation interval
-    adjustAngle() {
-        //let angle = Math.atan2(pos.y - (this.controller.path[this.controller.stepIndex][1] * 100), pos.x - (this.controller.path[this.controller.stepIndex][0] * 100));
-        let p1 = this.getLocationOnGrid(this.chairControl.getPosition());
-        let p2 = {
-            x: this.controller.path[this.controller.stepIndex][0],
-            y: this.controller.path[this.controller.stepIndex][1]
-        };
+    adjustAngle(angle = null) {
+        if (angle === null) {
+            //let angle = Math.atan2(pos.y - (this.controller.path[this.controller.stepIndex][1] * 100), pos.x - (this.controller.path[this.controller.stepIndex][0] * 100));
+            let p1 = this.getLocationOnGrid(this.chairControl.getPosition());
+            let p2 = {
+                x: this.controller.path[this.controller.stepIndex][0],
+                y: this.controller.path[this.controller.stepIndex][1]
+            };
 
-        if (this.debug) console.log(p1, p2)
-        let angle = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+            if (this.debug) console.log(p1, p2);
+            angle = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 
-        // dirty // davids schnitstelle macht + 90 ... 
-        if (angle == -90) angle = 270;
+            // dirty // davids schnitstelle macht + 90 ...
+            if (angle === -90) angle = 270;
 
-        if (this.debug) console.log(this.chairControl.getPosition(), "Started rotating to: ", angle);
+            if (this.debug) console.log(this.chairControl.getPosition(), "Started rotating to: ", angle);
+        }
 
         this.controller.wantedAngularRotation = angle;
         this.controller.rotationIntervalID = setInterval(this.controller.rotationInterval, this.controller.rotationIntervalTime)
