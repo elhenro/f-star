@@ -53,12 +53,12 @@ control.onReady = () => {
             if (obstacle[0] === id) {
                 // update x and y value for this id
                 
-                console.log("found existing obstacle ", id, " updating: ", obsX, obsY);
+                if(window.debug) console.log("found existing obstacle ", id, " updating: ", obsX, obsY);
                 
                 window.obstacles[id][1] = obsX;
                 window.obstacles[id][2] = obsY;
             } else {
-                console.log("adding new obstacle ", id, obsX, obsY);
+                if (window.debug) console.log("adding new obstacle ", id, obsX, obsY);
 
                 window.obstacles[id][0] = id;
                 window.obstacles[id][1] = obsX;
@@ -72,7 +72,9 @@ control.onReady = () => {
     }
 
     window.go = function(index, target, finalRotationAngle = 270){
-        if (window.debug) console.warn("getting new path with obstacles: ", window.obstacles)
+        //if (window.debug) 
+        console.warn("getting new path with obstacles: ", window.obstacles)
+        
         let path = new GetRoute(chairControllers[index].chairControl.getPosition(), target, window.obstacles);
         chairControllers[index].followPath(path, finalRotationAngle);
     };

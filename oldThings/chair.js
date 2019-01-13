@@ -381,9 +381,9 @@ export default class ChairController {
     }
 
     updateObstaclePosition(id, x, y) {
-        //if (this.debug) {
+        if (this.debug) {
             console.log("updating obstacle position: id ", id, " x:", Math.round(x), " y:", Math.round(y))
-        //}
+        }
 
         window.updateObstacle(id, Math.round(x), Math.round(y));
         //console.log("updated obstacles. now it is: ", window.obstacles);
