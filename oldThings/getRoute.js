@@ -3,7 +3,7 @@
 let astar = require("./../oldThings/assets/libs/a-star.js")
 
 export default class GetRoute {
-    constructor(startLoc, targetLoc, obstacles) {
+    constructor(startLoc, targetLoc, obstacles=[]) {
     let gridConst = 100;
 
     // todo: use the chair method instead of rewriting the function here
@@ -40,7 +40,8 @@ export default class GetRoute {
 
     let graph = new astar.Graph(createAStarGrid());
     console.log('start from grid node', startLoc.x, startLoc.y);
-    //console.log(startLoc, targetLoc)
+    console.log(startLoc, targetLoc)
+
     let start = graph.grid[startLoc.x/gridConst][startLoc.y/gridConst];
     let end = graph.grid[targetLoc.x][targetLoc.y];
 
