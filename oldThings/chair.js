@@ -105,6 +105,11 @@ export default class ChairController {
                         self.stop();
                         return;
                     } else {
+                        // update obstacles with own id and positions (round up 5)
+                        let position = self.chairControl.getPosition();
+                        self.updateObstaclePosition(self.getId(), self.round5(position.x), self.round5(position.y));
+
+                        // actually move
                         self.move(self.controller.direction);
                     }
                 }
@@ -113,8 +118,9 @@ export default class ChairController {
                 if (this.debug) console.log("checking if arrived at:", nextTarget, " current: ", self.chairControl.getPosition())
 
                 if (self.isArrived(nextTarget)) {
-                    let position = self.chairControl.getPosition();
-                    self.updateObstaclePosition(self.getId(), position.x, position.y);
+                    //test: move up outside of arrived, do it every time instead: be more acurate
+                    //let position = self.chairControl.getPosition();
+                    //self.updateObstaclePosition(self.getId(), position.x, position.y);
 
                     self.controller.stepIndex++;
                     if (self.debug) {
@@ -384,6 +390,7 @@ export default class ChairController {
 
         // todo
         window.updateObstacle(id, Math.round(x), Math.round(y));
+        //console.log("updated obstacles. now it is: ", window.obstacles);
     }
 
     resetStepIndex() {
@@ -413,5 +420,8 @@ export default class ChairController {
         c.rotationIntervalID = w.rotationIntervalID;
         c.moveIntervalID = w.moveIntervalID;
         c.arrivedState = w.arrivedState;
+    }
+    round5(x) {
+        return Math.ceil(x/10)*10;
     }
 }
