@@ -77,13 +77,6 @@ export default class ChairController {
                     console.log("NEXT TARGET ", nextTarget, " current position: ", (Math.round(self.chair.position.x) / 10), (Math.round(self.chair.position.y) / 10));
                 }
 
-                // prevent collision todo: does not work
-                if (self.stepBlockedByObstacle(nextTarget, this.window.obstacles)) {
-                    // stoesst aber trotzdem zusammen.. zu grosse hitbox? 
-                    self.stop();
-                    return;
-                }
-
                 if (self.controller.driveReady === false) {
                     if (this.debug) {
                         console.log("not ready to move.");
@@ -93,7 +86,15 @@ export default class ChairController {
 
                 // if is ready to move
                 if ((self.controller.driveReady === true) && (nextTarget != undefined)) {
-                    self.move(self.controller.direction);
+
+                    // prevent collision todo: does not work
+                    if (self.stepBlockedByObstacle(nextTarget, this.window.obstacles)) {
+                        // stoesst aber trotzdem zusammen.. zu grosse hitbox? 
+                        self.stop();
+                        return;
+                    } else {
+                        self.move(self.controller.direction);
+                    }
                 }
 
                 // if is arrived at current target
@@ -120,12 +121,16 @@ export default class ChairController {
                     // todo... L
                     currentLoc.x = currentLoc.x * 100;
                     currentLoc.y = currentLoc.y * 100;
-                    self.controller.path = new GetRoute(currentLoc, {
-                        x: self.controller.path[self.controller.path.length - 1][0],
-                        y: self.controller.path[self.controller.path.length - 1][1]
-                    });
-                    self.resetStepIndex(); //todo: kill
-                    self.followPath(self.controller.path);
+                    if(self.controller.path[self.controller.path.length - 1]){
+                        self.controller.path = new GetRoute(currentLoc, {
+                            x: self.controller.path[self.controller.path.length - 1][0],
+                            y: self.controller.path[self.controller.path.length - 1][1]
+                        });
+                        self.resetStepIndex(); //todo: kill
+                        self.followPath(self.controller.path);
+                    } else {
+                        if(this.debug){console.log("no new path")}
+                    }
                 }
 
                 // if is arrived at last step
@@ -138,14 +143,14 @@ export default class ChairController {
                     self.controller.driveReady = false;
                     self.controller.rotationReady = true;
 
-                    wantedAngle = self.controller.finalRotationAngle;
+                    let wantedAngle = self.controller.finalRotationAngle;
                     if (self.debug) console.log("rotating to final rotation angle", self.controller.finalRotationAngle, wantedAngle);
                     self.controller.rotationInterval();
                 }
 
                 if (nextTarget == undefined) {
                     self.errorState = true;
-                    self.errorMsg = "error - no next target defined";
+                    self.errorMsg = "no next target defined";
                     self.stop();
                     console.log(self.errorMsg);
                 }
@@ -221,7 +226,7 @@ export default class ChairController {
             y: this.controller.path[this.controller.stepIndex][1]
         };
 
-        console.log(p1, p2)
+        if (this.debug) console.log(p1, p2)
         let angle = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 
         if (this.debug) console.log(this.chairControl.getPosition(), "Started rotating to: ", angle);
@@ -240,16 +245,19 @@ export default class ChairController {
         let bufferRadius = 5;
 
         if (typeof target === 'undefined') {
-            console.log("warning: target is not defined: ", target);
-            this.controller.errorState = true;
-            return;
+            // arrival case
+            let pos = this.chairControl.getPosition()
+            if(this.debug) console.log(this.getId(), " arrived at: target : ", Math.round(pos.x), Math.round(pos.y));
+            //this.controller.errorState = true;
+            this.controller.rotationReady = false;
+            this.controller.driveReady = false;
+            this.stop();
+            return true;
         }
 
         let chairPos = this.chairControl.getPosition();//this.simulation.getPosition(this.chair);
 
         let distanceToNextStep = Math.sqrt(Math.pow(chairPos.x - (target[0] * 100), 2) + Math.pow(chairPos.y - (target[1] * 100), 2));
-        console.log(this.controller.stepIndex);
-        console.log(distanceToNextStep);
         let chairIsArrived = (distanceToNextStep < bufferRadius);
         if (this.debug) {
             console.log('Chair grid position and target', chairPos.x, chairPos.y, target[0] * 100, target[1] * 100);
@@ -318,7 +326,9 @@ export default class ChairController {
     }
 
     stepBlockedByObstacle(step, obstacles) {
-        console.log("checking if next step blocked by obstacle ", step, obstacles)
+        if(this.debug){
+            console.log("checking if next step blocked by obstacle ", step, obstacles)
+        }
         for (let obstacle of obstacles) {
             if (obstacle[1] == (step[0] * 10) && obstacle[2] == (step[1] * 10)) {
                 if (this.debug) {

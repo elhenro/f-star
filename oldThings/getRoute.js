@@ -31,7 +31,7 @@ export default class GetRoute {
                 for (let obstacle of window.obstacles) {
                     if (obstacle[0] && obstacle[1] && obstacle[2]) {
                         let position = getLocationOnGrid({x: obstacle[1], y: obstacle[2]});
-                        console.log(position);
+                        //console.log(position);
                         gridGraph[position.x][position.y] = 0;
                     }
                 }
@@ -40,7 +40,7 @@ export default class GetRoute {
         }
 
         let graph = new astar.Graph(createAStarGrid());
-        console.log('start from grid node', startLoc.x, startLoc.y);
+        //console.log('calculating new route from: ', startLoc.x, startLoc.y);
         //console.log(startLoc, targetLoc)
 
         let start = graph.grid[startLoc.x / gridConst][startLoc.y / gridConst];

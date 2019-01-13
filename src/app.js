@@ -48,16 +48,15 @@ control.onReady = () => {
     };
 
     window.control = control.getChairs();
-
-    console.log(window.control);
+    //console.log(window.control);
 
     for (let i = 0; i < window.chairs.length; i++){
         chairControllers.push(new ChairController(window.control[i], i));
         addObstacle([i, window.control[i].getPosition().x, window.control[i].getPosition().y]); //todo: obj
     }
 
-    console.log(chairControllers);
-    console.log('obstacles2', window.obstacles);
+    console.log("chair simulation spawned:",chairControllers);
+    console.log('obstacles found: ', window.obstacles);
 
     let path = new GetRoute(chairControllers[0].chairControl.getPosition(), {x: 3, y: 4}, window.obstacles);
     //chairControllers[0].followPath(path);
