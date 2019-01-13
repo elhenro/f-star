@@ -152,9 +152,11 @@ export default class ChairController {
 
                 if (nextTarget == undefined) {
                     self.errorState = true;
-                    self.errorMsg = "no target";
                     self.stop();
-                    console.log(self.errorMsg);
+                    if(this.debug){
+                        self.errorMsg = "no target";
+                        console.log(self.errorMsg);
+                    }
                 }
             },
             errorState: false,
