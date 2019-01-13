@@ -79,11 +79,11 @@ export default class ChairController {
                 }
 
                 // prevent collision todo: does not work
-                /*
                 if (self.stepBlockedByObstacle(nextTarget, this.window.obstacles)) {
+                    // stoesst aber trotzdem zusammen.. zu grosse hitbox? 
                     self.stop();
                     return;
-                }*/
+                }
 
                 if (self.controller.driveReady === false) {
                     if (this.debug) {

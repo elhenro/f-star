@@ -39,13 +39,12 @@ control.onReady = () => {
                 window.obstacles[i][1] = x;
                 window.obstacles[i][2] = y;
             } else {
-                console.log("couldnt add obstacle: ",window.obstacles)
+                console.log("failed to add obstacle: ",window.obstacles)
             }
         });
     };
 
     function addObstacle(obstacle) {
-        //window.obstacles = window.obstacles.concat([[id, x, y]]);
         window.obstacles.push(obstacle)
     }
 

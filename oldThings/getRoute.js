@@ -1,5 +1,3 @@
-//import Astar from "./../oldThings/assets/libs/a-star.js";
-
 let astar = require("./../oldThings/assets/libs/a-star.js")
 
 export default class GetRoute {
@@ -20,9 +18,9 @@ export default class GetRoute {
         function createAStarGrid() {
             // create empty grid
             let gridGraph = [];
-            for (let i = 0; i < 1000/*render.options.height*/ / gridConst; i++) {
+            for (let i = 0; i < 1000 / gridConst; i++) {
                 let gridGraphRow = [];
-                for (let j = 0; j < 1000/*render.options.width*/ / gridConst; j++) {
+                for (let j = 0; j < 1000 / gridConst; j++) {
                     gridGraphRow.push(1);
                 }
                 gridGraph.push(gridGraphRow);
@@ -43,7 +41,7 @@ export default class GetRoute {
 
         let graph = new astar.Graph(createAStarGrid());
         console.log('start from grid node', startLoc.x, startLoc.y);
-        console.log(startLoc, targetLoc)
+        //console.log(startLoc, targetLoc)
 
         let start = graph.grid[startLoc.x / gridConst][startLoc.y / gridConst];
         let end = graph.grid[targetLoc.x][targetLoc.y];
@@ -51,8 +49,7 @@ export default class GetRoute {
         // result is an array containing the path
         let result = astar.astar.search(graph, start, end);
 
-        console.log('Graph', graph);
-        //console.log(result);
+        //console.log('Graph', graph);
 
         let mockMap = [];
         for (let step of result) {
