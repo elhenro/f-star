@@ -79,7 +79,7 @@ control.onReady = () => {
         //addObstacle([i, window.control[i].getPosition().x, window.control[i].getPosition().y]); //todo: obj
     }
 
-    if (window.debug) console.log("chair simulation spawned:",chairControllers);
+    console.log("chair simulation spawned:",chairControllers);
     // is empty?
     //console.log('obstacles found: ', window.obstacles);
 
