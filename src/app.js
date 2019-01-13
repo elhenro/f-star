@@ -32,7 +32,7 @@ window.chairConfig = {
 
 let chairControllers = [];
 
-window.debug = false;
+window.debug = true;
 
 const simulation = new Simulation({
     element: document.querySelector('main'),
