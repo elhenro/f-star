@@ -172,6 +172,8 @@ export default class ChairController {
     followPath(path, finalRotationAngle) {
         if (!this.controller.errorState) {
             this.controller.path = path;
+
+            if (this.debug) console.log("setting final rotationangle to ", finalRotationAngle)
             this.controller.finalRotationAngle = finalRotationAngle;
 
             //target is neighbour tile
