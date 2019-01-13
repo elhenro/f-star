@@ -27,6 +27,7 @@ export default class ChairController {
             moveIntervalTime: 10,
             rotationIntervalID: null,
             moveIntervalID: null,
+            arrivedState: false,
             rotationInterval: function () {
                 if (self.controller.rotationReady) {
                     let angleSlowDownRegion = 10;
@@ -135,7 +136,8 @@ export default class ChairController {
 
                 // if is arrived at last step
                 if (self.isArrived(self.controller.path[(self.controller.path.length - 1)])) {
-                    console.log("arrived at final location! <3");
+                    if(!self.controller.arrivedState) console.log("arrived at final location! <3");
+                    self.controller.arrivedState = true;
 
                     // interval clears itself
                     clearInterval(self.controller.moveIntervalID);
@@ -150,7 +152,7 @@ export default class ChairController {
 
                 if (nextTarget == undefined) {
                     self.errorState = true;
-                    self.errorMsg = "no next target defined";
+                    self.errorMsg = "no target";
                     self.stop();
                     console.log(self.errorMsg);
                 }
@@ -277,7 +279,7 @@ export default class ChairController {
         if (!target) {
             // arrived at target (or error and no next target)
             this.errorState = true;
-            this.errorMsg = "no next target ( or arrived ? ),  chair ID: " + this.chairControl;
+            this.errorMsg = "no next target for chair ID: " + this.getId();
             this.stop();
             //this.followPath(this.controller.path);
             return "err";
