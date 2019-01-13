@@ -53,7 +53,7 @@ control.onReady = () => {
 
     for (let i = 0; i < window.chairs.length; i++){
         chairControllers.push(new ChairController(window.control[i], i));
-        addObstacle([i, window.control[i].getPosition().x, window.control[i].getPosition().y]); //todo: obj
+        //addObstacle([i, window.control[i].getPosition().x, window.control[i].getPosition().y]); //todo: obj
     }
 
     console.log(chairControllers);
