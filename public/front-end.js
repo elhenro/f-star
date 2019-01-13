@@ -26,7 +26,10 @@ $(document).ready(function () {
 
     $('body').on('click', function (e) {
         if (selectedChair !== undefined) {
-            let fra = parseInt($('.fra_' + selectedChair).val());
+            let fra;
+            if ($('.fra_' + selectedChair).val() !== '') {
+                fra = parseInt($('.fra_' + selectedChair).val() !== '');
+            }
             let x = (Math.round(e.pageX / 100) * 100) / 100;
             let y = (Math.round(e.pageY / 100) * 100) / 100;
             if (x <= 6 && y <= 6) {

@@ -3,7 +3,7 @@ import GetRoute from "../oldThings/getRoute.js";
 import ChairController from '../oldThings/chair.js';
 
 window.chairs = [
-    {x: 100, y: 100},
+    {x: 100, y: 90},
     {x: 200, y: 200},
     {x: 400, y: 400}
 ];
@@ -11,7 +11,7 @@ window.chairs = [
 // config for start values all actors are spawned with
 //set default chair speeds etc.
 window.chairConfig = {
-    finalRotationAngle        : null,
+    finalRotationAngle        : 270,
     direction                 : "",
     wantedAngularRotation     : null,
     rotationSpeed             : 0.5,
@@ -31,7 +31,7 @@ window.chairConfig = {
 
 let chairControllers = [];
 
-window.debug = false;
+window.debug = true;
 
 const simulation = new Simulation({
     element: document.querySelector('main'),
@@ -65,7 +65,7 @@ control.onReady = () => {
         window.obstacles.push(obstacle)
     }
 
-    window.go = function(index, target, finalRotationAngle = 0){
+    window.go = function(index, target, finalRotationAngle = 270){
         if (window.debug) console.warn("getting new path with obstacles: ", window.obstacles)
         let path = new GetRoute(chairControllers[index].chairControl.getPosition(), target, window.obstacles);
         chairControllers[index].followPath(path, finalRotationAngle);
