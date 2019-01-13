@@ -4,11 +4,22 @@ import GetRoute from "../oldThings/getRoute.js";
 
 import ChairController from '../oldThings/chair.js';
 
+let chairs = [{
+    x: 100,
+    y: 100
+},
+    {
+        x: 200,
+        y: 200
+    }];
+
+let chairControllers = [];
+
 const simulation = new Simulation({
     element: document.querySelector('main'),
     width: 600,
     height: 600,
-    positions: [{x: 100, y: 100}/*, {x: 500, y: 500}*/]
+    positions: chairs
 });
 
 const control = simulation.getChairControl();
@@ -30,29 +41,27 @@ control.onReady = () => {
             }
         });
     };
+
     function addObstacle(obstacle) {
-       //window.obstacles = window.obstacles.concat([[id, x, y]]);
-       window.obstacles.push(obstacle)
+        //window.obstacles = window.obstacles.concat([[id, x, y]]);
+        window.obstacles.push(obstacle)
     }
 
-    window.control = control.getChairs(); 
+    window.control = control.getChairs();
 
-    let newId = control.getChairs().length
-    let chairPos =  control.getChairs()[0].getPosition()
+    console.log(window.control);
 
-    let c1 = new ChairController(control.getChairs()[0], newId)
-    console.log(window.obstacles);
-    addObstacle([newId,chairPos.x, chairPos.y]); //todo: obj
-    console.log(window.obstacles);
+    let i = 0;
+    for (let chair of chairs){
+        chairControllers.push(new ChairController(window.control[i], i));
+        addObstacle([i, window.control[i].getPosition().x, window.control[i].getPosition().y]); //todo: obj
+        i++;
+    }
 
-    c1.debug = true;
-
-    let target = {x: 3, y: 4};
-
-    let path = new GetRoute(chairPos, target, window.obstacles);
-
-    // initialize
-    c1.followPath(path)
+    console.log(chairControllers);
+    console.log('obstacles2', window.obstacles);
+    let path = new GetRoute(chairControllers[0].chairControl.getPosition(), {x: 3, y: 4}, window.obstacles);
+    chairControllers[0].followPath(path);
 }
 
 // start

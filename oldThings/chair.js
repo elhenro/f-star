@@ -236,7 +236,6 @@ export default class ChairController {
 
     // check if actor has arrived ar target coordinates like: [position.x, position.y]
     isArrived(target) {
-        console.log("ISARRIVED??")
         let bufferRadius = 5;
 
         if (typeof target === 'undefined') {
