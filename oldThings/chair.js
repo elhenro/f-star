@@ -313,6 +313,7 @@ export default class ChairController {
     }
 
     stepBlockedByObstacle(step, obstacles) {
+        console.log("checking if next step blocked by obstacle ",step, obstacles)
         for (let obstacle of obstacles) {
             if (obstacle[1] == (step[0] * 10) && obstacle[2] == (step[1] * 10)) {
                 if(this.debug){
