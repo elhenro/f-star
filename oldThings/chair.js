@@ -65,8 +65,7 @@ export default class ChairController {
 
                         // stop spinning
                         self.stop();
-                        // interval clears itself
-                        clearInterval(self.controller.rotationIntervalID);
+
                         // set movement interval
                         self.controller.moveIntervalID = setInterval(self.controller.moveInterval, self.controller.moveIntervalTime)
                     }
