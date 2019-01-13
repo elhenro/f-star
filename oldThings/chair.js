@@ -75,7 +75,7 @@ export default class ChairController {
                 let nextTarget = self.controller.path[self.controller.stepIndex];
 
                 if (this.debug) {
-                    console.log("NEXT TARGET ", nextTarget, " current position: ", (Math.round(self.chair.position.x) / 10), (Math.round(self.chair.position.y) / 10));
+                    console.log("NEXT TARGET ", nextTarget, " current position: ", (Math.round(self.chairControl.getPosition().x) / 10), (Math.round(self.chairControl.getPosition().y) / 10));
                 }
 
                 if (self.controller.driveReady === false) {
@@ -99,15 +99,15 @@ export default class ChairController {
                 }
 
                 // if is arrived at current target
-                if (this.debug) console.log("checking if arrived at:", nextTarget, " current: ", self.chair.position)
+                if (this.debug) console.log("checking if arrived at:", nextTarget, " current: ", self.chairControl.getPosition())
 
                 if (self.isArrived(nextTarget)) {
-                    let position = self.chairControl.getPosition;
+                    let position = self.chairControl.getPosition();
                     self.updateObstaclePosition(self.getId(), position.x, position.y);
 
                     self.controller.stepIndex++;
                     if (self.debug) {
-                        console.log(this.chairControl, "X X X X X X X --- arrived at ", nextTarget, "! :) ---  X X X X X X X X");
+                        console.log(self.chairControl, "X X X X X X X --- arrived at ", nextTarget, "! :) ---  X X X X X X X X");
                         console.log("new target is: ", self.controller.path[self.controller.stepIndex]);
                     }
 
