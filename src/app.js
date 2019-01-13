@@ -3,7 +3,7 @@ import GetRoute from "../oldThings/getRoute.js";
 import ChairController from '../oldThings/chair.js';
 
 window.chairs = [
-    {x: 103, y: 103},
+    {x: 100, y: 100},
     {x: 200, y: 200},
     {x: 400, y: 400}
 ];
@@ -49,14 +49,14 @@ control.onReady = () => {
             // if id matches
             if (obstacle[0] === id) {
                 // update x and y value for this id
-                window.obstacles[i][1] = x;
-                window.obstacles[i][2] = y;
+                window.obstacles[id][1] = x;
+                window.obstacles[id][2] = y;
             } else if(obstacle[0],obstacle[1],obstacle[2]){
-                window.obstacles[i][0] = id;
-                window.obstacles[i][1] = x;
-                window.obstacles[i][2] = y;
+                window.obstacles[id][0] = id;
+                window.obstacles[id][1] = x;
+                window.obstacles[id][2] = y;
             } else {
-                console.log("failed to add obstacle: ",window.obstacles)
+                console.warn("failed to add obstacle: ",window.obstacles)
             }
         });
     };
@@ -66,6 +66,7 @@ control.onReady = () => {
     }
 
     window.go = function(index, target, finalRotationAngle = 0){
+        console.warn("getting new path with obstacles: ", window.obstacles)
         let path = new GetRoute(chairControllers[index].chairControl.getPosition(), target, window.obstacles);
         chairControllers[index].followPath(path, finalRotationAngle);
     };
@@ -75,7 +76,7 @@ control.onReady = () => {
 
     for (let i = 0; i < window.chairs.length; i++){
         chairControllers.push(new ChairController(window.control[i], i));
-        //addObstacle([i, window.control[i].getPosition().x, window.control[i].getPosition().y]); //todo: obj
+        addObstacle([i, window.control[i].getPosition().x, window.control[i].getPosition().y]); //todo: obj
     }
 
     console.log("chair simulation spawned:",chairControllers);

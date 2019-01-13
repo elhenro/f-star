@@ -169,7 +169,7 @@ export default class ChairController {
         };
     }
 
-    followPath(path, finalRotationAngle) {
+    followPath(path, finalRotationAngle = 270) {
         if (!this.controller.errorState) {
             this.controller.path = path;
 
