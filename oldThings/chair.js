@@ -35,6 +35,10 @@ export default class ChairController {
                     let actualAngle = Math.round(self.chairControl.getPosition().bearing - 90); // !!! OK!!! todo: why????
                     let arrivedAtAngle = (actualAngle === wantedAngle);
 
+                    // update obstacles
+                    let position = self.chairControl.getPosition();
+                    self.updateObstaclePosition(self.getId(), /*self.round10(*/position.x/*)*/, /*self.round10(*/position.y/*)*/);
+
                     // Chair is does not look towards the wanted direction.
                     // Start rotation
                     if (arrivedAtAngle === false) {
@@ -95,13 +99,12 @@ export default class ChairController {
 
                     // prevent collision todo: does not work
                     if (self.stepBlockedByObstacle(nextTarget, this.window.obstacles)) {
-                        // stoesst aber trotzdem zusammen.. zu grosse hitbox? 
                         self.stop();
                         return;
                     } else {
-                        // update obstacles with own id and positions (round up 5)
+                        // update obstacles with own id and positions (round to 10)
                         let position = self.chairControl.getPosition();
-                        self.updateObstaclePosition(self.getId(), /*self.round5(*/position.x/*)*/, /*self.round5(*/position.y/*)*/);
+                        self.updateObstaclePosition(self.getId(), /*self.round10(*/position.x/*)*/,/* self.round10(*/position.y/*)*/);
 
                         // actually move
                         self.move(self.controller.direction);
@@ -378,11 +381,10 @@ export default class ChairController {
     }
 
     updateObstaclePosition(id, x, y) {
-        if (this.debug) {
+        //if (this.debug) {
             console.log("updating obstacle position: id ", id, " x:", Math.round(x), " y:", Math.round(y))
-        }
+        //}
 
-        // todo
         window.updateObstacle(id, Math.round(x), Math.round(y));
         //console.log("updated obstacles. now it is: ", window.obstacles);
     }
@@ -417,5 +419,14 @@ export default class ChairController {
     }
     round5(x) {
         return Math.ceil(x/5)*5;
+    }
+    round10(num,pre) {
+        if( !pre) pre = 0;
+        //var pow = Math.pow(10,pre);
+
+        let rounded = Math.floor(num / 10) * 10
+        //let rounded = Math.ceil(Math.round(num*pow)/pow /10)*10 - 10
+        //console.log("round ", num , " to ", rounded)
+        return rounded;
     }
 }
