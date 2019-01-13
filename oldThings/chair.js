@@ -48,14 +48,25 @@ export default class ChairController {
                             speed = speed / 10;
                         }
 
-                        if(this.debug) console.log('comparing rotations:', actualAngle, wantedAngle);
+                        if (this.debug) console.log('comparing rotations:', actualAngle, wantedAngle);
                         // Start rotatinwantedAngleg
                         if (this.debug) console.log(actualAngle, wantedAngle);
-                        if (wantedAngle - actualAngle >= 180) {
+
+                        if (actualAngle < wantedAngle) {
+                            if (Math.abs(actualAngle - wantedAngle) < 180)
+                                self.chairControl.move({motionType: 'Rotation', velocity: speed});
+                            else self.chairControl.move({motionType: 'Rotation', velocity: -speed});
+                        } else {
+                            if (Math.abs(actualAngle - wantedAngle) < 180)
+                                self.chairControl.move({motionType: 'Rotation', velocity: -speed});
+                            else self.chairControl.move({motionType: 'Rotation', velocity: speed});
+                        }
+
+                        /*if (wantedAngle - actualAngle >= 180) {
                             self.chairControl.move({motionType: 'Rotation', velocity: -speed})
                         } else if (wantedAngle - actualAngle < 180) {
-                            self.chairControl.move({motionType: 'Rotation', velocity: speed})
-                        }
+                            self.chairControl.move({motionType: 'Rotation', velocity: -speed})
+                        }*/
 
                     } else if (arrivedAtAngle === true) {
                         if (this.debug) console.log("adjusted rotation successfully: ", actualAngle, wantedAngle);
@@ -147,7 +158,7 @@ export default class ChairController {
                     self.controller.driveReady = false;
                     self.controller.rotationReady = true;
 
-                    if(self.debug) console.log("resetting arrived actor: ", self.getId())
+                    if (self.debug) console.log("resetting arrived actor: ", self.getId())
                     self.resetReady();
                     if (self.debug) console.log("rotating to final rotation angle", self.controller.finalRotationAngle);
                     self.controller.wantedAngularRotation = self.controller.finalRotationAngle;
@@ -387,20 +398,20 @@ export default class ChairController {
         let w = window.chairConfig;
 
         //c.finalRotationAngle        = w.finalRotationAngle;
-        c.direction                 = w.direction;
-        c.wantedAngularRotation     = w.wantedAngularRotation;
-        c.rotationSpeed             = w.rotationSpeed;
-        c.driveReady                = w.driveReady;
-        c.rotationReady             = w.rotationReady;
-        c.stepIndex                 = w.stepIndex;
-        c.moveSpeed                 = w.moveSpeed;
-        c.timeout                   = w.timeout;
-        c.forceX                    = w.forceX;
-        c.forceY                    = w.forceY;
-        c.rotationIntervalTime      = w.rotationIntervalTime;
-        c.moveIntervalTime          = w.moveIntervalTime;
-        c.rotationIntervalID        = w.rotationIntervalID;
-        c.moveIntervalID            = w.moveIntervalID;
-        c.arrivedState              = w.arrivedState;
+        c.direction = w.direction;
+        c.wantedAngularRotation = w.wantedAngularRotation;
+        c.rotationSpeed = w.rotationSpeed;
+        c.driveReady = w.driveReady;
+        c.rotationReady = w.rotationReady;
+        c.stepIndex = w.stepIndex;
+        c.moveSpeed = w.moveSpeed;
+        c.timeout = w.timeout;
+        c.forceX = w.forceX;
+        c.forceY = w.forceY;
+        c.rotationIntervalTime = w.rotationIntervalTime;
+        c.moveIntervalTime = w.moveIntervalTime;
+        c.rotationIntervalID = w.rotationIntervalID;
+        c.moveIntervalID = w.moveIntervalID;
+        c.arrivedState = w.arrivedState;
     }
 }
