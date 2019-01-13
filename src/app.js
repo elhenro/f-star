@@ -31,7 +31,7 @@ window.chairConfig = {
 
 let chairControllers = [];
 
-window.debug = true;
+window.debug = false;
 
 const simulation = new Simulation({
     element: document.querySelector('main'),
@@ -45,19 +45,25 @@ const control = simulation.getChairControl();
 control.onReady = () => {
     window.obstacles = [];
     window.updateObstacle = function (id, x, y) {
+        let obsX = roundToNearest(x, 10);//Math.ceil(x/10)*10;
+        let obsY = roundToNearest(y, 10);//Math.ceil(y/10)*10;
+
         window.obstacles.forEach(function (obstacle, i) {
             // if id matches
             if (obstacle[0] === id) {
                 // update x and y value for this id
-                window.obstacles[id][1] = x;
-                window.obstacles[id][2] = y;
-            } else if(obstacle[0],obstacle[1],obstacle[2]){
-                window.obstacles[id][0] = id;
-                window.obstacles[id][1] = x;
-                window.obstacles[id][2] = y;
+                
+                if(window.debug) console.log("found existing obstacle ", id, " updating: ", obsX, obsY);
+                
+                window.obstacles[id][1] = obsX;
+                window.obstacles[id][2] = obsY;
             } else {
-                if (window.debug) console.warn("failed to add obstacle: ",window.obstacles)
-            }
+                if (window.debug) console.log("adding new obstacle ", id, obsX, obsY);
+
+                window.obstacles[id][0] = id;
+                window.obstacles[id][1] = obsX;
+                window.obstacles[id][2] = obsY;
+            } 
         });
     };
 
@@ -66,7 +72,9 @@ control.onReady = () => {
     }
 
     window.go = function(index, target, finalRotationAngle = 270){
-        if (window.debug) console.warn("getting new path with obstacles: ", window.obstacles)
+        //if (window.debug) 
+        console.warn("getting new path with obstacles: ", window.obstacles)
+        
         let path = new GetRoute(chairControllers[index].chairControl.getPosition(), target, window.obstacles);
         chairControllers[index].followPath(path, finalRotationAngle);
     };
@@ -95,3 +103,7 @@ control.onReady = () => {
 
 // start
 control.start();
+
+function roundToNearest(numToRound, numToRoundTo) {
+    return Math.round(numToRound / numToRoundTo) * numToRoundTo;
+}

@@ -29,11 +29,11 @@ export default class GetRoute {
             // update grid with blocked locations
             if (window.obstacles.length > 0) {
                 for (let obstacle of window.obstacles) {
-                    if (obstacle[0] && obstacle[1] && obstacle[2]) {
+                    //if (obstacle[0] && obstacle[1] && obstacle[2]) {
                         let position = getLocationOnGrid({x: obstacle[1], y: obstacle[2]});
                         //console.log(position);
                         gridGraph[position.x][position.y] = 0;
-                    }
+                    //}
                 }
             }
             return gridGraph;
