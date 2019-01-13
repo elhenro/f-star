@@ -34,10 +34,12 @@ control.onReady = () => {
                 // update x and y value for this id
                 window.obstacles[i][1] = x;
                 window.obstacles[i][2] = y;
+            } else if(obstacle[0],obstacle[1],obstacle[2]){
+                window.obstacles[i][0] = id;
+                window.obstacles[i][1] = x;
+                window.obstacles[i][2] = y;
             } else {
-                window.obstacle[i][0] = id;
-                window.obstacle[i][1] = x;
-                window.obstacle[i][2] = y;
+                console.log("couldnt add obstacle: ",window.obstacles)
             }
         });
     };
