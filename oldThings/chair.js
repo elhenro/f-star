@@ -151,6 +151,7 @@ export default class ChairController {
                     self.resetReady();
                     if (self.debug) console.log("rotating to final rotation angle", self.controller.finalRotationAngle);
                     self.controller.wantedAngularRotation = self.controller.finalRotationAngle;
+                    console.log(self.controller);
                     self.controller.rotationInterval();
                 }
 
@@ -378,12 +379,12 @@ export default class ChairController {
         let c = this.controller;
         let w = window.chairConfig;
 
-        c.finalRotationAngle        = w.finalRotationAngle;
+        //c.finalRotationAngle        = w.finalRotationAngle;
         c.direction                 = w.direction;
         c.wantedAngularRotation     = w.wantedAngularRotation;
         c.rotationSpeed             = w.rotationSpeed;
         c.driveReady                = w.driveReady;
-        c.rotationReady             = w.resetReady;
+        c.rotationReady             = w.rotationReady;
         c.stepIndex                 = w.stepIndex;
         c.moveSpeed                 = w.moveSpeed;
         c.timeout                   = w.timeout;

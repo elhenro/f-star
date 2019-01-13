@@ -27,12 +27,11 @@ window.chairConfig = {
     rotationIntervalID        : null,
     moveIntervalID            : null,
     arrivedState              : false,
-    rotationSpeed             : 0.5,
 };
 
 let chairControllers = [];
 
-window.debug = false;
+window.debug = true;
 
 const simulation = new Simulation({
     element: document.querySelector('main'),
