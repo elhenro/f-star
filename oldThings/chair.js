@@ -31,7 +31,7 @@ export default class ChairController {
             rotationInterval: function () {
                 if (self.controller.rotationReady) {
                     let angleSlowDownRegion = 10;
-                    let wantedAngle = self.controller.wantedAngularRotation;
+                    let wantedAngle = Math.round(self.controller.wantedAngularRotation);
                     let actualAngle = Math.round(self.chairControl.getPosition().bearing - 90); // !!! OK!!! todo: why????
                     let arrivedAtAngle = (actualAngle === wantedAngle);
 
@@ -48,13 +48,18 @@ export default class ChairController {
                             speed = speed / 10;
                         }
 
-                        if(this.debug) console.log('comparing rotations:', actualAngle, wantedAngle);
+                        if (this.debug) console.log('comparing rotations:', actualAngle, wantedAngle);
                         // Start rotatinwantedAngleg
                         if (this.debug) console.log(actualAngle, wantedAngle);
-                        if (actualAngle > wantedAngle) {
-                            self.chairControl.move({motionType: 'Rotation', velocity: -speed})
-                        } else if (actualAngle < wantedAngle) {
-                            self.chairControl.move({motionType: 'Rotation', velocity: speed})
+
+                        if (actualAngle < wantedAngle) {
+                            if (Math.abs(actualAngle - wantedAngle) < 180)
+                                self.chairControl.move({motionType: 'Rotation', velocity: speed});
+                            else self.chairControl.move({motionType: 'Rotation', velocity: -speed});
+                        } else {
+                            if (Math.abs(actualAngle - wantedAngle) < 180)
+                                self.chairControl.move({motionType: 'Rotation', velocity: -speed});
+                            else self.chairControl.move({motionType: 'Rotation', velocity: speed});
                         }
 
                     } else if (arrivedAtAngle === true) {
@@ -107,9 +112,8 @@ export default class ChairController {
                 if (this.debug) console.log("checking if arrived at:", nextTarget, " current: ", self.chairControl.getPosition())
 
                 if (self.isArrived(nextTarget)) {
-                    //test: move up outside of arrived, do it every time instead: be more acurate
-                    //let position = self.chairControl.getPosition();
-                    //self.updateObstaclePosition(self.getId(), position.x, position.y);
+                    let position = self.chairControl.getPosition();
+                    self.updateObstaclePosition(self.getId(), position.x, position.y);
 
                     self.controller.stepIndex++;
                     if (self.debug) {
@@ -153,7 +157,7 @@ export default class ChairController {
                     self.controller.driveReady = false;
                     self.controller.rotationReady = true;
 
-                    if(self.debug) console.log("resetting arrived actor: ", self.getId())
+                    if (self.debug) console.log("resetting arrived actor: ", self.getId())
                     self.resetReady();
                     if (self.debug) console.log("rotating to final rotation angle", self.controller.finalRotationAngle);
                     self.controller.wantedAngularRotation = self.controller.finalRotationAngle;
@@ -236,15 +240,15 @@ export default class ChairController {
     adjustAngle(angle = null) {
         if (angle === null) {
             //let angle = Math.atan2(pos.y - (this.controller.path[this.controller.stepIndex][1] * 100), pos.x - (this.controller.path[this.controller.stepIndex][0] * 100));
-            let p1 = this.getLocationOnGrid(this.chairControl.getPosition());
+            let p1 = this.chairControl.getPosition();
             let p2 = {
-                x: this.controller.path[this.controller.stepIndex][0],
-                y: this.controller.path[this.controller.stepIndex][1]
+                x: Math.round(this.controller.path[this.controller.stepIndex][0] * 100),
+                y: Math.round(this.controller.path[this.controller.stepIndex][1] * 100)
             };
 
             if (this.debug) console.log(p1, p2);
             angle = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
-
+            angle = (angle + 360) % 360;
             // dirty // davids schnitstelle macht + 90 ...
             if (angle === -90) angle = 270;
 
@@ -379,7 +383,6 @@ export default class ChairController {
 
         // todo
         window.updateObstacle(id, Math.round(x), Math.round(y));
-        //console.log("updated obstacles. now it is: ", window.obstacles);
     }
 
     resetStepIndex() {
@@ -394,21 +397,21 @@ export default class ChairController {
         let w = window.chairConfig;
 
         //c.finalRotationAngle        = w.finalRotationAngle;
-        c.direction                 = w.direction;
-        c.wantedAngularRotation     = w.wantedAngularRotation;
-        c.rotationSpeed             = w.rotationSpeed;
-        c.driveReady                = w.driveReady;
-        c.rotationReady             = w.rotationReady;
-        c.stepIndex                 = w.stepIndex;
-        c.moveSpeed                 = w.moveSpeed;
-        c.timeout                   = w.timeout;
-        c.forceX                    = w.forceX;
-        c.forceY                    = w.forceY;
-        c.rotationIntervalTime      = w.rotationIntervalTime;
-        c.moveIntervalTime          = w.moveIntervalTime;
-        c.rotationIntervalID        = w.rotationIntervalID;
-        c.moveIntervalID            = w.moveIntervalID;
-        c.arrivedState              = w.arrivedState;
+        c.direction = w.direction;
+        c.wantedAngularRotation = w.wantedAngularRotation;
+        c.rotationSpeed = w.rotationSpeed;
+        c.driveReady = w.driveReady;
+        c.rotationReady = w.rotationReady;
+        c.stepIndex = w.stepIndex;
+        c.moveSpeed = w.moveSpeed;
+        c.timeout = w.timeout;
+        c.forceX = w.forceX;
+        c.forceY = w.forceY;
+        c.rotationIntervalTime = w.rotationIntervalTime;
+        c.moveIntervalTime = w.moveIntervalTime;
+        c.rotationIntervalID = w.rotationIntervalID;
+        c.moveIntervalID = w.moveIntervalID;
+        c.arrivedState = w.arrivedState;
     }
     round5(x) {
         return Math.ceil(x/5)*5;

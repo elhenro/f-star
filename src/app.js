@@ -3,7 +3,7 @@ import GetRoute from "../oldThings/getRoute.js";
 import ChairController from '../oldThings/chair.js';
 
 window.chairs = [
-    {x: 100, y: 100},
+    {x: 100, y: 90},
     {x: 200, y: 200},
     {x: 400, y: 400}
 ];
@@ -76,7 +76,7 @@ control.onReady = () => {
 
     for (let i = 0; i < window.chairs.length; i++){
         chairControllers.push(new ChairController(window.control[i], i));
-        addObstacle([i, window.control[i].getPosition().x, window.control[i].getPosition().y]); //todo: obj
+        //addObstacle([i, window.control[i].getPosition().x, window.control[i].getPosition().y]); //todo: obj
     }
 
     if (window.debug) console.log("chair simulation spawned:",chairControllers);
