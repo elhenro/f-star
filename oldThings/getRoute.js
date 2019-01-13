@@ -3,7 +3,7 @@
 let astar = require("./../oldThings/assets/libs/a-star.js")
 
 export default class GetRoute {
-    constructor(startLoc, targetLoc, obstacles=[]) {
+    constructor(startLoc, targetLoc, obstacles) {
     let gridConst = 100;
 
     // todo: use the chair method instead of rewriting the function here
@@ -29,10 +29,13 @@ export default class GetRoute {
         }
 
         // update grid with blocked locations
-        if (obstacles.length > 0) {
-            for (let obstacle of obstacles) {
-                let position = getLocationOnGrid({x: obstacle[1], y: obstacle[2]});
+        if (window.obstacles.length > 0) {
+            for (let obstacle of window.obstacles) {
+                //if(obstacle[1]){
+                let position = getLocationOnGrid({x:obstacle[1],y:obstacle[2]});
+                console.log(position);
                 gridGraph[position.x][position.y] = 0;
+                //}
             }
         }
         return gridGraph;

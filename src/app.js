@@ -14,27 +14,46 @@ const simulation = new Simulation({
 const control = simulation.getChairControl();
 
 control.onReady = () => {
+    window.obstacles = [];
+
+    window.updateObstacle = function (id, x, y) {
+        window.obstacles.forEach(function (obstacle, i) {
+            // if id matches
+            if (obstacle[0] === id) {
+                // update x and y value for this id
+                window.obstacles[i][1] = x;
+                window.obstacles[i][2] = y;
+            } else {
+                window.obstacle[i][0] = id;
+                window.obstacle[i][1] = x;
+                window.obstacle[i][2] = y;
+            }
+        });
+    };
+    function addObstacle(obstacle) {
+       //window.obstacles = window.obstacles.concat([[id, x, y]]);
+       window.obstacles.push(obstacle)
+    }
+
     window.control = control.getChairs(); 
 
-    let c1 = new ChairController(control.getChairs()[0])
+    let newId = control.getChairs().length
+    let chairPos =  control.getChairs()[0].getPosition()
+
+    let c1 = new ChairController(control.getChairs()[0], newId)
+    console.log(window.obstacles);
+    addObstacle([newId,chairPos.x, chairPos.y]); //todo: obj
+    console.log(window.obstacles);
 
     c1.debug = true;
 
     let target = {x: 3, y: 4};
-    let chairPos =  control.getChairs()[0].getPosition()
-    //chairs[index].getLocationOnGrid(chairs[index].chair.position);
 
-    let obstacles = []; // todo
-    let path = new GetRoute(chairPos, target, obstacles);
+    let path = new GetRoute(chairPos, target, window.obstacles);
 
+    // initialize
     c1.followPath(path)
-    //c1.adjustAngle(180)
-
-
-    // 1 rotate 90deg
-//    adjustAngle(chair, 90)
 }
 
+// start
 control.start();
-
-//    chair.move({motionType: 'Rotation', velocity: 0.5})
