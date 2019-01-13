@@ -26,10 +26,6 @@ body {
         max-width: 900px;
     }
 
-    .chair-control article{
-        text-align: center;
-    }
-
     .chair-control input[type='number']{
         width: 60px;
         font-size: 2em;
@@ -51,3 +47,10 @@ body {
         background: #b80003;
         color: white;
     }
+
+.chair-control button.set-target{
+    background: #ecf4ed;
+}
+.chair-control button.set-target.selected{
+    background: #8c938d;
+}

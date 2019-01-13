@@ -1,6 +1,7 @@
 import GetRoute from "../oldThings/getRoute.js";
+
 export default class ChairController {
-    constructor(/*posX = 0, posY = 0*/ chairControl, id) {
+    constructor(chairControl, id) {
         let self = this;
 
         // enable / disable console logging for more information
@@ -14,12 +15,11 @@ export default class ChairController {
             finalRotationAngle: null,
             direction: "",
             wantedAngularRotation: null,
-            initialSpeed: 0.1,
-            rotationSpeed: 0.1,
+            rotationSpeed: 0.5,
             driveReady: false,
             rotationReady: true,
             stepIndex: 0,
-            moveSpeed: 0.3,
+            moveSpeed: 0.5,
             timeout: 50,
             forceX: 0,
             forceY: 0,
@@ -29,10 +29,9 @@ export default class ChairController {
             moveIntervalID: null,
             rotationInterval: function () {
                 if (self.controller.rotationReady) {
-                    let angleAccuracy = 80;
-                    let angleSlowDownRegion = 1;
+                    let angleSlowDownRegion = 10;
                     let wantedAngle = self.controller.wantedAngularRotation;
-                    let actualAngle = Math.round(self.chairControl.getPosition().bearing - 90) // !!! OK!!!   //(self.chair.angle % (Math.PI * 2));
+                    let actualAngle = Math.round(self.chairControl.getPosition().bearing - 90) // !!! OK!!! todo: why????
                     let arrivedAtAngle = (actualAngle === wantedAngle);
 
                     // Chair is does not look towards the wanted direction.
@@ -41,19 +40,19 @@ export default class ChairController {
                         self.controller.driveReady = false;
                         clearInterval(self.controller.moveIntervalID);
 
-                        let speed = self.controller.initialSpeed;
+                        let speed = self.controller.rotationSpeed;
 
                         // If chair angle is close to wanted angle, decrease speed
                         if (actualAngle <= (wantedAngle + angleSlowDownRegion) && actualAngle >= (wantedAngle - angleSlowDownRegion)) {
-                            speed = speed / 30;
+                            speed = speed / 10;
                         }
-                        
+
                         // Start rotatinwantedAngleg
-                        if(this.debug){console.log(actualAngle, wantedAngle)};
+                        if (this.debug) console.log(actualAngle, wantedAngle);
                         if (actualAngle > wantedAngle) {
-                            self.chairControl.move({motionType: 'Rotation',velocity: -speed})
+                            self.chairControl.move({motionType: 'Rotation', velocity: -speed})
                         } else if (actualAngle < wantedAngle) {
-                            self.chairControl.move({motionType: 'Rotation',velocity: speed})
+                            self.chairControl.move({motionType: 'Rotation', velocity: speed})
                         }
 
                     } else if (arrivedAtAngle === true) {
@@ -121,7 +120,10 @@ export default class ChairController {
                     // todo... L
                     currentLoc.x = currentLoc.x * 100;
                     currentLoc.y = currentLoc.y * 100;
-                    self.controller.path = new GetRoute(currentLoc, {x:self.controller.path[self.controller.path.length - 1][0],y:self.controller.path[self.controller.path.length -1][1]});
+                    self.controller.path = new GetRoute(currentLoc, {
+                        x: self.controller.path[self.controller.path.length - 1][0],
+                        y: self.controller.path[self.controller.path.length - 1][1]
+                    });
                     self.resetStepIndex(); //todo: kill
                     self.followPath(self.controller.path);
                 }
@@ -214,9 +216,12 @@ export default class ChairController {
 
         //let angle = Math.atan2(pos.y - (this.controller.path[this.controller.stepIndex][1] * 100), pos.x - (this.controller.path[this.controller.stepIndex][0] * 100));
         let p1 = this.getLocationOnGrid(this.chairControl.getPosition());
-        let p2 = { x: this.controller.path[this.controller.stepIndex][0], y: this.controller.path[this.controller.stepIndex][1]};
-    
-        console.log(p1,p2)
+        let p2 = {
+            x: this.controller.path[this.controller.stepIndex][0],
+            y: this.controller.path[this.controller.stepIndex][1]
+        };
+
+        console.log(p1, p2)
         let angle = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 
         if (this.debug) console.log(this.chairControl.getPosition(), "Started rotating to: ", angle);
@@ -227,7 +232,7 @@ export default class ChairController {
 
     // Accelerates the chair
     move() {
-        this.chairControl.move({motionType:'Straight', velocity: this.controller.moveSpeed})
+        this.chairControl.move({motionType: 'Straight', velocity: this.controller.moveSpeed})
     }
 
     // check if actor has arrived ar target coordinates like: [position.x, position.y]
@@ -247,8 +252,8 @@ export default class ChairController {
         console.log(distanceToNextStep);
         let chairIsArrived = (distanceToNextStep < bufferRadius);
         if (this.debug) {
-            console.log('Chair grid position and target', chairPos.x, chairPos.y, target[0]*100, target[1]*100);
-            console.log("stepindex:",this.controller.stepIndex)
+            console.log('Chair grid position and target', chairPos.x, chairPos.y, target[0] * 100, target[1] * 100);
+            console.log("stepindex:", this.controller.stepIndex)
             console.log('Chair is arrived', chairIsArrived);
         }
 
@@ -313,10 +318,10 @@ export default class ChairController {
     }
 
     stepBlockedByObstacle(step, obstacles) {
-        console.log("checking if next step blocked by obstacle ",step, obstacles)
+        console.log("checking if next step blocked by obstacle ", step, obstacles)
         for (let obstacle of obstacles) {
             if (obstacle[1] == (step[0] * 10) && obstacle[2] == (step[1] * 10)) {
-                if(this.debug){
+                if (this.debug) {
                     console.log("chairID:", this.getId(), "step:", step, " was blocked by obstacle: ", obstacle);
                 }
                 return true

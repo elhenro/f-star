@@ -55,7 +55,7 @@ export default class Simulation {
                     y = 100
                 } = positions[index] || {};
 
-                const shape = Bodies.circle(x, y, 50);
+                const shape = Bodies.circle(x, y, 45);
                 shape.frictionAir = friction;
                 return shape;
             })(),
@@ -74,6 +74,9 @@ export default class Simulation {
             engine: engine,
             options: {
                 showAngleIndicator: true,
+                showIds: true,
+                showBroadphase: true,
+                showBounds: true,
                 height,
                 width
             }
