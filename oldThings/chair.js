@@ -237,7 +237,7 @@ export default class ChairController {
         let angle = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 
         // dirty // davids schnitstelle macht + 90 ... 
-        //if (angle == -90) angle = 0;
+        if (angle == -90) angle = 270;
 
         if (this.debug) console.log(this.chairControl.getPosition(), "Started rotating to: ", angle);
 
