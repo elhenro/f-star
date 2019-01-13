@@ -31,7 +31,7 @@ window.chairConfig = {
 
 let chairControllers = [];
 
-window.debug = true;
+window.debug = false;
 
 const simulation = new Simulation({
     element: document.querySelector('main'),
@@ -56,7 +56,7 @@ control.onReady = () => {
                 window.obstacles[id][1] = x;
                 window.obstacles[id][2] = y;
             } else {
-                console.warn("failed to add obstacle: ",window.obstacles)
+                if (window.debug) console.warn("failed to add obstacle: ",window.obstacles)
             }
         });
     };
@@ -66,7 +66,7 @@ control.onReady = () => {
     }
 
     window.go = function(index, target, finalRotationAngle = 0){
-        console.warn("getting new path with obstacles: ", window.obstacles)
+        if (window.debug) console.warn("getting new path with obstacles: ", window.obstacles)
         let path = new GetRoute(chairControllers[index].chairControl.getPosition(), target, window.obstacles);
         chairControllers[index].followPath(path, finalRotationAngle);
     };
@@ -79,7 +79,7 @@ control.onReady = () => {
         addObstacle([i, window.control[i].getPosition().x, window.control[i].getPosition().y]); //todo: obj
     }
 
-    console.log("chair simulation spawned:",chairControllers);
+    if (window.debug) console.log("chair simulation spawned:",chairControllers);
     // is empty?
     //console.log('obstacles found: ', window.obstacles);
 

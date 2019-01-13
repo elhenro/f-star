@@ -48,7 +48,7 @@ export default class ChairController {
                             speed = speed / 10;
                         }
 
-                        console.log('comparing rotations:', actualAngle, wantedAngle);
+                        if(this.debug) console.log('comparing rotations:', actualAngle, wantedAngle);
                         // Start rotatinwantedAngleg
                         if (this.debug) console.log(actualAngle, wantedAngle);
                         if (actualAngle > wantedAngle) {
@@ -151,7 +151,7 @@ export default class ChairController {
                     self.resetReady();
                     if (self.debug) console.log("rotating to final rotation angle", self.controller.finalRotationAngle);
                     self.controller.wantedAngularRotation = self.controller.finalRotationAngle;
-                    console.log(self.controller);
+                    //console.log(self.controller);
                     self.adjustAngle(self.controller.finalRotationAngle);
                 }
 
