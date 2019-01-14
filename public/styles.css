@@ -1,6 +1,13 @@
+*{
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     padding: 0;
+    color: white;
+    background-color: #121517;
+    font-family: 'Avenir Next', 'Helvetica Neue', sans-serif;
 }
 
 .grid {
@@ -16,38 +23,70 @@ table tr {
 }
 
 table th {
-    min-width: 96px;
+    min-width: 100px;
     border: 1px solid white;
 }
 
 .chair-control {
     display: flex;
     justify-content: space-between;
-    max-width: 900px;
+    text-align: center;
+    max-width: 1000px;
+    margin-top: 50px;
+}
+
+.chair-control article{
+    max-width: 250px;
+    background-color: #3d585e;
+    padding: 1%;
 }
 
 .chair-control input[type='number'] {
     width: 100%;
-    font-size: 1.5em;
+    height: 30px;
+    font-size: 1.2em;
     text-align: center;
+    border: none;
+    outline: none;
+    border-bottom: #121517 solid 2px;
 }
 
 .chair-control button {
     width: 100%;
-    height: 30px;
     padding: 0;
-    font-size: 1em;
+    color: white;
+    font-size: 1.5em;
+    margin-top: 2%;
+    cursor: pointer;
+    border: none;
 }
 
 .chair-control button.set-target {
-    background: #00b800;
+    background: #3abc37;
+    height: 30px;
 }
 
 .chair-control button.set-target.selected {
-    background: #007700;
+    background: #3abc37;
 }
 
 .chair-control button.stop {
-    background: #b80003;
-    color: white;
+    background: #6a0002;
+    font-size: 1.2em;
+}
+
+@keyframes pulse {
+    0%{
+        background-color: #3abc37;
+    }
+    50%{
+        background-color: #336633;
+    }
+    100%{
+        background-color: #3abc37;
+    }
+}
+
+.pulse{
+    animation: pulse 2s infinite;
 }
